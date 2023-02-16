@@ -19,15 +19,44 @@ class StackedColumnChart extends SampleView {
 /// State class of the stacked column chart.
 class _StackedColumnChartState extends SampleViewState {
   _StackedColumnChartState();
-
-  List<ChartSampleData>? chartData;
-
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
         TooltipBehavior(enable: true, header: '', canShowMarker: false);
-    chartData = <ChartSampleData>[
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildStackedColumnChart();
+  }
+
+  /// Returns the cartesian Stacked column chart.
+  SfCartesianChart _buildStackedColumnChart() {
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0,
+      title: ChartTitle(
+          text: isCardView ? '' : 'Quarterly wise sales of products'),
+      legend: Legend(
+          isVisible: !isCardView, overflowMode: LegendItemOverflowMode.wrap),
+      primaryXAxis: CategoryAxis(
+        majorGridLines: MajorGridLines(width: 0),
+      ),
+      primaryYAxis: NumericAxis(
+          axisLine: AxisLine(width: 0),
+          labelFormat: '{value}K',
+          maximum: 300,
+          majorTickLines: MajorTickLines(size: 0)),
+      series: _getStackedColumnSeries(),
+      tooltipBehavior: _tooltipBehavior,
+    );
+  }
+
+  /// Returns the list of chart serie which need to render
+  /// on the stacked column chart.
+  List<StackedColumnSeries<ChartSampleData, String>> _getStackedColumnSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
           x: 'Q1',
           y: 50,
@@ -53,65 +82,27 @@ class _StackedColumnChartState extends SampleViewState {
           secondSeriesYValue: 70,
           thirdSeriesYValue: 65),
     ];
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildStackedColumnChart();
-  }
-
-  /// Returns the cartesian Stacked column chart.
-  SfCartesianChart _buildStackedColumnChart() {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(
-          text: isCardView ? '' : 'Quarterly wise sales of products'),
-      legend: Legend(
-          isVisible: !isCardView, overflowMode: LegendItemOverflowMode.wrap),
-      primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
-      ),
-      primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
-          labelFormat: '{value}K',
-          maximum: 300,
-          majorTickLines: const MajorTickLines(size: 0)),
-      series: _getStackedColumnSeries(),
-      tooltipBehavior: _tooltipBehavior,
-    );
-  }
-
-  /// Returns the list of chart serie which need to render
-  /// on the stacked column chart.
-  List<StackedColumnSeries<ChartSampleData, String>> _getStackedColumnSeries() {
     return <StackedColumnSeries<ChartSampleData, String>>[
       StackedColumnSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           name: 'Product A'),
       StackedColumnSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.yValue,
           name: 'Product B'),
       StackedColumnSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
           name: 'Product C'),
       StackedColumnSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
           name: 'Product D')
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
   }
 }

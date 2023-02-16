@@ -2,28 +2,19 @@
 import 'package:flutter/material.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Map import
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 ///Local import
 import '../../../../model/sample_view.dart';
 
 /// Renders the map tooltip sample.
-// ignore: must_be_immutable
 class MapTooltipPage extends SampleView {
   /// Creates the map tooltip sample.
-  MapTooltipPage(Key key) : super(key: key) {
-    needsPropertyPanel = hideSampleStatus = false;
-  }
-
-  /// Specifies whether the property panel is required in web and other desktop platforms
-  bool? needsPropertyPanel;
-
-  /// Specifies whether to display sample status such as updated tag in web and other desktop platforms
-  bool? hideSampleStatus;
+  const MapTooltipPage(Key key) : super(key: key);
 
   @override
   _MapTooltipPageState createState() => _MapTooltipPageState();
@@ -43,114 +34,109 @@ class _MapTooltipPageState extends SampleViewState {
 
   // Index of either forest, river or rainfall data.
   int _currentDataTypeIndex = 0;
-  bool _autoHide = true;
 
   late String _title;
 
   @override
   void initState() {
     _forestArea = <_Area>[
-      const _Area('Madhya Pradesh',
+      _Area('Madhya Pradesh',
           areaInSqKm: 77414,
           percent: 25.11,
           imageSource: 'images/maps_forest_1.jpg'),
-      const _Area('Arunachal Pradesh',
+      _Area('Arunachal Pradesh',
           areaInSqKm: 66964,
           percent: 79.96,
           imageSource: 'images/maps_forest_2.jpg'),
-      const _Area('Chhattisgarh',
+      _Area('Chhattisgarh',
           areaInSqKm: 55547,
           percent: 41.09,
           imageSource: 'images/maps_forest_3.jpg'),
-      const _Area('Orissa',
+      _Area('Orissa',
           areaInSqKm: 51345,
           percent: 32.98,
           imageSource: 'images/maps_forest_1.jpg'),
-      const _Area('Maharashtra',
+      _Area('Maharashtra',
           areaInSqKm: 50682,
           percent: 16.47,
           imageSource: 'images/maps_forest_2.jpg'),
-      const _Area('Karnataka',
+      _Area('Karnataka',
           areaInSqKm: 37550,
           percent: 19.58,
           imageSource: 'images/maps_forest_3.jpg'),
-      const _Area('Andhra Pradesh',
+      _Area('Andhra Pradesh',
           areaInSqKm: 28147,
           percent: 17.27,
           imageSource: 'images/maps_forest_1.jpg'),
-      const _Area('Assam',
+      _Area('Assam',
           areaInSqKm: 28105,
           percent: 35.83,
           imageSource: 'images/maps_forest_2.jpg'),
-      const _Area('Tamil Nadu',
+      _Area('Tamil Nadu',
           areaInSqKm: 26281,
           percent: 20.21,
           imageSource: 'images/maps_forest_3.jpg'),
-      const _Area('Uttaranchal',
+      _Area('Uttaranchal',
           areaInSqKm: 24295,
           percent: 45.43,
           imageSource: 'images/maps_forest_1.jpg'),
     ];
 
     _riverArea = <_Area>[
-      const _Area('Kerala',
-          riversCount: 20, imageSource: 'images/maps_river_1.jpg'),
-      const _Area('Maharashtra',
+      _Area('Kerala', riversCount: 20, imageSource: 'images/maps_river_1.jpg'),
+      _Area('Maharashtra',
           riversCount: 15, imageSource: 'images/maps_river_2.jpg'),
-      const _Area('Uttar Pradesh',
+      _Area('Uttar Pradesh',
           riversCount: 15, imageSource: 'images/maps_river_3.jpg'),
-      const _Area('West Bengal',
+      _Area('West Bengal',
           riversCount: 15, imageSource: 'images/maps_river_1.jpg'),
-      const _Area('Karnataka',
+      _Area('Karnataka',
           riversCount: 14, imageSource: 'images/maps_river_2.jpg'),
-      const _Area('Madhya Pradesh',
+      _Area('Madhya Pradesh',
           riversCount: 13, imageSource: 'images/maps_river_3.jpg'),
-      const _Area('Bihar',
-          riversCount: 11, imageSource: 'images/maps_river_1.jpg'),
-      const _Area('Andhra Pradesh',
+      _Area('Bihar', riversCount: 11, imageSource: 'images/maps_river_1.jpg'),
+      _Area('Andhra Pradesh',
           riversCount: 10, imageSource: 'images/maps_river_2.jpg'),
-      const _Area('Tamil Nadu',
+      _Area('Tamil Nadu',
           riversCount: 10, imageSource: 'images/maps_river_3.jpg'),
-      const _Area('Rajasthan',
+      _Area('Rajasthan',
           riversCount: 10, imageSource: 'images/maps_river_1.jpg'),
-      const _Area('Assam',
-          riversCount: 10, imageSource: 'images/maps_river_2.jpg'),
-      const _Area('Gujarat',
-          riversCount: 10, imageSource: 'images/maps_river_3.jpg'),
-      const _Area('Uttaranchal',
+      _Area('Assam', riversCount: 10, imageSource: 'images/maps_river_2.jpg'),
+      _Area('Gujarat', riversCount: 10, imageSource: 'images/maps_river_3.jpg'),
+      _Area('Uttaranchal',
           riversCount: 10, imageSource: 'images/maps_river_1.jpg'),
     ];
 
     _rainfallArea = <_Area>[
-      const _Area('Arunachal Pradesh',
+      _Area('Arunachal Pradesh',
           rainfallInMillimeter: 2782,
           imageSource: 'images/maps_rainfall_1.jpg'),
-      const _Area('Meghalaya',
+      _Area('Meghalaya',
           rainfallInMillimeter: 2818,
           imageSource: 'images/maps_rainfall_2.jpg'),
-      const _Area('Goa',
+      _Area('Goa',
           rainfallInMillimeter: 3005,
           imageSource: 'images/maps_rainfall_3.jpg'),
-      const _Area('Madhya Pradesh',
+      _Area('Madhya Pradesh',
           rainfallInMillimeter: 1178,
           imageSource: 'images/maps_rainfall_1.jpg'),
-      const _Area('Maharastra',
+      _Area('Maharastra',
           rainfallInMillimeter: 2739,
           imageSource: 'images/maps_rainfall_2.jpg'),
-      const _Area('Uttar Pradesh',
+      _Area('Uttar Pradesh',
           rainfallInMillimeter: 3005,
           imageSource: 'images/maps_rainfall_3.jpg'),
-      const _Area('Karnataka',
+      _Area('Karnataka',
           rainfallInMillimeter: 1771,
           imageSource: 'images/maps_rainfall_1.jpg'),
-      const _Area('Kerala',
+      _Area('Kerala',
           rainfallInMillimeter: 3055,
           imageSource: 'images/maps_rainfall_2.jpg'),
-      const _Area('Andhra Pradesh',
+      _Area('Andhra Pradesh',
           rainfallInMillimeter: 912, imageSource: 'images/maps_rainfall_3.jpg'),
-      const _Area('Tamil Nadu',
+      _Area('Tamil Nadu',
           rainfallInMillimeter: 998, imageSource: 'images/maps_rainfall_1.jpg'),
-      const _Area('Orissa',
+      _Area('Orissa',
           rainfallInMillimeter: 1489,
           imageSource: 'images/maps_rainfall_2.jpg'),
     ];
@@ -159,26 +145,24 @@ class _MapTooltipPageState extends SampleViewState {
       'assets/india.json',
       shapeDataField: 'name',
       dataCount: _forestArea.length,
-      primaryValueMapper: (int index) => _forestArea[index].state,
-      bubbleSizeMapper: (int index) =>
-          _forestArea[index].areaInSqKm!.toDouble(),
+      primaryValueMapper: (index) => _forestArea[index].state,
+      bubbleSizeMapper: (index) => _forestArea[index].areaInSqKm!.toDouble(),
     );
 
     _riverMapSource = MapShapeSource.asset(
       'assets/india.json',
       shapeDataField: 'name',
       dataCount: _riverArea.length,
-      primaryValueMapper: (int index) => _riverArea[index].state,
-      bubbleSizeMapper: (int index) => _riverArea[index].riversCount,
+      primaryValueMapper: (index) => _riverArea[index].state,
+      bubbleSizeMapper: (index) => _riverArea[index].riversCount,
     );
 
     _rainfallMapSource = MapShapeSource.asset(
       'assets/india.json',
       shapeDataField: 'name',
       dataCount: _rainfallArea.length,
-      primaryValueMapper: (int index) => _rainfallArea[index].state,
-      bubbleSizeMapper: (int index) =>
-          _rainfallArea[index].rainfallInMillimeter,
+      primaryValueMapper: (index) => _rainfallArea[index].state,
+      bubbleSizeMapper: (index) => _rainfallArea[index].rainfallInMillimeter,
     );
 
     _setMapDelegate(_currentDataTypeIndex);
@@ -198,17 +182,17 @@ class _MapTooltipPageState extends SampleViewState {
     switch (index) {
       case 0:
         _title = 'Indian States with the Most Forest Area';
-        _bubbleColor = const Color.fromRGBO(34, 205, 72, 0.7);
+        _bubbleColor = Color.fromRGBO(34, 205, 72, 0.7);
         _mapSource = _forestMapSource;
         break;
       case 1:
         _title = 'Indian States with the Most Rivers';
-        _bubbleColor = const Color.fromRGBO(237, 171, 0, 0.7);
+        _bubbleColor = Color.fromRGBO(237, 171, 0, 0.7);
         _mapSource = _riverMapSource;
         break;
       case 2:
         _title = 'Indian States with the Most Rainfall';
-        _bubbleColor = const Color.fromRGBO(24, 152, 207, 0.7);
+        _bubbleColor = Color.fromRGBO(24, 152, 207, 0.7);
         _mapSource = _rainfallMapSource;
         break;
     }
@@ -218,32 +202,32 @@ class _MapTooltipPageState extends SampleViewState {
       _Area model, ThemeData themeData, bool isLightTheme) {
     return Container(
         width: 300,
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
         child: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               Expanded(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+                  children: [
                     const SizedBox(height: 5),
                     Text(
                       model.state,
                       textAlign: TextAlign.center,
-                      style: themeData.textTheme.bodyMedium!.copyWith(
+                      style: themeData.textTheme.bodyText2!.copyWith(
                           color: isLightTheme
-                              ? const Color.fromRGBO(0, 0, 0, 0.87)
-                              : const Color.fromRGBO(255, 255, 255, 0.87),
+                              ? Color.fromRGBO(0, 0, 0, 0.87)
+                              : Color.fromRGBO(255, 255, 255, 0.87),
                           fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(_getTooltipText(model),
-                        style: themeData.textTheme.bodySmall!.copyWith(
+                        style: themeData.textTheme.caption!.copyWith(
                           color: isLightTheme
-                              ? const Color.fromRGBO(0, 0, 0, 0.87)
-                              : const Color.fromRGBO(255, 255, 255, 0.87),
+                              ? Color.fromRGBO(0, 0, 0, 0.87)
+                              : Color.fromRGBO(255, 255, 255, 0.87),
                         )),
                   ],
                 ),
@@ -310,40 +294,26 @@ class _MapTooltipPageState extends SampleViewState {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final bool scrollEnabled = constraints.maxHeight > 400;
-      double height = scrollEnabled ? constraints.maxHeight : 400;
-      if (model.isWebFullView ||
-          (model.isMobile &&
-              MediaQuery.of(context).orientation == Orientation.landscape)) {
-        final double refHeight = height * 0.6;
-        height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
-      }
-      return Center(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: constraints.maxWidth,
-            height: height,
-            child: _buildMapsWidget(themeData, scrollEnabled),
-          ),
-        ),
-      );
-    });
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? _buildMapsWidget(themeData)
+        : SingleChildScrollView(
+            child: Container(height: 400, child: _buildMapsWidget(themeData)),
+          );
   }
 
-  Widget _buildMapsWidget(ThemeData themeData, bool scrollEnabled) {
-    final bool isLightTheme =
-        themeData.colorScheme.brightness == Brightness.light;
+  Widget _buildMapsWidget(ThemeData themeData) {
+    final bool isLightTheme = themeData.brightness == Brightness.light;
     return Stack(
-      children: <Widget>[
+      children: [
         Container(
-          padding: scrollEnabled
+          padding: MediaQuery.of(context).orientation == Orientation.portrait ||
+                  model.isWebFullView
               ? EdgeInsets.only(
                   left: 15,
                   top: MediaQuery.of(context).size.height * 0.05,
-                  bottom: MediaQuery.of(context).size.height * 0.075)
-              : const EdgeInsets.only(bottom: 70.0),
+                  bottom: MediaQuery.of(context).size.height * 0.15)
+              : const EdgeInsets.only(bottom: 75.0),
           child: SfMapsTheme(
               data: SfMapsThemeData(
                 shapeHoverColor: Colors.transparent,
@@ -353,21 +323,22 @@ class _MapTooltipPageState extends SampleViewState {
                 bubbleHoverStrokeColor: Colors.black,
                 bubbleHoverStrokeWidth: 1.0,
               ),
-              child: Column(children: <Widget>[
+              child: Column(children: [
                 Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 30),
+                    padding: EdgeInsets.only(top: 15, bottom: 30),
                     child: Align(
+                        alignment: Alignment.center,
                         child: Text(_title,
-                            style: Theme.of(context).textTheme.titleMedium))),
+                            style: Theme.of(context).textTheme.subtitle1))),
                 Expanded(
                     child: SfMaps(
-                  layers: <MapLayer>[
+                  layers: [
                     MapShapeLayer(
                       loadingBuilder: (BuildContext context) {
-                        return const SizedBox(
+                        return Container(
                           height: 25,
                           width: 25,
-                          child: CircularProgressIndicator(
+                          child: const CircularProgressIndicator(
                             strokeWidth: 3,
                           ),
                         );
@@ -386,12 +357,11 @@ class _MapTooltipPageState extends SampleViewState {
                             isLightTheme);
                       },
                       color: isLightTheme
-                          ? const Color.fromRGBO(204, 204, 204, 1)
-                          : const Color.fromRGBO(103, 103, 103, 1),
+                          ? Color.fromRGBO(204, 204, 204, 1)
+                          : Color.fromRGBO(103, 103, 103, 1),
                       strokeColor: isLightTheme
-                          ? const Color.fromRGBO(255, 255, 255, 1)
-                          : const Color.fromRGBO(49, 49, 49, 1),
-                      strokeWidth: 0.5,
+                          ? Color.fromRGBO(255, 255, 255, 1)
+                          : Color.fromRGBO(49, 49, 49, 1),
                       bubbleSettings: MapBubbleSettings(
                         minRadius: 15,
                         maxRadius: 30,
@@ -401,11 +371,10 @@ class _MapTooltipPageState extends SampleViewState {
                       ),
                       tooltipSettings: MapTooltipSettings(
                         color: isLightTheme
-                            ? const Color.fromRGBO(255, 255, 255, 1)
-                            : const Color.fromRGBO(66, 66, 66, 1),
-                        strokeColor: const Color.fromRGBO(153, 153, 153, 1),
+                            ? Color.fromRGBO(255, 255, 255, 1)
+                            : Color.fromRGBO(66, 66, 66, 1),
+                        strokeColor: Color.fromRGBO(153, 153, 153, 1),
                         strokeWidth: 0.5,
-                        hideDelay: _autoHide ? 3.0 : double.infinity,
                       ),
                     ),
                   ],
@@ -416,7 +385,7 @@ class _MapTooltipPageState extends SampleViewState {
           alignment: Alignment.bottomCenter,
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
+            children: [
               _buildChipWidget(0, 'Forest'),
               _buildChipWidget(1, 'River'),
               _buildChipWidget(2, 'Rainfall'),
@@ -424,26 +393,6 @@ class _MapTooltipPageState extends SampleViewState {
           ),
         )
       ],
-    );
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          value: _autoHide,
-          title: const Text('Auto hide'),
-          activeColor: model.backgroundColor,
-          onChanged: (bool? value) {
-            setState(() {
-              _autoHide = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
     );
   }
 }

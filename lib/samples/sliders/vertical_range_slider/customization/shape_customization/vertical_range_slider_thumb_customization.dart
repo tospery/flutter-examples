@@ -1,10 +1,9 @@
 ///Package imports
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -15,8 +14,6 @@ import '../../../../../model/sample_view.dart';
 
 ///Renders range slider with customized thumb
 class VerticalThumbCustomizedRangeSlider extends SampleView {
-  /// Creates range slider with customized thumb
-  const VerticalThumbCustomizedRangeSlider(Key key) : super(key: key);
   @override
   _VerticalThumbCustomizedRangeSliderState createState() =>
       _VerticalThumbCustomizedRangeSliderState();
@@ -43,6 +40,7 @@ class _VerticalThumbCustomizedRangeSliderState extends SampleViewState {
         tooltipBackgroundColor: _activeColor,
       ),
       child: SfRangeSlider.vertical(
+        min: 0.0,
         max: 100.0,
         values: _singleStrokeSliderValues,
         onChanged: (SfRangeValues values) {
@@ -68,6 +66,7 @@ class _VerticalThumbCustomizedRangeSliderState extends SampleViewState {
         tooltipBackgroundColor: const Color.fromARGB(255, 0, 178, 206),
       ),
       child: SfRangeSlider.vertical(
+        min: 0.0,
         max: 100.0,
         values: _doubleStrokeSliderValues,
         tooltipPosition: SliderTooltipPosition.right,
@@ -90,14 +89,12 @@ class _VerticalThumbCustomizedRangeSliderState extends SampleViewState {
         MediaQuery.of(context).orientation == Orientation.landscape
             ? 80.0
             : 50.0;
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          _doubleStrokeThumbRangeSlider(),
-          Padding(
-              padding: EdgeInsets.only(left: padding),
-              child: _strokeThumbRangeSlider())
-        ]);
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      _doubleStrokeThumbRangeSlider(),
+      Padding(
+          padding: EdgeInsets.only(left: padding),
+          child: _strokeThumbRangeSlider())
+    ]);
   }
 }
 

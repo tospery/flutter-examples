@@ -74,7 +74,6 @@ class _MapEqualColorMappingPageState extends SampleViewState {
       _CountryTimeInGMT('Malta', 'GMT+2'),
       _CountryTimeInGMT('Montenegro', 'GMT+2'),
       _CountryTimeInGMT('Netherlands', 'GMT+2'),
-      _CountryTimeInGMT('Norway', 'GMT+2'),
       _CountryTimeInGMT('Poland', 'GMT+2'),
       _CountryTimeInGMT('Portugal', 'GMT+1'),
       _CountryTimeInGMT('Romania', 'GMT+3'),
@@ -127,15 +126,12 @@ class _MapEqualColorMappingPageState extends SampleViewState {
       // [MapColorMapper.text] which is used for the text of
       // legend item and [MapColorMapper.color] will be used for
       // the color of the legend icon respectively.
-      shapeColorMappers: <MapColorMapper>[
-        const MapColorMapper(
-            value: 'GMT+0', color: Colors.lightBlue, text: 'GMT+0'),
-        const MapColorMapper(
+      shapeColorMappers: const <MapColorMapper>[
+        MapColorMapper(value: 'GMT+0', color: Colors.lightBlue, text: 'GMT+0'),
+        MapColorMapper(
             value: 'GMT+1', color: Colors.orangeAccent, text: 'GMT+1'),
-        const MapColorMapper(
-            value: 'GMT+2', color: Colors.lightGreen, text: 'GMT+2'),
-        const MapColorMapper(
-            value: 'GMT+3', color: Colors.purple, text: 'GMT+3'),
+        MapColorMapper(value: 'GMT+2', color: Colors.lightGreen, text: 'GMT+2'),
+        MapColorMapper(value: 'GMT+3', color: Colors.purple, text: 'GMT+3'),
       ],
     );
   }
@@ -149,55 +145,40 @@ class _MapEqualColorMappingPageState extends SampleViewState {
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final bool scrollEnabled = constraints.maxHeight > 400;
-      double height = scrollEnabled ? constraints.maxHeight : 400;
-      if (model.isWebFullView ||
-          (model.isMobile &&
-              MediaQuery.of(context).orientation == Orientation.landscape)) {
-        final double refHeight = height * 0.6;
-        height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
-      }
-      return Center(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: constraints.maxWidth,
-            height: height,
-            child: _buildMapsWidget(themeData, scrollEnabled),
-          ),
-        ),
-      );
-    });
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? _buildMapsWidget(themeData)
+        : SingleChildScrollView(child: _buildMapsWidget(themeData));
   }
 
-  Widget _buildMapsWidget(ThemeData themeData, bool scrollEnabled) {
-    final bool isLightTheme =
-        themeData.colorScheme.brightness == Brightness.light;
+  Widget _buildMapsWidget(ThemeData themeData) {
+    final bool isLightTheme = themeData.brightness == Brightness.light;
     return Center(
         child: Padding(
-      padding: scrollEnabled
+      padding: MediaQuery.of(context).orientation == Orientation.portrait ||
+              model.isWebFullView
           ? EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.05,
               bottom: MediaQuery.of(context).size.height * 0.05,
               right: 10,
               left: 10)
           : const EdgeInsets.only(left: 10, right: 10, bottom: 15),
-      child: Column(children: <Widget>[
+      child: Column(children: [
         Padding(
-            padding: const EdgeInsets.only(top: 15, bottom: 30),
+            padding: EdgeInsets.only(top: 15, bottom: 30),
             child: Align(
+                alignment: Alignment.center,
                 child: Text('European Time Zones',
-                    style: Theme.of(context).textTheme.titleMedium))),
+                    style: Theme.of(context).textTheme.subtitle1))),
         Expanded(
             child: SfMaps(
           layers: <MapLayer>[
             MapShapeLayer(
               loadingBuilder: (BuildContext context) {
-                return const SizedBox(
+                return Container(
                   height: 25,
                   width: 25,
-                  child: CircularProgressIndicator(
+                  child: const CircularProgressIndicator(
                     strokeWidth: 3,
                   ),
                 );
@@ -214,10 +195,10 @@ class _MapEqualColorMappingPageState extends SampleViewState {
                     _timeZones[index].countryName +
                         ' : ' +
                         _timeZones[index].gmtTime,
-                    style: themeData.textTheme.bodySmall!.copyWith(
+                    style: themeData.textTheme.caption!.copyWith(
                       color: isLightTheme
-                          ? const Color.fromRGBO(255, 255, 255, 1)
-                          : const Color.fromRGBO(10, 10, 10, 1),
+                          ? Color.fromRGBO(255, 255, 255, 1)
+                          : Color.fromRGBO(10, 10, 10, 1),
                     ),
                   ),
                 );
@@ -230,8 +211,8 @@ class _MapEqualColorMappingPageState extends SampleViewState {
               ),
               tooltipSettings: MapTooltipSettings(
                 color: isLightTheme
-                    ? const Color.fromRGBO(45, 45, 45, 1)
-                    : const Color.fromRGBO(242, 242, 242, 1),
+                    ? Color.fromRGBO(45, 45, 45, 1)
+                    : Color.fromRGBO(242, 242, 242, 1),
               ),
             ),
           ],

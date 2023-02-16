@@ -3,11 +3,9 @@ import 'dart:math' as math;
 
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -18,8 +16,6 @@ import '../../../../../model/sample_view.dart';
 
 ///Renders slider with customized ticks
 class TickCustomizedSlider extends SampleView {
-  ///Creates slider with customized ticks
-  const TickCustomizedSlider(Key key) : super(key: key);
   @override
   _TickCustomizedSliderState createState() => _TickCustomizedSliderState();
 }
@@ -44,11 +40,12 @@ class _TickCustomizedSliderState extends SampleViewState {
           tickOffset: const Offset(0, 4),
           tooltipBackgroundColor: _activeColor),
       child: SfSlider(
+        min: 0.0,
         max: 100.0,
         value: _value,
         onChanged: (dynamic values) {
           setState(() {
-            _value = values as double;
+            _value = values;
           });
         },
         interval: 10,
@@ -76,11 +73,11 @@ class _TickShape extends SfTickShape {
     final Size tickSize = getPreferredSize(themeData);
     final bool isTickRightOfThumb = offset.dx > thumbCenter!.dx;
     final Color begin = isTickRightOfThumb
-        ? themeData.disabledInactiveTickColor!
-        : themeData.disabledActiveTickColor!;
+        ? themeData.disabledInactiveTickColor
+        : themeData.disabledActiveTickColor;
     final Color end = isTickRightOfThumb
-        ? themeData.inactiveTickColor!
-        : themeData.activeTickColor!;
+        ? themeData.inactiveTickColor
+        : themeData.activeTickColor;
     final Paint paint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = tickSize.width
@@ -118,11 +115,11 @@ class _MinorTickShape extends SfTickShape {
     final bool isMinorTickRightOfThumb = offset.dx > thumbCenter!.dx;
 
     final Color begin = isMinorTickRightOfThumb
-        ? themeData.disabledInactiveMinorTickColor!
-        : themeData.disabledActiveMinorTickColor!;
+        ? themeData.disabledInactiveMinorTickColor
+        : themeData.disabledActiveMinorTickColor;
     final Color end = isMinorTickRightOfThumb
-        ? themeData.inactiveMinorTickColor!
-        : themeData.activeMinorTickColor!;
+        ? themeData.inactiveMinorTickColor
+        : themeData.activeMinorTickColor;
     final Paint paint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = minorTickSize.width

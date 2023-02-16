@@ -19,7 +19,7 @@ class HorizantalGradient extends SampleView {
 /// State class of horizontal gradient.
 class _HorizantalGradientState extends SampleViewState {
   _HorizantalGradientState();
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior = TooltipBehavior(enable: true, canShowMarker: false);
@@ -40,28 +40,60 @@ class _HorizantalGradientState extends SampleViewState {
           labelPlacement: LabelPlacement.onTicks,
           interval: model.isWebFullView ? 1 : null,
           labelRotation: -45,
-          majorGridLines: const MajorGridLines(width: 0)),
+          majorGridLines: MajorGridLines(width: 0)),
       tooltipBehavior: _tooltipBehavior,
       primaryYAxis: NumericAxis(
           interval: 2,
           minimum: 14,
           maximum: 20,
           labelFormat: '{value}%',
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getGradientAreaSeries(),
+      onMarkerRender: (MarkerRenderArgs args) {
+        if (args.pointIndex == 0) {
+          args.color = const Color.fromRGBO(207, 124, 168, 1);
+        } else if (args.pointIndex == 1) {
+          args.color = const Color.fromRGBO(210, 133, 167, 1);
+        } else if (args.pointIndex == 2) {
+          args.color = const Color.fromRGBO(219, 128, 161, 1);
+        } else if (args.pointIndex == 3) {
+          args.color = const Color.fromRGBO(213, 143, 151, 1);
+        } else if (args.pointIndex == 4) {
+          args.color = const Color.fromRGBO(226, 157, 126, 1);
+        } else if (args.pointIndex == 5) {
+          args.color = const Color.fromRGBO(220, 169, 122, 1);
+        } else if (args.pointIndex == 6) {
+          args.color = const Color.fromRGBO(221, 176, 108, 1);
+        } else if (args.pointIndex == 7) {
+          args.color = const Color.fromRGBO(222, 187, 97, 1);
+        }
+      },
     );
   }
 
   /// Returns the list of spline area series with horizontal gradient.
   List<ChartSeries<_ChartData, String>> _getGradientAreaSeries() {
+    final List<_ChartData> chartData = <_ChartData>[
+      _ChartData(x: '1997', y: 17.70),
+      _ChartData(x: '1998', y: 18.20),
+      _ChartData(x: '1999', y: 18),
+      _ChartData(x: '2000', y: 19),
+      _ChartData(x: '2001', y: 18.5),
+      _ChartData(x: '2002', y: 18),
+      _ChartData(x: '2003', y: 18.80),
+      _ChartData(x: '2004', y: 17.90)
+    ];
+    final List<Color> color = <Color>[];
+    color.add(Colors.blue[200]!);
+    color.add(Colors.orange[200]!);
+
+    final List<double> stops = <double>[];
+    stops.add(0.2);
+    stops.add(0.7);
+
     return <ChartSeries<_ChartData, String>>[
       SplineAreaSeries<_ChartData, String>(
-        onCreateRenderer: (ChartSeries<dynamic, dynamic> series) {
-          return _CustomSplineAreaSeriesRenderer(
-              series as SplineAreaSeries<_ChartData, String>);
-        },
-
         /// To set the gradient colors for border here.
         borderGradient: const LinearGradient(colors: <Color>[
           Color.fromRGBO(212, 126, 166, 1),
@@ -80,18 +112,14 @@ class _HorizantalGradientState extends SampleViewState {
           0.9
         ]),
         borderWidth: 2,
-        markerSettings: const MarkerSettings(
-            isVisible: true, borderColor: Colors.white, borderWidth: 2),
-        dataSource: <_ChartData>[
-          _ChartData(x: '1997', y: 17.70),
-          _ChartData(x: '1998', y: 18.20),
-          _ChartData(x: '1999', y: 18),
-          _ChartData(x: '2000', y: 19),
-          _ChartData(x: '2001', y: 18.5),
-          _ChartData(x: '2002', y: 18),
-          _ChartData(x: '2003', y: 18.80),
-          _ChartData(x: '2004', y: 17.90)
-        ],
+        markerSettings: MarkerSettings(
+            isVisible: true,
+            height: 8,
+            width: 8,
+            borderColor: Colors.white,
+            borderWidth: 2),
+        borderDrawMode: BorderDrawMode.top,
+        dataSource: chartData,
         xValueMapper: (_ChartData sales, _) => sales.x,
         yValueMapper: (_ChartData sales, _) => sales.y,
         name: 'Investment',
@@ -104,31 +132,4 @@ class _ChartData {
   _ChartData({this.x, this.y});
   final String? x;
   final double? y;
-}
-
-class _CustomSplineAreaSeriesRenderer extends SplineAreaSeriesRenderer {
-  _CustomSplineAreaSeriesRenderer(this.series);
-
-  final SplineAreaSeries<dynamic, dynamic> series;
-
-  List<Color> markerColorList = <Color>[
-    const Color.fromRGBO(207, 124, 168, 1),
-    const Color.fromRGBO(210, 133, 167, 1),
-    const Color.fromRGBO(219, 128, 161, 1),
-    const Color.fromRGBO(213, 143, 151, 1),
-    const Color.fromRGBO(226, 157, 126, 1),
-    const Color.fromRGBO(220, 169, 122, 1),
-    const Color.fromRGBO(221, 176, 108, 1),
-    const Color.fromRGBO(222, 187, 97, 1)
-  ];
-
-  @override
-  void drawDataMarker(int index, Canvas canvas, Paint fillPaint,
-      Paint strokePaint, double pointX, double pointY,
-      [CartesianSeriesRenderer? seriesRenderer]) {
-    strokePaint.color = Colors.white;
-    fillPaint.color = markerColorList[index];
-    super.drawDataMarker(
-        index, canvas, fillPaint, strokePaint, pointX, pointY, seriesRenderer);
-  }
 }

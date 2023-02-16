@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -26,34 +24,54 @@ class VerticalSliderTooltipTypeSliderPage extends SampleView {
 class _VerticalSliderTooltipPageState extends SampleViewState {
   _VerticalSliderTooltipPageState();
 
-  DateTime _hourValue = DateTime(2020, 01, 01, 13);
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _SliderTooltipType();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: slider),
+          );
+  }
+}
+
+class _SliderTooltipType extends SampleView {
+  @override
+  _SliderTooltipTypeState createState() => _SliderTooltipTypeState();
+}
+
+class _SliderTooltipTypeState extends SampleViewState {
+  DateTime _hourValue = DateTime(2020, 01, 01, 13, 00, 00);
   double _sliderValue = 20;
-  bool _isInversed = false;
-  bool _shouldAlwaysShowTooltip = false;
 
   SfSliderTheme _numerical() {
     return SfSliderTheme(
         data: SfSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor,
-            labelOffset: const Offset(-30, 0),
-            tickOffset: const Offset(-15, 0)),
+            labelOffset: Offset(-30, 0),
+            tickOffset: Offset(-15, 0)),
         child: SfSlider.vertical(
-          showLabels: true,
-          interval: 10,
-          min: 10.0,
-          max: 40.0,
-          showTicks: true,
-          isInversed: _isInversed,
-          tooltipPosition: SliderTooltipPosition.right,
-          value: _sliderValue,
-          onChanged: (dynamic values) {
-            setState(() {
-              _sliderValue = values as double;
-            });
-          },
-          enableTooltip: true,
-          shouldAlwaysShowTooltip: _shouldAlwaysShowTooltip,
-        ));
+            showLabels: true,
+            interval: 10,
+            min: 10.0,
+            max: 40.0,
+            showTicks: true,
+            tooltipPosition: SliderTooltipPosition.right,
+            value: _sliderValue,
+            onChanged: (dynamic values) {
+              setState(() {
+                _sliderValue = values;
+              });
+            },
+            enableTooltip: true));
   }
 
   SfSliderTheme _dateTimeSlider() {
@@ -62,23 +80,22 @@ class _VerticalSliderTooltipPageState extends SampleViewState {
           tooltipBackgroundColor: model.backgroundColor,
         ),
         child: SfSlider.vertical(
-          min: DateTime(2020, 01, 01, 9),
-          max: DateTime(2020, 01, 01, 21),
+          min: DateTime(2020, 01, 01, 9, 00, 00),
+          max: DateTime(2020, 01, 01, 21, 05, 00),
           showLabels: true,
           interval: 4,
           showTicks: true,
-          isInversed: _isInversed,
           minorTicksPerInterval: 3,
           dateFormat: DateFormat('h a'),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.hours,
           value: _hourValue,
           onChanged: (dynamic value) {
             setState(() {
-              _hourValue = value as DateTime;
+              _hourValue = value;
             });
           },
           enableTooltip: true,
-          shouldAlwaysShowTooltip: _shouldAlwaysShowTooltip,
           //tooltipShape: SfPaddleTooltipShape(),
           tooltipTextFormatterCallback:
               (dynamic actualLabel, String formattedText) {
@@ -104,13 +121,13 @@ class _VerticalSliderTooltipPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _numerical()),
-              const Text('Tooltip on the right')
+              Text('Tooltip on the right')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _dateTimeSlider()),
-              const Text('Tooltip on the left'),
+              Text('Tooltip on the left'),
             ]),
           ],
         ));
@@ -118,55 +135,6 @@ class _VerticalSliderTooltipPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 400, child: slider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return Column(
-          children: <Widget>[
-            CheckboxListTile(
-              value: _isInversed,
-              title: const Text(
-                'Inversed',
-                softWrap: false,
-              ),
-              contentPadding: EdgeInsets.zero,
-              activeColor: model.backgroundColor,
-              onChanged: (bool? value) {
-                setState(() {
-                  _isInversed = value!;
-                  stateSetter(() {});
-                });
-              },
-            ),
-            CheckboxListTile(
-              value: _shouldAlwaysShowTooltip,
-              title: const Text(
-                'Show tooltip always',
-                softWrap: false,
-              ),
-              activeColor: model.backgroundColor,
-              contentPadding: EdgeInsets.zero,
-              onChanged: (bool? value) {
-                setState(() {
-                  _shouldAlwaysShowTooltip = value!;
-                  stateSetter(() {});
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

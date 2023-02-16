@@ -27,49 +27,55 @@ class _TextExtractionPdfState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'This sample shows how to extract text in an existing PDF document. It also supports extracting the text with its font name, size, and style.',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 20, width: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(model.backgroundColor),
-                    padding: model.isMobile
-                        ? null
-                        : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 15)),
-                  ),
-                  onPressed: _viewTemplate,
-                  child: const Text('View Template',
-                      style: TextStyle(color: Colors.white)),
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'This sample shows how to extract text in an existing PDF document. It also supports extracting the text with its font name, size, and style.',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 20, width: 30),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            model.backgroundColor),
+                        padding: model.isMobile
+                            ? null
+                            : MaterialStateProperty.all(EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15)),
+                      ),
+                      onPressed: _viewTemplate,
+                      child: Text('View Template',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    SizedBox(
+                      height: 10,
+                      width: 20,
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            model.backgroundColor),
+                        padding: model.isMobile
+                            ? null
+                            : MaterialStateProperty.all(EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15)),
+                      ),
+                      onPressed: _generatePDF,
+                      child: const Text('Extract Text',
+                          style: TextStyle(color: Colors.white)),
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  height: 10,
-                  width: 20,
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(model.backgroundColor),
-                    padding: model.isMobile
-                        ? null
-                        : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 15)),
-                  ),
-                  onPressed: _generatePDF,
-                  child: const Text('Extract Text',
-                      style: TextStyle(color: Colors.white)),
-                )
-              ],
-            ),
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -105,24 +111,24 @@ class _TextExtractionPdfState extends SampleViewState {
   }
 
   void _showDialog(String text) {
-    showDialog<Widget>(
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text('Extracted text'),
+            title: Text('Extracted text'),
             content: Scrollbar(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(
+                physics: BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics()),
                 child: Text(text),
               ),
             ),
-            actions: <Widget>[
+            actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Close'),
+                child: Text('Close'),
               )
             ],
           );

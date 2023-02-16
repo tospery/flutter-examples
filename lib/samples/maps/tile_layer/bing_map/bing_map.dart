@@ -1,12 +1,15 @@
 ///Flutter package imports
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 
 ///Map import
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 ///URL launcher import
-import 'package:url_launcher/url_launcher.dart' show launchUrl;
+import 'package:url_launcher/url_launcher.dart' show launch;
 
 ///Local import
 import '../../../../model/sample_view.dart';
@@ -41,7 +44,7 @@ class _BingMapState extends SampleViewState {
       minZoomLevel: 3,
       maxZoomLevel: 10,
       zoomLevel: model.isWebFullView ? 5 : 4,
-      focalLatLng: const MapLatLng(27.1751, 78.0421),
+      focalLatLng: MapLatLng(27.1751, 78.0421),
       enableDoubleTapZooming: true,
     );
   }
@@ -63,7 +66,7 @@ class _BingMapState extends SampleViewState {
     /// pass the URL to this method along with the map type and subscription
     /// key.
     return _hasBingMapKey
-        ? FutureBuilder<String?>(
+        ? FutureBuilder(
             future: getBingUrlTemplate(_bingURL),
             builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
@@ -87,13 +90,13 @@ class _BingMapState extends SampleViewState {
   /// Home screen with the `TextField` to get the subscription key.
   Widget _buildKeyValidationScreen() {
     return Center(
-      child: SizedBox(
+      child: Container(
         width: MediaQuery.of(context).size.width *
             (model.isWebFullView ? 0.4 : 0.8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
             TextField(
               controller: _textFieldController,
               onSubmitted: (String text) => _handleKeyValidation(),
@@ -112,21 +115,21 @@ class _BingMapState extends SampleViewState {
                       ? Colors.red
                       : const Color.fromRGBO(153, 153, 153, 1),
                 ),
-                focusedBorder: const OutlineInputBorder(
+                focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromRGBO(153, 153, 153, 1),
+                    color: const Color.fromRGBO(153, 153, 153, 1),
                     width: 0.5,
                   ),
                 ),
-                enabledBorder: const OutlineInputBorder(
+                enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromRGBO(153, 153, 153, 1),
+                    color: const Color.fromRGBO(153, 153, 153, 1),
                     width: 0.5,
                   ),
                 ),
-                border: const OutlineInputBorder(
+                border: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Color.fromRGBO(153, 153, 153, 1),
+                    color: const Color.fromRGBO(153, 153, 153, 1),
                     width: 0.5,
                   ),
                 ),
@@ -137,7 +140,7 @@ class _BingMapState extends SampleViewState {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+                children: [
                   const SizedBox(height: 10),
                   const Text(
                     'Note:',
@@ -148,8 +151,8 @@ class _BingMapState extends SampleViewState {
                   ),
                   const SizedBox(height: 3),
                   Wrap(
-                    children: <Widget>[
-                      const Text(
+                    children: [
+                      Text(
                         '1. Please use the ',
                         style: TextStyle(fontSize: 11),
                       ),
@@ -157,10 +160,10 @@ class _BingMapState extends SampleViewState {
                         cursor: SystemMouseCursors.click,
                         child: GestureDetector(
                           onTap: () {
-                            launchUrl(Uri.parse(
-                                'https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key'));
+                            launch(
+                                'https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key');
                           },
-                          child: const Text(
+                          child: Text(
                             'development or testing key',
                             style: TextStyle(
                                 color: Colors.blue,
@@ -169,7 +172,7 @@ class _BingMapState extends SampleViewState {
                           ),
                         ),
                       ),
-                      const Text(
+                      Text(
                         '.',
                         style: TextStyle(fontSize: 11),
                       ),
@@ -191,7 +194,7 @@ class _BingMapState extends SampleViewState {
 
   Widget _buildBingMap(String urlTemplate) {
     return Stack(
-      children: <Widget>[
+      children: [
         Positioned.fill(
           child: Image.asset(
             'images/maps_grid.png',
@@ -199,7 +202,7 @@ class _BingMapState extends SampleViewState {
           ),
         ),
         SfMaps(
-          layers: <MapLayer>[
+          layers: [
             MapTileLayer(
               urlTemplate: urlTemplate,
               zoomPanBehavior: _zoomPanBehavior,
@@ -211,7 +214,7 @@ class _BingMapState extends SampleViewState {
           child: Wrap(
             alignment: WrapAlignment.center,
             spacing: 10.0,
-            children: <Widget>[
+            children: [
               _buildChip(0, 'Road View'),
               _buildChip(1, 'Aerial View'),
               _buildChip(2, 'Aerial View With Labels'),
@@ -246,6 +249,7 @@ class _BingMapState extends SampleViewState {
   /// Changing the Bing Maps type on clicking the chip.
   void _setBingMapView(int index) {
     switch (index) {
+
       /// Road view
       case 0:
         _bingURL =

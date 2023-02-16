@@ -36,15 +36,9 @@ class _WidgetPointerExampleState extends SampleViewState {
     _startTimer();
   }
 
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
   void _startTimer() {
     if (mounted) {
-      _timer = Timer.periodic(const Duration(milliseconds: 20), (Timer timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 20), (Timer _timer) {
         _incrementPointerValue();
       });
     }
@@ -65,6 +59,9 @@ class _WidgetPointerExampleState extends SampleViewState {
     return SfRadialGauge(
       axes: <RadialAxis>[
         RadialAxis(
+          startAngle: 130,
+          endAngle: 50,
+          showTicks: true,
           interval: 10,
           labelOffset: 0.1,
           tickOffset: 0.125,
@@ -72,34 +69,34 @@ class _WidgetPointerExampleState extends SampleViewState {
           labelsPosition: ElementsPosition.outside,
           offsetUnit: GaugeSizeUnit.factor,
           showAxisLine: false,
-          showLastLabel: true,
           radiusFactor: model.isWebFullView ? 0.8 : 0.8,
+          showLabels: true,
+          minimum: 0,
           maximum: 120,
           pointers: <GaugePointer>[
             WidgetPointer(
                 offset: isCardView ? -2.5 : -5,
-                value: _value.toDouble(),
                 child: Container(
                   decoration: BoxDecoration(
-                      color: model.themeData.colorScheme.brightness ==
-                              Brightness.light
+                      color: model.themeData.brightness == Brightness.light
                           ? Colors.white
-                          : const Color.fromRGBO(33, 33, 33, 1),
+                          : Color.fromRGBO(33, 33, 33, 1),
                       borderRadius: BorderRadius.circular(40),
-                      boxShadow: <BoxShadow>[
+                      boxShadow: [
                         BoxShadow(
-                          color: model.themeData.colorScheme.brightness ==
-                                  Brightness.light
+                          color: model.themeData.brightness == Brightness.light
                               ? Colors.grey
                               : Colors.white.withOpacity(0.2),
+                          offset: Offset.zero,
                           blurRadius: 4.0,
                         ),
                       ],
                       border: Border.all(
-                        color: model.themeData.colorScheme.brightness ==
-                                Brightness.light
+                        color: model.themeData.brightness == Brightness.light
                             ? Colors.black.withOpacity(0.1)
                             : Colors.white.withOpacity(0.1),
+                        style: BorderStyle.solid,
+                        width: 1.0,
                       )),
                   height: isCardView
                       ? 37
@@ -115,8 +112,8 @@ class _WidgetPointerExampleState extends SampleViewState {
                           : 50,
                   child: Center(
                     child: Row(
-                      children: <Widget>[
-                        const Padding(padding: EdgeInsets.fromLTRB(5, 0, 0, 0)),
+                      children: [
+                        Padding(padding: EdgeInsets.fromLTRB(5, 0, 0, 0)),
                         Container(
                             width: isCardView
                                 ? 14.00
@@ -133,7 +130,7 @@ class _WidgetPointerExampleState extends SampleViewState {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: ExactAssetImage(model
-                                            .themeData.colorScheme.brightness ==
+                                            .themeData.brightness ==
                                         Brightness.light
                                     ? 'images/temperature_indicator_light.png'
                                     : 'images/temperature_indicator_dark.png'),
@@ -144,7 +141,7 @@ class _WidgetPointerExampleState extends SampleViewState {
                           child: Text(
                             '$_value',
                             style: TextStyle(
-                              color: const Color.fromRGBO(126, 126, 126, 1),
+                              color: Color.fromRGBO(126, 126, 126, 1),
                               fontWeight: FontWeight.bold,
                               fontSize: isCardView ? 10 : 12,
                             ),
@@ -153,7 +150,8 @@ class _WidgetPointerExampleState extends SampleViewState {
                       ],
                     ),
                   ),
-                ))
+                ),
+                value: _value.toDouble())
           ],
           ranges: <GaugeRange>[
             GaugeRange(

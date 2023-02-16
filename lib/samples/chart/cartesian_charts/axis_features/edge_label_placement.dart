@@ -1,6 +1,6 @@
 /// Package imports
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -21,27 +21,18 @@ class EdgeLabel extends SampleView {
 class _EdgeLabelState extends SampleViewState {
   _EdgeLabelState();
 
-  List<String>? _edgeList;
+  final List<String> _edgeList = <String>['hide', 'none', 'shift'].toList();
   late String _selectedType;
-  EdgeLabelPlacement? _edgeLabelPlacement;
-  TooltipBehavior? _tooltipBehavior;
-  List<ChartSampleData>? chartData;
+  late EdgeLabelPlacement _edgeLabelPlacement;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
     _selectedType = 'shift';
-    _edgeList = <String>['hide', 'none', 'shift'].toList();
     _edgeLabelPlacement = EdgeLabelPlacement.shift;
     _tooltipBehavior =
         TooltipBehavior(enable: true, format: 'point.x : point.y');
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _edgeList!.clear();
-    chartData!.clear();
-    super.dispose();
   }
 
   @override
@@ -56,33 +47,33 @@ class _EdgeLabelState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Text('Edge label placement',
-                  style: TextStyle(
-                    color: model.textColor,
-                    fontSize: 16,
-                  )),
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                alignment: Alignment.bottomLeft,
-                child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
-                    value: _selectedType,
-                    items: _edgeList!.map((String value) {
-                      return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'hide',
-                          child: Text(value,
-                              style: TextStyle(color: model.textColor)));
-                    }).toList(),
-                    onChanged: (dynamic value) {
-                      _onPositionTypeChange(value.toString());
-                      stateSetter(() {});
-                    }),
-              ),
-            ],
+          Container(
+            child: Row(
+              children: <Widget>[
+                Text('Edge label placement',
+                    style: TextStyle(
+                      color: model.textColor,
+                      fontSize: 16,
+                    )),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                  alignment: Alignment.bottomLeft,
+                  child: DropdownButton<String>(
+                      underline: Container(color: Color(0xFFBDBDBD), height: 1),
+                      value: _selectedType,
+                      items: _edgeList.map((String value) {
+                        return DropdownMenuItem<String>(
+                            value: (value != null) ? value : 'hide',
+                            child: Text('$value',
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (dynamic value) {
+                        _onPositionTypeChange(value.toString());
+                        stateSetter(() {});
+                      }),
+                ),
+              ],
+            ),
           ),
         ],
       );
@@ -98,19 +89,19 @@ class _EdgeLabelState extends SampleViewState {
           isVisible: isCardView ? false : true,
           position: LegendPosition.bottom),
       primaryXAxis: DateTimeAxis(
-          majorGridLines: const MajorGridLines(width: 0),
-          minimum: DateTime(2006, 4),
+          majorGridLines: MajorGridLines(width: 0),
+          minimum: DateTime(2006, 4, 1),
           interval: 2,
           dateFormat: DateFormat.y(),
           intervalType: DateTimeIntervalType.years,
-          maximum: DateTime(2016, 4),
+          maximum: DateTime(2016, 4, 1),
 
           /// This is the API for x axis edge label placement.
           edgeLabelPlacement:
-              isCardView ? EdgeLabelPlacement.shift : _edgeLabelPlacement!),
+              isCardView ? EdgeLabelPlacement.shift : _edgeLabelPlacement),
       primaryYAxis: NumericAxis(
-        majorTickLines: const MajorTickLines(width: 0.5),
-        axisLine: const AxisLine(width: 0),
+        majorTickLines: MajorTickLines(width: 0.5),
+        axisLine: AxisLine(width: 0),
         labelFormat: '₹{value}',
         minimum: 20,
         maximum: 80,
@@ -127,38 +118,45 @@ class _EdgeLabelState extends SampleViewState {
   /// Returns the list of chart serires whcih need to render
   /// on the spline edge label placement chart.
   List<ChartSeries<ChartSampleData, DateTime>> _getEdgeLabelPlacementSeries() {
-    chartData = <ChartSampleData>[
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
-          x: DateTime(2005, 4), y: 37.99, secondSeriesYValue: 28.22),
-      ChartSampleData(x: DateTime(2006, 4), y: 43.5, secondSeriesYValue: 30.45),
-      ChartSampleData(x: DateTime(2007, 4), y: 43, secondSeriesYValue: 30.25),
-      ChartSampleData(x: DateTime(2008, 4), y: 45.5, secondSeriesYValue: 31.76),
-      ChartSampleData(x: DateTime(2009, 4), y: 44.7, secondSeriesYValue: 30.86),
-      ChartSampleData(x: DateTime(2010, 4), y: 48, secondSeriesYValue: 38.1),
-      ChartSampleData(x: DateTime(2011, 4), y: 58.5, secondSeriesYValue: 37.75),
-      ChartSampleData(x: DateTime(2012, 4), y: 65.6, secondSeriesYValue: 40.91),
+          x: DateTime(2005, 4, 1), y: 37.99, secondSeriesYValue: 28.22),
       ChartSampleData(
-          x: DateTime(2013, 4), y: 66.09, secondSeriesYValue: 48.63),
+          x: DateTime(2006, 4, 1), y: 43.5, secondSeriesYValue: 30.45),
       ChartSampleData(
-          x: DateTime(2014, 4), y: 72.26, secondSeriesYValue: 55.48),
+          x: DateTime(2007, 4, 1), y: 43, secondSeriesYValue: 30.25),
       ChartSampleData(
-          x: DateTime(2015, 4), y: 60.49, secondSeriesYValue: 49.71),
-      ChartSampleData(x: DateTime(2016, 4), y: 59.68, secondSeriesYValue: 48.33)
+          x: DateTime(2008, 4, 1), y: 45.5, secondSeriesYValue: 31.76),
+      ChartSampleData(
+          x: DateTime(2009, 4, 1), y: 44.7, secondSeriesYValue: 30.86),
+      ChartSampleData(x: DateTime(2010, 4, 1), y: 48, secondSeriesYValue: 38.1),
+      ChartSampleData(
+          x: DateTime(2011, 4, 1), y: 58.5, secondSeriesYValue: 37.75),
+      ChartSampleData(
+          x: DateTime(2012, 4, 1), y: 65.6, secondSeriesYValue: 40.91),
+      ChartSampleData(
+          x: DateTime(2013, 4, 1), y: 66.09, secondSeriesYValue: 48.63),
+      ChartSampleData(
+          x: DateTime(2014, 4, 1), y: 72.26, secondSeriesYValue: 55.48),
+      ChartSampleData(
+          x: DateTime(2015, 4, 1), y: 60.49, secondSeriesYValue: 49.71),
+      ChartSampleData(
+          x: DateTime(2016, 4, 1), y: 59.68, secondSeriesYValue: 48.33)
     ];
     return <ChartSeries<ChartSampleData, DateTime>>[
       SplineSeries<ChartSampleData, DateTime>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
-          markerSettings: const MarkerSettings(
-              isVisible: true, shape: DataMarkerType.pentagon),
+          markerSettings:
+              MarkerSettings(isVisible: true, shape: DataMarkerType.pentagon),
           name: 'Petrol'),
       SplineSeries<ChartSampleData, DateTime>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
-          markerSettings: const MarkerSettings(
-              isVisible: true, shape: DataMarkerType.pentagon),
+          markerSettings:
+              MarkerSettings(isVisible: true, shape: DataMarkerType.pentagon),
           name: 'Diesel')
     ];
   }

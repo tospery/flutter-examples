@@ -37,21 +37,22 @@ class _HeatMeterState extends SampleViewState {
   /// Returns the heat meter.
   Widget _buildHeatMeter(BuildContext context) {
     return SfLinearGauge(
+        minimum: 0.0,
         maximum: 80.0,
         interval: 20.0,
         minorTicksPerInterval: 0,
         animateAxis: true,
-        labelFormatterCallback: (String value) {
+        labelFormatterCallback: (value) {
           return value + '°c';
         },
-        axisTrackStyle: const LinearAxisTrackStyle(thickness: 1),
+        axisTrackStyle: LinearAxisTrackStyle(thickness: 1),
         barPointers: <LinearBarPointer>[
           LinearBarPointer(
               value: 80,
               thickness: 24,
               position: LinearElementPosition.outside,
               shaderCallback: (Rect bounds) {
-                return const LinearGradient(colors: <Color>[
+                return LinearGradient(colors: <Color>[
                   Colors.green,
                   Colors.orange,
                   Colors.red
@@ -62,12 +63,12 @@ class _HeatMeterState extends SampleViewState {
                 ]).createShader(bounds);
               }),
         ],
-        markerPointers: <LinearMarkerPointer>[
+        markerPointers: [
           LinearWidgetPointer(
               value: _widgetPointerWithGradientValue,
               offset: 26,
               position: LinearElementPosition.outside,
-              child: SizedBox(
+              child: Container(
                   width: 55,
                   height: 45,
                   child: Center(
@@ -84,10 +85,8 @@ class _HeatMeterState extends SampleViewState {
                   )))),
           LinearShapePointer(
             offset: 25,
-            onChanged: (dynamic value) {
-              setState(() {
-                _widgetPointerWithGradientValue = value as double;
-              });
+            onValueChanged: (value) => {
+              setState(() => {_widgetPointerWithGradientValue = value})
             },
             value: _widgetPointerWithGradientValue,
             color: _widgetPointerWithGradientValue < 20

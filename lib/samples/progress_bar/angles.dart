@@ -33,7 +33,7 @@ class _ProgressBarAnglesState extends SampleViewState {
 
   void _startTimer() {
     if (mounted) {
-      _timer = Timer.periodic(const Duration(milliseconds: 20), (Timer timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 20), (Timer _timer) {
         setState(() {
           if (_value == 100) {
             _value = 0;
@@ -55,17 +55,16 @@ class _ProgressBarAnglesState extends SampleViewState {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _getFirstProgressBar(),
             Align(
-                alignment: !model.isWebFullView
-                    ? const Alignment(-0.3, 0)
-                    : Alignment.center,
+                alignment:
+                    !model.isWebFullView ? Alignment(-0.3, 0) : Alignment(0, 0),
                 child: _getSecondProgressBar()),
             Align(
-              alignment: !model.isWebFullView
-                  ? const Alignment(0.3, 0)
-                  : Alignment.center,
+              alignment:
+                  !model.isWebFullView ? Alignment(0.3, 0) : Alignment(0, 0),
               child: _getThirdProgressBar(),
             ),
             _getFourthProgressBar(),
@@ -77,14 +76,14 @@ class _ProgressBarAnglesState extends SampleViewState {
       return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _getFirstProgressBar(),
             _getSecondProgressBar(),
             _getThirdProgressBar(),
             Align(
-                alignment: model.isWebFullView
-                    ? const Alignment(0, -0.5)
-                    : Alignment.center,
+                alignment:
+                    model.isWebFullView ? Alignment(0, -0.5) : Alignment(0, 0),
                 child: _getFourthProgressBar()),
           ],
         ),
@@ -99,17 +98,19 @@ class _ProgressBarAnglesState extends SampleViewState {
   }
 
   Widget _getFirstProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             radiusFactor: 0.9,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -122,7 +123,9 @@ class _ProgressBarAnglesState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(widget: Text(_value.toStringAsFixed(0) + '%'))
+              GaugeAnnotation(
+                  positionFactor: 0,
+                  widget: Text(_value.toStringAsFixed(0) + '%'))
             ])
       ]),
     );
@@ -130,19 +133,21 @@ class _ProgressBarAnglesState extends SampleViewState {
 
   Widget _getSecondProgressBar() {
     return Center(
-        child: SizedBox(
+        child: Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 90,
             endAngle: 270,
             radiusFactor: 0.9,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -155,7 +160,9 @@ class _ProgressBarAnglesState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(widget: Text(_value.toStringAsFixed(0) + '%'))
+              GaugeAnnotation(
+                  positionFactor: 0,
+                  widget: Text(_value.toStringAsFixed(0) + '%'))
             ])
       ]),
     ));
@@ -163,19 +170,21 @@ class _ProgressBarAnglesState extends SampleViewState {
 
   Widget _getThirdProgressBar() {
     return Center(
-        child: SizedBox(
+        child: Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 270,
             endAngle: 90,
             radiusFactor: 0.9,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -188,7 +197,9 @@ class _ProgressBarAnglesState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(widget: Text(_value.toStringAsFixed(0) + '%'))
+              GaugeAnnotation(
+                  positionFactor: 0,
+                  widget: Text(_value.toStringAsFixed(0) + '%'))
             ])
       ]),
     ));
@@ -196,20 +207,22 @@ class _ProgressBarAnglesState extends SampleViewState {
 
   Widget _getFourthProgressBar() {
     return Center(
-        child: SizedBox(
+        child: Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 180,
             endAngle: 0,
             canScaleToFit: true,
             radiusFactor: 0.9,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -222,7 +235,9 @@ class _ProgressBarAnglesState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(widget: Text(_value.toStringAsFixed(0) + '%'))
+              GaugeAnnotation(
+                  positionFactor: 0,
+                  widget: Text(_value.toStringAsFixed(0) + '%'))
             ])
       ]),
     ));

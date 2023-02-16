@@ -1,67 +1,62 @@
 name: flutter_examples
 description: This project contains the Syncfusion Flutter UI widgets examples.
-version: 20.4.38 
+version: 18.4.30
 homepage: https://github.com/syncfusion/flutter-examples
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter_test:
     sdk: flutter
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  url_launcher: ^6.1.0
+  url_launcher: ^6.0.2
   path_provider: ^2.0.1
-  path_provider_foundation: ^2.1.0
+  path_provider_macos: ^2.0.0
   desktop_window: 0.4.0
-  intl: ">=0.17.0 <0.20.0"
 
-  syncfusion_localizations: ^20.4.38
-  syncfusion_flutter_datagrid_export: ^20.4.38-beta
-  syncfusion_flutter_calendar: ^20.4.38
-  syncfusion_flutter_datepicker: ^20.4.38
-  syncfusion_flutter_charts: ^20.4.38
-  syncfusion_flutter_gauges: ^20.4.38
-  syncfusion_flutter_sliders: ^20.4.38
-  syncfusion_flutter_pdf: ^20.4.38
-  syncfusion_flutter_barcodes: ^20.4.38
-  syncfusion_officechart: ^20.4.38-beta
-  syncfusion_flutter_maps: ^20.4.38
-  syncfusion_flutter_signaturepad: ^20.4.38
-  syncfusion_flutter_pdfviewer: ^20.4.38-beta
-  syncfusion_flutter_treemap: ^20.4.38-beta
-
+  syncfusion_flutter_datagrid: ^19.1.54-beta
+  syncfusion_flutter_calendar: ^19.1.54
+  syncfusion_flutter_datepicker: ^19.1.54-beta
+  syncfusion_flutter_charts: ^19.1.54
+  syncfusion_flutter_gauges: ^19.1.54
+  syncfusion_flutter_sliders: ^19.1.54-beta
+  syncfusion_flutter_pdf: ^19.1.54-beta
+  syncfusion_flutter_barcodes: ^19.1.54
+  syncfusion_officechart: ^19.1.54-beta
+  syncfusion_flutter_maps: ^19.1.54-beta
+  syncfusion_flutter_signaturepad: ^19.1.54-beta
+  syncfusion_flutter_pdfviewer: ^19.1.54-beta
+  syncfusion_flutter_treemap: ^19.1.54-beta
+  
+  
 flutter:
   uses-material-design: true
   assets:
     - images/
     - images/pdf/
     - images/xlsio/
-    - images/pdf_viewer/
     - assets/pdf/
     - lib/sample_details.json
-    - assets/world_map.json
-    - assets/africa.json
-    - assets/europe.json
-    - assets/germany.json
-    - assets/india.json
-    - assets/usa.json
-    - assets/south_america.json
-    - assets/australia.json
-    - assets/maps_brazil_boundary.json
-    - assets/maps_uk_boundary.json
-    - assets/maps_france_boundary.json
-    - assets/river.json
-    - assets/london_to_british.json
-    - assets/london_to_chessington.json
-    - assets/london_to_hampton_court_palace.json
-    - assets/london_to_twickenham_stadium.json
-    - assets/london_to_windsor_castle.json
-    - assets/product_data.json
-    - assets/chart_data.json
+    - world_map.json
+    - africa.json
+    - europe.json
+    - india.json
+    - usa.json
+    - south_america.json
+    - australia.json
+    - maps_brazil_boundary.json
+    - maps_uk_boundary.json
+    - maps_france_boundary.json
+    - river.json
+    - london_to_british.json
+    - london_to_chessington.json
+    - london_to_hampton_court_palace.json
+    - london_to_twickenham_stadium.json
+    - london_to_windsor_castle.json
+    - product_data.json
+    - chart_data.json
   fonts:
     - family: HeeboBold
       fonts:
@@ -77,4 +72,4 @@ flutter:
         - asset: assets/fonts/Roboto-Medium.ttf
     - family: Roboto-Regular
       fonts:
-        - asset: assets/fonts/Roboto-Regular.ttf 
+        - asset: assets/fonts/Roboto-Regular.ttf

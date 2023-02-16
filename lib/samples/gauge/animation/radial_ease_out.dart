@@ -37,33 +37,33 @@ class _RadialEaseOutAnimationState extends SampleViewState {
             showLabels: false,
             canScaleToFit: true,
             radiusFactor: 0.8,
+            minimum: 0,
             maximum: 50,
-            axisLineStyle: const AxisLineStyle(thickness: 40),
+            axisLineStyle: AxisLineStyle(thickness: 40),
             pointers: <GaugePointer>[
-              const RangePointer(
+              RangePointer(
                 enableAnimation: true,
                 animationType: AnimationType.easeOutBack,
                 width: 40,
-                color: Color(0xFF00A8B5),
+                color: const Color(0xFF00A8B5),
                 value: 40,
-                gradient: SweepGradient(
+                gradient: const SweepGradient(
                     colors: <Color>[Color(0xFFD046CA), Color(0xFF6094EA)],
                     stops: <double>[0.25, 0.75]),
               ),
               NeedlePointer(
                   knobStyle: KnobStyle(
-                      color: model.themeData.colorScheme.brightness ==
-                              Brightness.light
+                      color: model.themeData.brightness == Brightness.light
                           ? null
                           : _darkNeedleColor,
                       knobRadius: 5,
                       sizeUnit: GaugeSizeUnit.logicalPixel),
                   needleEndWidth: 2,
                   needleStartWidth: 2,
-                  needleColor:
-                      model.themeData.colorScheme.brightness == Brightness.light
-                          ? null
-                          : _darkNeedleColor,
+                  needleColor: model.themeData.brightness == Brightness.light
+                      ? null
+                      : _darkNeedleColor,
+                  lengthUnit: GaugeSizeUnit.factor,
                   needleLength: 0.98,
                   value: 40,
                   enableAnimation: true,

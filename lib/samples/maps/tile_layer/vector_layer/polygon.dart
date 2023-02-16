@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 /// Map import
@@ -35,11 +36,12 @@ class _MapPolygonPageState extends SampleViewState {
         padding: EdgeInsets.all(_isDesktop ? 8.0 : 10.0),
         child: ExpandableAnimatedButton(
           dataCount: _polygonData.length,
+          alignment: Alignment.bottomRight,
           builder: (int index, BuildContext context) {
             return _ExpandedButton(
               text: _polygonData[index].name,
               color: _polygonData[index].color,
-              textStyle: const TextStyle(color: Colors.white),
+              textStyle: TextStyle(color: Colors.white),
               size: 35,
               isSelected: index == _selectedIndex,
               opacity: 1.0,
@@ -51,19 +53,19 @@ class _MapPolygonPageState extends SampleViewState {
                     // France coordinate.
                     _zoomPanBehavior
                       ..zoomLevel = 4
-                      ..focalLatLng = const MapLatLng(46.2276, 2.2137);
+                      ..focalLatLng = MapLatLng(46.2276, 2.2137);
                   } else if (index == 1) {
                     _boundaryJson = 'assets/maps_brazil_boundary.json';
                     // Brazil coordinate.
                     _zoomPanBehavior
                       ..zoomLevel = 3
-                      ..focalLatLng = const MapLatLng(-14.2350, -51.9253);
+                      ..focalLatLng = MapLatLng(-14.2350, -51.9253);
                   } else if (index == 2) {
                     _boundaryJson = 'assets/maps_uk_boundary.json';
                     // UK coordinate.
                     _zoomPanBehavior
                       ..zoomLevel = 4
-                      ..focalLatLng = const MapLatLng(55.3781, -3.4360);
+                      ..focalLatLng = MapLatLng(55.3781, -3.4360);
                   }
                 });
               },
@@ -75,15 +77,16 @@ class _MapPolygonPageState extends SampleViewState {
       );
 
   Widget _toggleButtons(ThemeData themeData) {
-    _isLightTheme = themeData.colorScheme.brightness == Brightness.light;
+    _isLightTheme = themeData.brightness == Brightness.light;
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 10),
       child: DecoratedBox(
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          boxShadow: <BoxShadow>[
+          boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.24),
+              spreadRadius: 0,
               blurRadius: 6,
               offset: Offset(0, 2),
             )
@@ -91,7 +94,7 @@ class _MapPolygonPageState extends SampleViewState {
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
+          children: [
             Tooltip(
               message: 'Inverted polygon',
               child: SizedBox(
@@ -158,12 +161,13 @@ class _MapPolygonPageState extends SampleViewState {
         },
       ),
       shape: MaterialStateProperty.all<OutlinedBorder>(
-        const RoundedRectangleBorder(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(0.0)),
           side: BorderSide(color: Colors.transparent),
         ),
       ),
       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-        EdgeInsets.zero,
+        EdgeInsets.all(0.0),
       ),
     );
   }
@@ -183,20 +187,19 @@ class _MapPolygonPageState extends SampleViewState {
     final List<List<MapLatLng>> polygons = <List<MapLatLng>>[];
     final String data = await rootBundle.loadString(_boundaryJson);
     final dynamic jsonData = json.decode(data);
-    const String key = 'features';
-    final int jsonLength = jsonData[key].length as int;
+    final String key = 'features';
+    final int jsonLength = jsonData[key].length;
     for (int i = 0; i < jsonLength; i++) {
       final dynamic features = jsonData[key][i];
-      final Map<String, dynamic> geometry =
-          features['geometry'] as Map<String, dynamic>;
+      final Map<String, dynamic> geometry = features['geometry'];
 
       if (geometry['type'] == 'Polygon') {
-        polygonGeometryData = geometry['coordinates'][0] as List<dynamic>;
+        polygonGeometryData = geometry['coordinates'][0];
         polygons.add(_getLatLngPoints(polygonGeometryData));
       } else {
-        multipolygonGeometryLength = geometry['coordinates'].length as int;
+        multipolygonGeometryLength = geometry['coordinates'].length;
         for (int j = 0; j < multipolygonGeometryLength; j++) {
-          polygonGeometryData = geometry['coordinates'][j][0] as List<dynamic>;
+          polygonGeometryData = geometry['coordinates'][j][0];
           polygons.add(_getLatLngPoints(polygonGeometryData));
         }
       }
@@ -239,18 +242,18 @@ class _MapPolygonPageState extends SampleViewState {
 
   @override
   void initState() {
-    _polygonData = <PolygonDataModel>[
+    _polygonData = [
       PolygonDataModel('France', 'images/maps_france.png',
-          color: const Color.fromRGBO(237, 41, 57, 1.0)),
+          color: Color.fromRGBO(237, 41, 57, 1.0)),
       PolygonDataModel('Brazil', 'images/maps_brazil.png',
-          color: const Color.fromRGBO(7, 154, 73, 1.0)),
+          color: Color.fromRGBO(7, 154, 73, 1.0)),
       PolygonDataModel('United Kingdom', 'images/maps_UK.png',
-          color: const Color.fromRGBO(1, 33, 105, 1.0)),
+          color: Color.fromRGBO(1, 33, 105, 1.0)),
     ];
     _zoomPanBehavior = MapZoomPanBehavior(
       zoomLevel: 3,
       // Brazil coordinate.
-      focalLatLng: const MapLatLng(-14.2350, -51.9253),
+      focalLatLng: MapLatLng(-14.2350, -51.9253),
       minZoomLevel: 3,
       maxZoomLevel: 10,
       enableDoubleTapZooming: true,
@@ -272,12 +275,12 @@ class _MapPolygonPageState extends SampleViewState {
         themeData.platform == TargetPlatform.macOS ||
         themeData.platform == TargetPlatform.windows ||
         themeData.platform == TargetPlatform.linux;
-    return FutureBuilder<dynamic>(
+    return FutureBuilder(
       future: _getPolygonPoints(),
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
         if (snapshot.hasData) {
           return Stack(
-            children: <Widget>[
+            children: [
               Positioned.fill(
                 child: Image.asset(
                   'images/maps_grid.png',
@@ -286,7 +289,7 @@ class _MapPolygonPageState extends SampleViewState {
               ),
               MapTileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                sublayers: <MapSublayer>[_getPolygonLayer(snapshot.data)],
+                sublayers: [_getPolygonLayer(snapshot.data)],
                 zoomPanBehavior: _zoomPanBehavior,
               ),
               _expandableAnimatedButton,
@@ -309,7 +312,7 @@ typedef ExpandableButtonWidgetBuilder = _ExpandedButton Function(
 /// Renders the expandable animated button
 class ExpandableAnimatedButton extends StatefulWidget {
   /// Creates the expandable animated button
-  const ExpandableAnimatedButton({
+  ExpandableAnimatedButton({
     Key? key,
     required this.dataCount,
     required this.builder,
@@ -354,7 +357,7 @@ class _ExpandableAnimatedButtonState extends State<ExpandableAnimatedButton> {
           spacing: widget.spacing,
           direction: Axis.vertical,
           crossAxisAlignment: alignment,
-          children: List<Widget>.generate(
+          children: List.generate(
             widget.dataCount,
             (int index) => widget.builder(index, context),
           ),
@@ -382,7 +385,6 @@ class _ExpandedButton extends StatefulWidget {
     required this.text,
     required this.child,
     required this.color,
-    // ignore: unused_element
     this.padding = const EdgeInsets.symmetric(horizontal: 10.0),
     this.size = 45.0,
     this.opacity = 0.5,
@@ -407,7 +409,7 @@ class _ExpandedButton extends StatefulWidget {
 
 class _ExpandedButtonState extends State<_ExpandedButton>
     with SingleTickerProviderStateMixin {
-  static Duration duration = const Duration(milliseconds: 550);
+  static Duration duration = Duration(milliseconds: 550);
   late AnimationController _controller;
   late Animation<double> _animation;
   late _InheritedExpandableAnimatedButton _ancestor;
@@ -501,8 +503,8 @@ class _ExpandedButtonState extends State<_ExpandedButton>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: _ancestor.alignment == WrapCrossAlignment.end
-                    ? <Widget>[_text, _image]
-                    : <Widget>[_image, _text],
+                    ? [_text, _image]
+                    : [_image, _text],
               ),
             ),
           ),

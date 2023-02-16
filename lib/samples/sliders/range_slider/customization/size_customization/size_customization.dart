@@ -1,10 +1,9 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -16,7 +15,7 @@ import '../../../slider_utils.dart';
 
 ///Renders range slider with customized size
 class SfRangeSliderSizeCustomizationPage extends SampleView {
-  ///Creates range slider with customized divider
+  ///Creates range slider with customized divisor
   const SfRangeSliderSizeCustomizationPage(Key key) : super(key: key);
 
   @override
@@ -26,30 +25,58 @@ class SfRangeSliderSizeCustomizationPage extends SampleView {
 
 class _SfRangeSliderSizeCustomizationPageState extends SampleViewState {
   _SfRangeSliderSizeCustomizationPageState();
-  SfRangeValues _yearValues = SfRangeValues(DateTime(2005), DateTime(2015));
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _SfRangeSliderSizeCustomization();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 300, child: rangeSlider),
+          );
+  }
+}
+
+class _SfRangeSliderSizeCustomization extends SampleView {
+  @override
+  _SfRangeSliderSizeCustomizationState createState() =>
+      _SfRangeSliderSizeCustomizationState();
+}
+
+class _SfRangeSliderSizeCustomizationState extends SampleViewState {
+  SfRangeValues _yearValues =
+      SfRangeValues(DateTime(2005, 1, 01), DateTime(2015, 1, 1));
   SfRangeValues _values = const SfRangeValues(-25.0, 25.0);
 
-  SfRangeSliderTheme _dividerCustomizationRangeSlider() {
+  SfRangeSliderTheme _divisorCustomizationRangeSlider() {
     return SfRangeSliderTheme(
         data: SfRangeSliderThemeData(
-            activeDividerRadius: 6.0,
-            inactiveDividerRadius: 3.0,
-            inactiveDividerColor: Colors.teal.withOpacity(0.24),
-            activeDividerColor: Colors.teal,
+            activeDivisorRadius: 6.0,
+            inactiveDivisorRadius: 3.0,
+            inactiveDivisorColor: Colors.teal.withOpacity(0.24),
+            activeDivisorColor: Colors.teal,
             activeTrackColor: Colors.teal,
             thumbColor: Colors.teal,
             tooltipBackgroundColor: Colors.teal,
             overlayColor: Colors.teal.withOpacity(0.12),
             inactiveTrackColor: Colors.teal.withOpacity(0.24)),
         child: SfRangeSlider(
-          min: DateTime(2000),
-          max: DateTime(2020),
+          min: DateTime(2000, 01, 01),
+          max: DateTime(2020, 01, 01),
           showLabels: true,
           interval: 5,
           stepDuration: const SliderStepDuration(years: 5),
           dateFormat: DateFormat.y(),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.years,
-          showDividers: true,
+          showDivisors: true,
           values: _yearValues,
           onChanged: (SfRangeValues values) {
             setState(() {
@@ -112,9 +139,9 @@ class _SfRangeSliderSizeCustomizationPageState extends SampleViewState {
             columnSpacing10,
             _numericRangeSlider(),
             columnSpacing40,
-            title('Active and inactive divider radius'),
+            title('Active and inactive divisor radius'),
             columnSpacing10,
-            _dividerCustomizationRangeSlider(),
+            _divisorCustomizationRangeSlider(),
             columnSpacing40,
           ],
         ));
@@ -122,14 +149,6 @@ class _SfRangeSliderSizeCustomizationPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 300
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 300, child: rangeSlider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

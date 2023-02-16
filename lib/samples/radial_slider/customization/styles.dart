@@ -51,8 +51,13 @@ class _RadialSliderStylesState extends SampleViewState {
   String _annotationValue5 = '30';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final Size actualSize = MediaQuery.of(context).size;
+    final actualSize = MediaQuery.of(context).size;
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
       _firstMarkerSize = 12;
       _secondMarkerSize = 20;
@@ -74,10 +79,11 @@ class _RadialSliderStylesState extends SampleViewState {
       return Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
+        children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               _buildFirtProgressBar(),
               _buildSecondProgressBar(),
               _buildThirdProgressBar()
@@ -85,7 +91,8 @@ class _RadialSliderStylesState extends SampleViewState {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               _buildFourthProgressBar(),
               _buildFifthProgressBar(),
               _buildSixthProgressBar()
@@ -98,10 +105,11 @@ class _RadialSliderStylesState extends SampleViewState {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
+        children: [
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               _buildFirtProgressBar(),
               _buildSecondProgressBar(),
               _buildThirdProgressBar()
@@ -109,7 +117,8 @@ class _RadialSliderStylesState extends SampleViewState {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               _buildFourthProgressBar(),
               _buildFifthProgressBar(),
               _buildSixthProgressBar()
@@ -121,7 +130,7 @@ class _RadialSliderStylesState extends SampleViewState {
   }
 
   Widget _buildFirtProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(
@@ -155,7 +164,7 @@ class _RadialSliderStylesState extends SampleViewState {
                     onValueChangeEnd: handleFirstPointerValueChanged,
                     onValueChanging: handleFirstPointerValueChanging,
                     enableDragging: true,
-                    overlayColor: const Color.fromRGBO(41, 118, 246, 0.125),
+                    overlayColor: Color.fromRGBO(41, 118, 246, 0.125),
                     color:
                         model.currentThemeData!.brightness == Brightness.light
                             ? Colors.white
@@ -164,12 +173,12 @@ class _RadialSliderStylesState extends SampleViewState {
                     markerHeight: _firstMarkerSize,
                     markerWidth: _firstMarkerSize,
                     markerType: MarkerType.circle,
-                    borderColor: const Color.fromRGBO(41, 118, 246, 1)),
+                    borderColor: Color.fromRGBO(41, 118, 246, 1)),
               ],
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     widget: Text(
-                      _annotationValue,
+                      '$_annotationValue',
                       style: TextStyle(
                           fontSize: _annotationFontSize,
                           fontFamily: 'Times',
@@ -184,7 +193,7 @@ class _RadialSliderStylesState extends SampleViewState {
   }
 
   Widget _buildSecondProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(
@@ -225,7 +234,7 @@ class _RadialSliderStylesState extends SampleViewState {
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     widget: Text(
-                      _annotationValue1,
+                      '$_annotationValue1',
                       style: TextStyle(
                         fontSize: _annotationFontSize,
                         fontFamily: 'Times',
@@ -241,15 +250,15 @@ class _RadialSliderStylesState extends SampleViewState {
   }
 
   Widget _buildThirdProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(
         axes: <RadialAxis>[
           RadialAxis(
               radiusFactor: 0.85,
-              axisLineStyle: const AxisLineStyle(
-                  color: Color.fromRGBO(254, 166, 25, 1),
+              axisLineStyle: AxisLineStyle(
+                  color: const Color.fromRGBO(254, 166, 25, 1),
                   thickness: 0.2,
                   thicknessUnit: GaugeSizeUnit.factor),
               showLabels: false,
@@ -277,8 +286,8 @@ class _RadialSliderStylesState extends SampleViewState {
                     elevation: 5,
                     color:
                         model.currentThemeData!.brightness == Brightness.light
-                            ? const Color.fromRGBO(255, 255, 255, 1)
-                            : const Color.fromRGBO(33, 33, 33, 1),
+                            ? Color.fromRGBO(255, 255, 255, 1)
+                            : Color.fromRGBO(33, 33, 33, 1),
                     borderWidth: _thirdborderwidth,
                     onValueChanged: handleThirdPointerValueChanged,
                     onValueChangeEnd: handleThirdPointerValueChanged,
@@ -293,7 +302,7 @@ class _RadialSliderStylesState extends SampleViewState {
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     widget: Text(
-                      _annotationValue2,
+                      '$_annotationValue2',
                       style: TextStyle(
                         fontSize: _annotationFontSize,
                         fontFamily: 'Times',
@@ -309,7 +318,7 @@ class _RadialSliderStylesState extends SampleViewState {
   }
 
   Widget _buildFourthProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(
@@ -346,7 +355,7 @@ class _RadialSliderStylesState extends SampleViewState {
                 MarkerPointer(
                     value: _markerValue3,
                     elevation: 5,
-                    overlayColor: const Color.fromRGBO(88, 194, 143, 0.125),
+                    overlayColor: Color.fromRGBO(88, 194, 143, 0.125),
                     onValueChanged: handleFourthPointerValueChanged,
                     onValueChanging: handleFourthPointerValueChanging,
                     enableDragging: true,
@@ -358,25 +367,25 @@ class _RadialSliderStylesState extends SampleViewState {
                     markerHeight: 20,
                     markerWidth: 20,
                     markerType: MarkerType.circle,
-                    borderColor: const Color.fromRGBO(88, 194, 143, 1)),
+                    borderColor: Color.fromRGBO(88, 194, 143, 1)),
                 MarkerPointer(
                     value: _markerValue3,
                     // elevation: 5,
                     onValueChanged: handleFourthPointerValueChanged,
                     onValueChanging: handleFourthPointerValueChanging,
                     enableDragging: true,
-                    color: const Color.fromRGBO(88, 194, 143, 1),
+                    color: Color.fromRGBO(88, 194, 143, 1),
                     borderWidth: 2,
                     markerHeight: 9,
                     markerWidth: 9,
                     overlayRadius: 0,
                     markerType: MarkerType.circle,
-                    borderColor: const Color.fromRGBO(88, 194, 143, 1)),
+                    borderColor: Color.fromRGBO(88, 194, 143, 1)),
               ],
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     widget: Text(
-                      _annotationValue3,
+                      '$_annotationValue3',
                       style: TextStyle(
                         fontSize: _annotationFontSize,
                         fontFamily: 'Times',
@@ -392,14 +401,14 @@ class _RadialSliderStylesState extends SampleViewState {
   }
 
   Widget _buildFifthProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(
         axes: <RadialAxis>[
           RadialAxis(
               radiusFactor: 0.85,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                   color: Color.fromRGBO(41, 118, 246, 1),
                   thickness: 0.24,
                   thicknessUnit: GaugeSizeUnit.factor),
@@ -431,7 +440,7 @@ class _RadialSliderStylesState extends SampleViewState {
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     widget: Text(
-                      _annotationValue4,
+                      '$_annotationValue4',
                       style: TextStyle(
                         fontSize: _annotationFontSize,
                         fontFamily: 'Times',
@@ -447,16 +456,16 @@ class _RadialSliderStylesState extends SampleViewState {
   }
 
   Widget _buildSixthProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(
         axes: <RadialAxis>[
           RadialAxis(
               radiusFactor: 0.85,
-              axisLabelStyle: const GaugeTextStyle(fontSize: 8),
+              axisLabelStyle: GaugeTextStyle(fontSize: 8),
               interval: 10,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                   thickness: 0.03, thicknessUnit: GaugeSizeUnit.factor),
               showTicks: false,
               showLabels: false,
@@ -467,8 +476,8 @@ class _RadialSliderStylesState extends SampleViewState {
                     value: _markerValue5,
                     needleColor:
                         model.currentThemeData!.brightness == Brightness.light
-                            ? const Color.fromRGBO(65, 65, 65, 1)
-                            : const Color.fromRGBO(191, 191, 191, 1),
+                            ? Color.fromRGBO(65, 65, 65, 1)
+                            : Color.fromRGBO(191, 191, 191, 1),
                     needleEndWidth: 1.5,
                     needleStartWidth: 1.5,
                     needleLength: 0.82,
@@ -477,8 +486,8 @@ class _RadialSliderStylesState extends SampleViewState {
                       borderWidth: 0.05,
                       borderColor:
                           model.currentThemeData!.brightness == Brightness.light
-                              ? const Color.fromRGBO(65, 65, 65, 1)
-                              : const Color.fromRGBO(191, 191, 191, 1),
+                              ? Color.fromRGBO(65, 65, 65, 1)
+                              : Color.fromRGBO(191, 191, 191, 1),
                       color:
                           model.currentThemeData!.brightness == Brightness.light
                               ? Colors.white
@@ -498,7 +507,7 @@ class _RadialSliderStylesState extends SampleViewState {
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     widget: Text(
-                      _annotationValue5,
+                      '$_annotationValue5',
                       style: TextStyle(
                           fontSize: 12,
                           fontFamily: 'Times',
@@ -516,16 +525,21 @@ class _RadialSliderStylesState extends SampleViewState {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void handleFirstPointerValueChanged(double value) {
     _setFirstPointerValue(value);
   }
 
   void handleFirstPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _markerValue).abs() > 20) {
+    if ((args.value.round().toInt() - _markerValue).abs() > 20) {
       args.cancel = true;
 
       if (_markerValue > 50) {
-        const double value = 100;
+        final double value = 100;
         _setFirstPointerValue(value);
       }
     }
@@ -535,9 +549,9 @@ class _RadialSliderStylesState extends SampleViewState {
   void _setFirstPointerValue(double value) {
     setState(() {
       _markerValue = value.roundToDouble();
-      _value = _markerValue + 2;
-      final int currentValue = _markerValue.round();
-      _annotationValue = '$currentValue%';
+      _value = (_markerValue + 2);
+      final int _currentValue = _markerValue.round().toInt();
+      _annotationValue = '$_currentValue%';
     });
   }
 
@@ -547,11 +561,11 @@ class _RadialSliderStylesState extends SampleViewState {
 
   /// Pointer dragging is canceled when dragging pointer value is less than 6.
   void handleSecondPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _markerValue1).abs() > 20) {
+    if ((args.value.round().toInt() - _markerValue1).abs() > 20) {
       args.cancel = true;
 
       if (_markerValue1 > 50) {
-        const double value = 100;
+        final double value = 100;
         _setSecondPointerValue(value);
       }
     }
@@ -561,9 +575,9 @@ class _RadialSliderStylesState extends SampleViewState {
   void _setSecondPointerValue(double value) {
     setState(() {
       _markerValue1 = value.roundToDouble();
-      _value1 = _markerValue1;
-      final int currentValue = _markerValue1.round();
-      _annotationValue1 = '$currentValue%';
+      _value1 = (_markerValue1);
+      final int _currentValue = _markerValue1.round().toInt();
+      _annotationValue1 = '$_currentValue%';
     });
   }
 
@@ -575,11 +589,11 @@ class _RadialSliderStylesState extends SampleViewState {
 
   /// Pointer dragging is canceled when dragging pointer value is less than 6.
   void handleThirdPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _markerValue2).abs() > 20) {
+    if ((args.value.round().toInt() - _markerValue2).abs() > 20) {
       args.cancel = true;
 
       if (_markerValue2 > 50) {
-        const double value = 100;
+        final double value = 100;
         _setThirdPointerValue(value);
       }
     }
@@ -589,9 +603,9 @@ class _RadialSliderStylesState extends SampleViewState {
   void _setThirdPointerValue(double value) {
     setState(() {
       _markerValue2 = value.roundToDouble();
-      _value2 = _markerValue2 + 2;
-      final int currentValue = _markerValue2.round();
-      _annotationValue2 = '$currentValue%';
+      _value2 = (_markerValue2 + 2);
+      final int _currentValue = _markerValue2.round().toInt();
+      _annotationValue2 = '$_currentValue%';
     });
   }
 
@@ -603,11 +617,11 @@ class _RadialSliderStylesState extends SampleViewState {
 
   /// Pointer dragging is canceled when dragging pointer value is less than 6.
   void handleFourthPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _markerValue3).abs() > 20) {
+    if ((args.value.round().toInt() - _markerValue3).abs() > 20) {
       args.cancel = true;
 
       if (_markerValue3 > 50) {
-        const double value = 100;
+        final double value = 100;
         _setFourthPointerValue(value);
       }
     }
@@ -617,9 +631,9 @@ class _RadialSliderStylesState extends SampleViewState {
   void _setFourthPointerValue(double value) {
     setState(() {
       _markerValue3 = value;
-      _value3 = _markerValue3 + 2;
-      final int currentValue = _markerValue3.round();
-      _annotationValue3 = '$currentValue%';
+      _value3 = (_markerValue3 + 2);
+      final int _currentValue = _markerValue3.round().toInt();
+      _annotationValue3 = '$_currentValue%';
     });
   }
 
@@ -631,11 +645,11 @@ class _RadialSliderStylesState extends SampleViewState {
 
   /// Pointer dragging is canceled when dragging pointer value is less than 6.
   void handleFifthPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _markerValue4).abs() > 20) {
+    if ((args.value.round().toInt() - _markerValue4).abs() > 20) {
       args.cancel = true;
 
       if (_markerValue4 > 50) {
-        const double value = 100;
+        final double value = 100;
         _setFifthPointerValue(value);
       }
     }
@@ -645,9 +659,9 @@ class _RadialSliderStylesState extends SampleViewState {
   void _setFifthPointerValue(double value) {
     setState(() {
       _markerValue4 = value.roundToDouble();
-      _value4 = _markerValue4 + 2;
-      final int currentValue = _markerValue4.round();
-      _annotationValue4 = '$currentValue%';
+      _value4 = (_markerValue4 + 2);
+      final int _currentValue = _markerValue4.round().toInt();
+      _annotationValue4 = '$_currentValue%';
     });
   }
 
@@ -659,11 +673,11 @@ class _RadialSliderStylesState extends SampleViewState {
 
   /// Pointer dragging is canceled when dragging pointer value is less than 6.
   void handleSixthPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _markerValue5).abs() > 20) {
+    if ((args.value.round().toInt() - _markerValue5).abs() > 20) {
       args.cancel = true;
 
       if (_markerValue5 > 50) {
-        const double value = 100;
+        final double value = 100;
         _setValueForSixthPointer(value);
       }
     }
@@ -674,8 +688,8 @@ class _RadialSliderStylesState extends SampleViewState {
     setState(() {
       _markerValue5 = value.roundToDouble();
       _value5 = _markerValue5;
-      final int currentValue = _value5.round();
-      _annotationValue5 = '$currentValue';
+      final int _currentValue = _value5.round().toInt();
+      _annotationValue5 = '$_currentValue';
     });
   }
 }

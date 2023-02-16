@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -25,22 +23,48 @@ class VerticalSliderStepDurationPage extends SampleView {
 
 class _VerticalSliderStepDurationPageState extends SampleViewState {
   _VerticalSliderStepDurationPageState();
-  SfRangeValues _yearValues = SfRangeValues(DateTime(2005), DateTime(2015));
+
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _SliderStepDurationView();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: rangeSlider),
+          );
+  }
+}
+
+class _SliderStepDurationView extends SampleView {
+  @override
+  _SliderStepDurationState createState() => _SliderStepDurationState();
+}
+
+class _SliderStepDurationState extends SampleViewState {
+  SfRangeValues _yearValues =
+      SfRangeValues(DateTime(2005, 1, 01), DateTime(2015, 1, 1));
   SfRangeValues _values = const SfRangeValues(-25.0, 25.0);
-  bool _isInversed = false;
 
   SfRangeSliderTheme _yearRangeSlider() {
     return SfRangeSliderTheme(
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider.vertical(
-          min: DateTime(2000),
-          max: DateTime(2020),
+          min: DateTime(2000, 01, 01),
+          max: DateTime(2020, 01, 01),
           showLabels: true,
           interval: 5,
-          isInversed: _isInversed,
           stepDuration: const SliderStepDuration(years: 5),
           dateFormat: DateFormat.y(),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.years,
           showTicks: true,
           values: _yearValues,
@@ -67,7 +91,6 @@ class _VerticalSliderStepDurationPageState extends SampleViewState {
             min: -50.0,
             max: 50.0,
             stepSize: 25,
-            isInversed: _isInversed,
             showTicks: true,
             values: _values,
             onChanged: (SfRangeValues values) {
@@ -95,13 +118,13 @@ class _VerticalSliderStepDurationPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _numericRangeSlider()),
-              const Text('Numeric')
+              Text('Numeric')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _yearRangeSlider()),
-              const Text('DateTime')
+              Text('DateTime')
             ]),
           ],
         ));
@@ -109,37 +132,6 @@ class _VerticalSliderStepDurationPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 400, child: rangeSlider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: _isInversed,
-          title: const Text(
-            'Inversed',
-            softWrap: false,
-          ),
-          contentPadding: EdgeInsets.zero,
-          activeColor: model.backgroundColor,
-          onChanged: (bool? value) {
-            setState(() {
-              _isInversed = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

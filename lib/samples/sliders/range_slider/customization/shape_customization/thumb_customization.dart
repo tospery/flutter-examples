@@ -1,10 +1,9 @@
 ///Package imports
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -16,9 +15,6 @@ import '../../../slider_utils.dart';
 
 ///Renders range slider with customized thumb
 class ThumbCustomizedRangeSlider extends SampleView {
-  /// Creates range slider with customized thumb
-  const ThumbCustomizedRangeSlider(Key key) : super(key: key);
-
   @override
   _ThumbCustomizedRangeSliderState createState() =>
       _ThumbCustomizedRangeSliderState();
@@ -45,6 +41,7 @@ class _ThumbCustomizedRangeSliderState extends SampleViewState {
         tooltipBackgroundColor: _activeColor,
       ),
       child: SfRangeSlider(
+        min: 0.0,
         max: 100.0,
         values: _singleStrokeSliderValues,
         onChanged: (SfRangeValues values) {
@@ -70,6 +67,7 @@ class _ThumbCustomizedRangeSliderState extends SampleViewState {
         tooltipBackgroundColor: const Color.fromARGB(255, 0, 178, 206),
       ),
       child: SfRangeSlider(
+        min: 0.0,
         max: 100.0,
         values: _doubleStrokeSliderValues,
         onChanged: (SfRangeValues values) {

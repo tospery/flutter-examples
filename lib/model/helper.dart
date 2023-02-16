@@ -4,13 +4,12 @@ import 'dart:io' show Platform;
 /// Package imports
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Local imports
 import '../widgets/bottom_sheet.dart';
-import '../widgets/search_bar.dart';
 import 'mobile_view.dart';
 import 'model.dart';
 import 'sample_view.dart';
@@ -26,229 +25,41 @@ void onTapControlInMobile(BuildContext context, SampleModel model,
               LayoutPage(sampleModel: model, category: category)));
 }
 
-/// Resets the locale and textDirection values.
-void resetLocaleValue(SampleModel model, SubItem currentSample) {
-  model.sampleDetail = currentSample;
-
-  if (currentSample != null &&
-      (currentSample.title!.toLowerCase().contains('rtl') ||
-          currentSample.title!.toLowerCase().contains('directionality'))) {
-    model.textDirection = TextDirection.rtl;
-    model.locale = const Locale('ar', 'AE');
-    model.isInitialRender = true;
-  } else if (currentSample != null &&
-      currentSample.title!.toLowerCase().contains('localization')) {
-    model.textDirection = TextDirection.ltr;
-    model.locale = const Locale('en', 'US');
-    model.isInitialRender = true;
-  }
-}
-
 /// On tap the mouse, select the samples in web.
 void onTapControlInWeb(BuildContext context, SampleModel model,
     WidgetCategory category, int position) {
   category.selectedIndex = position;
-  final SubItem subItem =
+  final SubItem _subItem =
       category.controlList![category.selectedIndex!].subItems[0].type ==
               'parent'
           ? category.controlList![category.selectedIndex!].subItems[0]
-              .subItems[0].subItems[0] as SubItem
+              .subItems[0].subItems[0]
           : category.controlList![category.selectedIndex!].subItems[0].type ==
                   'child'
-              ? category.controlList![category.selectedIndex!].subItems[0]
-                  .subItems[0] as SubItem
-              : category.controlList![category.selectedIndex!].subItems[0]
-                  as SubItem;
+              ? category
+                  .controlList![category.selectedIndex!].subItems[0].subItems[0]
+              : category.controlList![category.selectedIndex!].subItems[0];
 
-  Navigator.pushNamed(context, subItem.breadCrumbText!);
+  Navigator.pushNamed(context, _subItem.breadCrumbText!);
 }
 
 /// On tap the expand button, get the fullview sample.
 void onTapExpandSample(
     BuildContext context, SubItem subItem, SampleModel model) {
   model.isCardView = false;
-  final Function sampleWidget = model.sampleWidget[subItem.key]!;
-  final SampleView sampleView = sampleWidget(GlobalKey<State>()) as SampleView;
+  final Function _sampleWidget = model.sampleWidget[subItem.key]!;
+  final SampleView _sampleView = _sampleWidget(GlobalKey<State>());
   Navigator.push<dynamic>(
       context,
       MaterialPageRoute<dynamic>(
           builder: (BuildContext context) => _FullViewSampleLayout(
-                sampleWidget: sampleView,
+                sampleWidget: _sampleView,
                 sample: subItem,
               )));
   model.sampleList.clear();
   model.editingController.text = '';
-  if (!model.isWebFullView &&
-      model.searchBar != null &&
-      model.searchBar!.key != null) {
-    final SearchBarState searchBarState =
-        (model.searchBar!.key! as GlobalKey).currentState! as SearchBarState;
-    searchBarState.isFocus.unfocus();
-    searchBarState.isOpen = false;
-  }
   //ignore: invalid_use_of_protected_member
   model.notifyListeners();
-}
-
-/// Method to return list of text span from the provide sample description
-List<TextSpan> getTextSpan(String description, SampleModel model) {
-  final List<String> highlightList = <String>[];
-  final List<String> list = <String>[];
-  final List<String> value = description.split(' ');
-  bool isHightlightStarted = false;
-  String? highlightText;
-  String? overallText;
-
-  for (int i = 0; i < value.length; i++) {
-    if (value[i].contains('<highlight>') &&
-        value[i].contains('<endHighlight>')) {
-      String word = value[i].replaceAll('<highlight>', '');
-      word = word.replaceAll('<endHighlight>', '');
-      if (word.isNotEmpty) {
-        if (overallText != null) {
-          list.add(overallText);
-          overallText = null;
-          list.add(word);
-          highlightList.add(word);
-        }
-      }
-    } else if (value[i] == '<highlight>' || value[i].contains('<highlight>')) {
-      if (overallText != null) {
-        list.add(overallText);
-      }
-      overallText = null;
-      isHightlightStarted = true;
-
-      if (value[i] == '<highlight>') {
-        continue;
-      }
-    } else if (value[i] == '<endHighlight>' ||
-        value[i].contains('<endHighlight>')) {
-      String word = '';
-      if (value[i].contains('<endHighlight>')) {
-        word = value[i].replaceAll('<endHighlight>', '');
-      }
-      if (overallText != null) {
-        list.add(overallText);
-      }
-
-      if (word.isNotEmpty) {
-        list.add(word);
-      }
-
-      if (highlightText != null) {
-        highlightList.add(highlightText);
-      }
-
-      if (word.isNotEmpty) {
-        highlightList.add(word);
-      }
-      overallText = null;
-      highlightText = null;
-      isHightlightStarted = false;
-      continue;
-    }
-
-    if (isHightlightStarted) {
-      String word;
-      if (value[i].contains('<highlight>')) {
-        word = value[i].replaceAll('<highlight>', '');
-      } else if (value[i].contains('<endHighlight>')) {
-        word = value[i].replaceAll('<endHighlight>', '');
-      } else {
-        word = value[i];
-      }
-      if (overallText != null) {
-        overallText = overallText + ' ' + word;
-      } else {
-        overallText = word;
-      }
-
-      if (highlightText != null) {
-        highlightText = highlightText + ' ' + word;
-      } else {
-        highlightText = word;
-      }
-    } else if (!value[i].contains('<highlight>') &&
-        !value[i].contains('<endHighlight>')) {
-      if (overallText != null) {
-        overallText = overallText + ' ' + value[i];
-      } else {
-        overallText = value[i];
-      }
-    }
-  }
-
-  if (overallText != null && !list.contains(overallText)) {
-    list.add(overallText);
-  }
-
-  if (highlightText != null && !highlightList.contains(highlightText)) {
-    highlightList.add(highlightText);
-  }
-
-  final List<TextSpan> textSpans = <TextSpan>[];
-  for (int i = 0; i < list.length; i++) {
-    if (list[i].contains('[')) {
-      final List<String> splits = list[i].split('[');
-      final String text = splits[0].isEmpty
-          ? splits[1].contains(']')
-              ? splits[1].replaceAll(']', '')
-              : splits[1]
-          : splits[0];
-      if (i != 0) {
-        textSpans.add(const TextSpan(text: ' '));
-      }
-      textSpans.add(TextSpan(
-          text: text,
-          style: const TextStyle(
-              fontWeight: FontWeight.normal,
-              letterSpacing: 0.25,
-              fontFamily: 'Roboto-Regular',
-              fontSize: 14,
-              color: Color(0xFF0274E5),
-              height: 1.2,
-              decoration: TextDecoration.underline),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              launchUrl(Uri.parse(splits[1].replaceAll(']', '')));
-            }));
-    } else if (highlightList.any((String element) => element == list[i])) {
-      if (i != 0) {
-        textSpans.add(const TextSpan(text: ' '));
-      }
-
-      textSpans.add(TextSpan(
-          text: list[i],
-          style: const TextStyle(
-            backgroundColor: Color.fromRGBO(252, 228, 217, 0.6),
-            letterSpacing: 0.25,
-            fontSize: 12,
-            fontFamily: 'Menlo',
-            height: 1.2,
-            fontWeight: FontWeight.normal,
-            color: Color(0xFF83300C),
-          )));
-    } else {
-      textSpans.add(TextSpan(
-        text: i == 0 ? list[i] : ' ' + list[i],
-        style: model.isWebFullView
-            ? TextStyle(
-                color: model.textColor,
-                fontFamily: 'Roboto-Regular',
-                letterSpacing: 0.3,
-              )
-            : TextStyle(
-                fontWeight: FontWeight.normal,
-                letterSpacing: 0.2,
-                fontSize: 15,
-                height: 1.2,
-                color: model.textColor,
-              ),
-      ));
-    }
-  }
-  return textSpans;
 }
 
 ///On expanding sample, full view sample layout renders
@@ -261,7 +72,7 @@ class _FullViewSampleLayout extends StatelessWidget {
     final SampleModel model = SampleModel.instance;
     final bool needsFloatingBotton =
         (sample!.sourceLink != null && sample!.sourceLink != '') ||
-            (sample!.needsPropertyPanel ?? false);
+            sample!.needsPropertyPanel == true;
     final bool needPadding =
         sample!.codeLink != null && sample!.codeLink!.contains('/chart/');
     return LayoutBuilder(
@@ -280,35 +91,33 @@ class _FullViewSampleLayout extends StatelessWidget {
                             actions: (sample!.description != null &&
                                     sample!.description != '')
                                 ? <Widget>[
-                                    if (sample!.codeLink != null &&
-                                        sample!.codeLink != '')
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 8, 0),
-                                        child: SizedBox(
-                                          height: 37,
-                                          width: 37,
-                                          child: IconButton(
-                                            icon: Image.asset(
-                                                'images/git_hub_mobile.png',
-                                                color: Colors.white),
-                                            onPressed: () {
-                                              launchUrl(
-                                                  Uri.parse(sample!.codeLink!));
-                                            },
-                                          ),
-                                        ),
-                                      )
-                                    else
-                                      Container(),
+                                    (sample!.codeLink != null &&
+                                            sample!.codeLink != '')
+                                        ? Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 8, 0),
+                                            child: Container(
+                                              height: 37,
+                                              width: 37,
+                                              child: IconButton(
+                                                icon: Image.asset(
+                                                    'images/git_hub_mobile.png',
+                                                    color: Colors.white),
+                                                onPressed: () {
+                                                  launch(sample!.codeLink!);
+                                                },
+                                              ),
+                                            ),
+                                          )
+                                        : Container(),
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(
                                           0, 0, 10, 0),
-                                      child: SizedBox(
+                                      child: Container(
                                         height: 40,
                                         width: 40,
                                         child: IconButton(
-                                          icon: const Icon(Icons.info_outline,
+                                          icon: Icon(Icons.info_outline,
                                               color: Colors.white),
                                           onPressed: () {
                                             showBottomInfo(
@@ -324,7 +133,7 @@ class _FullViewSampleLayout extends StatelessWidget {
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
                                               0, 0, 8, 0),
-                                          child: SizedBox(
+                                          child: Container(
                                             height: 37,
                                             width: 37,
                                             child: IconButton(
@@ -332,8 +141,7 @@ class _FullViewSampleLayout extends StatelessWidget {
                                                   'images/git_hub_mobile.png',
                                                   color: Colors.white),
                                               onPressed: () {
-                                                launchUrl(Uri.parse(
-                                                    sample!.codeLink!));
+                                                launch(sample!.codeLink!);
                                               },
                                             ),
                                           ),
@@ -347,69 +155,70 @@ class _FullViewSampleLayout extends StatelessWidget {
                       body: Container(
                           decoration: BoxDecoration(
                               borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(12)),
+                                  top: Radius.circular(12),
+                                  bottom: Radius.circular(0)),
                               color: model.cardThemeColor),
                           padding: needPadding
                               ? EdgeInsets.fromLTRB(
                                   5, 0, 5, needsFloatingBotton ? 57 : 0)
-                              : EdgeInsets.zero,
+                              : const EdgeInsets.all(0),
                           child: Container(child: sampleWidget)),
                       floatingActionButton: needsFloatingBotton
                           ? Stack(children: <Widget>[
-                              if (sample!.sourceLink != null &&
-                                  sample!.sourceLink != '')
-                                Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Container(
-                                    padding: EdgeInsets.fromLTRB(
-                                        30, needPadding ? 50 : 0, 0, 0),
-                                    child: SizedBox(
-                                      height: 20,
-                                      width: 230,
-                                      child: InkWell(
-                                        onTap: () => launchUrl(
-                                            Uri.parse(sample!.sourceLink!)),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text('Source: ',
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: model.textColor)),
-                                            Text(sample!.sourceText!,
-                                                style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.blue)),
-                                          ],
+                              (sample!.sourceLink != null &&
+                                      sample!.sourceLink != '')
+                                  ? Align(
+                                      alignment: Alignment.bottomLeft,
+                                      child: Container(
+                                        padding: EdgeInsets.fromLTRB(
+                                            30, needPadding ? 50 : 0, 0, 0),
+                                        child: Container(
+                                          height: 50,
+                                          width: 230,
+                                          child: InkWell(
+                                            onTap: () =>
+                                                launch(sample!.sourceLink!),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text('Source: ',
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color:
+                                                            model.textColor)),
+                                                Text(sample!.sourceText!,
+                                                    style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.blue)),
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                    )
+                                  : Container(),
+                              sample!.needsPropertyPanel != true
+                                  ? Container()
+                                  : Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: FloatingActionButton(
+                                        heroTag: null,
+                                        onPressed: () {
+                                          final GlobalKey _sampleKey =
+                                              sampleWidget!.key as GlobalKey;
+                                          final SampleViewState _sampleState =
+                                              _sampleKey.currentState
+                                                  as SampleViewState;
+                                          final Widget _settingsContent =
+                                              _sampleState
+                                                  .buildSettings(context)!;
+                                          showBottomSheetSettingsPanel(
+                                              context, _settingsContent);
+                                        },
+                                        backgroundColor: model.paletteColor,
+                                        child: const Icon(Icons.graphic_eq,
+                                            color: Colors.white),
+                                      ),
                                     ),
-                                  ),
-                                )
-                              else
-                                Container(),
-                              if (sample!.needsPropertyPanel != true)
-                                Container()
-                              else
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: FloatingActionButton(
-                                    heroTag: null,
-                                    onPressed: () {
-                                      final GlobalKey sampleKey =
-                                          sampleWidget!.key! as GlobalKey;
-                                      final SampleViewState sampleState =
-                                          sampleKey.currentState!
-                                              as SampleViewState;
-                                      final Widget settingsContent =
-                                          sampleState.buildSettings(context)!;
-                                      showBottomSheetSettingsPanel(
-                                          context, settingsContent);
-                                    },
-                                    backgroundColor: model.paletteColor,
-                                    child: const Icon(Icons.graphic_eq,
-                                        color: Colors.white),
-                                  ),
-                                ),
                             ])
                           : null,
                     ))));
@@ -417,7 +226,7 @@ class _FullViewSampleLayout extends StatelessWidget {
 }
 
 /// Darwer to show the product related links.
-Widget getLeftSideDrawer(SampleModel model) {
+Widget getLeftSideDrawer(SampleModel _model) {
   return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
     return SizedBox(
@@ -425,24 +234,24 @@ Widget getLeftSideDrawer(SampleModel model) {
             (MediaQuery.of(context).size.width < 600 ? 0.7 : 0.4),
         child: Drawer(
             child: Container(
-          color: model.themeData.colorScheme.brightness == Brightness.dark
+          color: _model.themeData.brightness == Brightness.dark
               ? Colors.black
               : Colors.white,
           child: Column(
             children: <Widget>[
               Stack(children: <Widget>[
-                if (model.themeData.colorScheme.brightness == Brightness.light)
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 30, 30, 10),
-                    child: Image.asset('images/image_nav_banner.png',
-                        fit: BoxFit.cover),
-                  )
-                else
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 30, 30, 10),
-                    child: Image.asset('images/image_nav_banner_darktheme.png',
-                        fit: BoxFit.cover),
-                  )
+                _model.themeData.brightness == Brightness.light
+                    ? Container(
+                        padding: const EdgeInsets.fromLTRB(10, 30, 30, 10),
+                        child: Image.asset('images/image_nav_banner.png',
+                            fit: BoxFit.cover),
+                      )
+                    : Container(
+                        padding: const EdgeInsets.fromLTRB(10, 30, 30, 10),
+                        child: Image.asset(
+                            'images/image_nav_banner_darktheme.png',
+                            fit: BoxFit.cover),
+                      )
               ]),
               Expanded(
                 /// ListView contains a group of widgets
@@ -451,13 +260,14 @@ Widget getLeftSideDrawer(SampleModel model) {
                   children: <Widget>[
                     SingleChildScrollView(
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                             child: Text('Fast . Fluid . Flexible',
                                 style: TextStyle(
-                                    color: model.drawerTextIconColor,
+                                    color: _model.drawerTextIconColor,
                                     fontSize: 14,
                                     letterSpacing: 0.26,
                                     fontFamily: 'Roboto-Regular',
@@ -478,8 +288,8 @@ Widget getLeftSideDrawer(SampleModel model) {
                                     splashColor: Colors.grey.withOpacity(0.4),
                                     onTap: () {
                                       Feedback.forLongPress(context);
-                                      launchUrl(Uri.parse(
-                                          'https://www.syncfusion.com/flutter-widgets'));
+                                      launch(
+                                          'https://www.syncfusion.com/flutter-widgets');
                                     },
                                     child: Padding(
                                         padding: const EdgeInsets.fromLTRB(
@@ -494,14 +304,14 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                   fit: BoxFit.contain,
                                                   height: 22,
                                                   width: 22,
-                                                  color: model.webIconColor),
+                                                  color: _model.webIconColor),
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.fromLTRB(
                                                         15, 0, 0, 0),
                                                 child: Text('Product page',
                                                     style: TextStyle(
-                                                        color: model
+                                                        color: _model
                                                             .drawerTextIconColor,
                                                         fontSize: 16,
                                                         letterSpacing: 0.4,
@@ -525,8 +335,8 @@ Widget getLeftSideDrawer(SampleModel model) {
                                     splashColor: Colors.grey.withOpacity(0.4),
                                     onTap: () {
                                       Feedback.forLongPress(context);
-                                      launchUrl(Uri.parse(
-                                          'https://help.syncfusion.com/flutter/introduction/overview'));
+                                      launch(
+                                          'https://help.syncfusion.com/flutter/introduction/overview');
                                     },
                                     child: Padding(
                                         padding: const EdgeInsets.fromLTRB(
@@ -542,14 +352,14 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                   fit: BoxFit.contain,
                                                   height: 22,
                                                   width: 22,
-                                                  color: model.webIconColor),
+                                                  color: _model.webIconColor),
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.fromLTRB(
                                                         15, 0, 0, 0),
                                                 child: Text('Documentation',
                                                     style: TextStyle(
-                                                        color: model
+                                                        color: _model
                                                             .drawerTextIconColor,
                                                         fontSize: 16,
                                                         letterSpacing: 0.4,
@@ -571,7 +381,7 @@ Widget getLeftSideDrawer(SampleModel model) {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 20, 40, 0),
                       child: Container(
-                          height: 2, width: 5, color: model.backgroundColor),
+                          height: 2, width: 5, color: _model.backgroundColor),
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 20, 3, 0),
@@ -584,7 +394,7 @@ Widget getLeftSideDrawer(SampleModel model) {
                                 padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                 child: Text('Other products',
                                     style: TextStyle(
-                                        color: model.drawerTextIconColor,
+                                        color: _model.drawerTextIconColor,
                                         fontSize: 16,
                                         letterSpacing: 0.4,
                                         fontFamily: 'Roboto-Regular',
@@ -600,8 +410,8 @@ Widget getLeftSideDrawer(SampleModel model) {
                                   splashColor: Colors.grey.withOpacity(0.4),
                                   onTap: () {
                                     Feedback.forLongPress(context);
-                                    launchUrl(Uri.parse(
-                                        'https://play.google.com/store/apps/details?id=com.syncfusion.samplebrowser&hl=en'));
+                                    launch(
+                                        'https://play.google.com/store/apps/details?id=com.syncfusion.samplebrowser&hl=en');
                                   },
                                   child: Column(
                                     children: <Widget>[
@@ -624,7 +434,7 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                       10, 0, 0, 0),
                                               child: Text('Xamarin Demo',
                                                   style: TextStyle(
-                                                      color: model
+                                                      color: _model
                                                           .drawerTextIconColor,
                                                       fontSize: 16,
                                                       letterSpacing: 0.4,
@@ -633,8 +443,10 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                       fontWeight:
                                                           FontWeight.normal))),
                                           const Spacer(),
-                                          Icon(Icons.arrow_forward,
-                                              color: model.backgroundColor),
+                                          Container(
+                                            child: Icon(Icons.arrow_forward,
+                                                color: _model.backgroundColor),
+                                          ),
                                         ],
                                       ),
                                       const Padding(
@@ -647,8 +459,8 @@ Widget getLeftSideDrawer(SampleModel model) {
                                   splashColor: Colors.grey.withOpacity(0.4),
                                   onTap: () {
                                     Feedback.forLongPress(context);
-                                    launchUrl(Uri.parse(
-                                        'https://play.google.com/store/apps/details?id=com.syncfusion.xamarin.uikit&hl=en'));
+                                    launch(
+                                        'https://play.google.com/store/apps/details?id=com.syncfusion.xamarin.uikit&hl=en');
                                   },
                                   child: Column(
                                     children: <Widget>[
@@ -670,7 +482,7 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                 10, 0, 0, 0),
                                             child: Text('Xamarin UI kit Demo',
                                                 style: TextStyle(
-                                                    color: model
+                                                    color: _model
                                                         .drawerTextIconColor,
                                                     fontSize: 16,
                                                     letterSpacing: 0.4,
@@ -680,8 +492,10 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                         FontWeight.normal)),
                                           ),
                                           const Spacer(),
-                                          Icon(Icons.arrow_forward,
-                                              color: model.backgroundColor),
+                                          Container(
+                                            child: Icon(Icons.arrow_forward,
+                                                color: _model.backgroundColor),
+                                          ),
                                         ],
                                       ),
                                       const Padding(
@@ -694,8 +508,8 @@ Widget getLeftSideDrawer(SampleModel model) {
                                   splashColor: Colors.grey.withOpacity(0.4),
                                   onTap: () {
                                     Feedback.forLongPress(context);
-                                    launchUrl(Uri.parse(
-                                        'https://play.google.com/store/apps/details?id=com.Syncfusion.ej2&hl=en'));
+                                    launch(
+                                        'https://play.google.com/store/apps/details?id=com.Syncfusion.ej2&hl=en');
                                   },
                                   child: Column(
                                     children: <Widget>[
@@ -717,7 +531,7 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                 10, 0, 0, 0),
                                             child: Text('JavaScript Demo',
                                                 style: TextStyle(
-                                                    color: model
+                                                    color: _model
                                                         .drawerTextIconColor,
                                                     fontSize: 16,
                                                     letterSpacing: 0.4,
@@ -727,8 +541,10 @@ Widget getLeftSideDrawer(SampleModel model) {
                                                         FontWeight.normal)),
                                           ),
                                           const Spacer(),
-                                          Icon(Icons.arrow_forward,
-                                              color: model.backgroundColor),
+                                          Container(
+                                            child: Icon(Icons.arrow_forward,
+                                                color: _model.backgroundColor),
+                                          ),
                                         ],
                                       ),
                                       const Padding(
@@ -751,8 +567,7 @@ Widget getLeftSideDrawer(SampleModel model) {
                     Align(
                         alignment: Alignment.bottomCenter,
                         child: Image.asset(
-                          model.themeData.colorScheme.brightness ==
-                                  Brightness.dark
+                          _model.themeData.brightness == Brightness.dark
                               ? 'images/syncfusion_dark.png'
                               : 'images/syncfusion.png',
                           fit: BoxFit.contain,
@@ -761,9 +576,9 @@ Widget getLeftSideDrawer(SampleModel model) {
                         )),
                     Align(
                         alignment: Alignment.bottomCenter,
-                        child: Text('Version 20.3.47',
+                        child: Text('Version 19.1.0.54',
                             style: TextStyle(
-                                color: model.drawerTextIconColor,
+                                color: _model.drawerTextIconColor,
                                 fontSize: 12,
                                 letterSpacing: 0.4,
                                 fontFamily: 'Roboto-Regular',
@@ -786,7 +601,7 @@ Widget getFooter(BuildContext context, SampleModel model) {
       border: Border(
         top: BorderSide(width: 0.8, color: model.dividerColor),
       ),
-      color: model.themeData.colorScheme.brightness == Brightness.dark
+      color: model.themeData.brightness == Brightness.dark
           ? const Color.fromRGBO(33, 33, 33, 1)
           : const Color.fromRGBO(234, 234, 234, 1),
     ),
@@ -798,15 +613,16 @@ Widget getFooter(BuildContext context, SampleModel model) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Column(
+        Container(
+            child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
                 InkWell(
-                  onTap: () => launchUrl(Uri.parse(
-                      'https://help.syncfusion.com/flutter/introduction/overview')),
+                  onTap: () => launch(
+                      'https://help.syncfusion.com/flutter/introduction/overview'),
                   child: const Text('Documentation',
                       style: TextStyle(color: Colors.blue, fontSize: 12)),
                 ),
@@ -814,8 +630,8 @@ Widget getFooter(BuildContext context, SampleModel model) {
                     style: TextStyle(
                         fontSize: 12, color: model.textColor.withOpacity(0.7))),
                 InkWell(
-                  onTap: () => launchUrl(
-                      Uri.parse('https://www.syncfusion.com/forums/flutter')),
+                  onTap: () =>
+                      launch('https://www.syncfusion.com/forums/flutter'),
                   child: const Text('Forum',
                       style: TextStyle(color: Colors.blue, fontSize: 12)),
                 ),
@@ -823,8 +639,8 @@ Widget getFooter(BuildContext context, SampleModel model) {
                     style: TextStyle(
                         fontSize: 12, color: model.textColor.withOpacity(0.7))),
                 InkWell(
-                  onTap: () => launchUrl(
-                      Uri.parse('https://www.syncfusion.com/blogs/?s=flutter')),
+                  onTap: () =>
+                      launch('https://www.syncfusion.com/blogs/?s=flutter'),
                   child: const Text('Blog',
                       style: TextStyle(color: Colors.blue, fontSize: 12)),
                 ),
@@ -832,8 +648,7 @@ Widget getFooter(BuildContext context, SampleModel model) {
                     style: TextStyle(
                         fontSize: 12, color: model.textColor.withOpacity(0.7))),
                 InkWell(
-                  onTap: () => launchUrl(
-                      Uri.parse('https://www.syncfusion.com/kb/flutter')),
+                  onTap: () => launch('https://www.syncfusion.com/kb/flutter'),
                   child: const Text('Knowledge base',
                       style: TextStyle(color: Colors.blue, fontSize: 12)),
                 )
@@ -841,17 +656,17 @@ Widget getFooter(BuildContext context, SampleModel model) {
             ),
             Container(
                 padding: const EdgeInsets.only(top: 10),
-                child: Text('Copyright © 2001 - 2022 Syncfusion Inc.',
+                child: Text('Copyright © 2001 - 2021 Syncfusion Inc.',
                     style: TextStyle(
                         color: model.textColor.withOpacity(0.7),
                         fontSize: 12,
                         letterSpacing: 0.23)))
           ],
-        ),
+        )),
         InkWell(
-          onTap: () => launchUrl(Uri.parse('https://www.syncfusion.com')),
+          onTap: () => launch('https://www.syncfusion.com'),
           child: Image.asset(
-              model.themeData.colorScheme.brightness == Brightness.dark
+              model.themeData.brightness == Brightness.dark
                   ? 'images/syncfusion_dark.png'
                   : 'images/syncfusion.png',
               fit: BoxFit.contain,
@@ -865,13 +680,12 @@ Widget getFooter(BuildContext context, SampleModel model) {
 
 /// Show Right drawer which contains theme settings for web.
 Widget showWebThemeSettings(SampleModel model) {
-  int selectedValue = model.selectedThemeIndex;
+  int _selectedValue = model.selectedThemeIndex;
   return StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-    final double width = MediaQuery.of(context).size.width * 0.4;
-    final Color textColor =
-        model.themeData.colorScheme.brightness == Brightness.light
-            ? const Color.fromRGBO(84, 84, 84, 1)
-            : const Color.fromRGBO(218, 218, 218, 1);
+    final double _width = MediaQuery.of(context).size.width * 0.4;
+    final Color _textColor = model.themeData.brightness == Brightness.light
+        ? const Color.fromRGBO(84, 84, 84, 1)
+        : const Color.fromRGBO(218, 218, 218, 1);
     return Drawer(
         child: Container(
             color: model.bottomSheetBackgroundColor,
@@ -907,22 +721,22 @@ Widget showWebThemeSettings(SampleModel model) {
                               return CupertinoSegmentedControl<int>(
                                 children: <int, Widget>{
                                   0: Container(
-                                      width: width,
+                                      width: _width,
                                       alignment: Alignment.center,
                                       child: Text('Light theme',
                                           style: TextStyle(
-                                              color: selectedValue == 0
+                                              color: _selectedValue == 0
                                                   ? Colors.white
-                                                  : textColor,
+                                                  : _textColor,
                                               fontFamily: 'Roboto-Medium'))),
                                   1: Container(
-                                      width: width,
+                                      width: _width,
                                       alignment: Alignment.center,
                                       child: Text('Dark theme',
                                           style: TextStyle(
-                                              color: selectedValue == 1
+                                              color: _selectedValue == 1
                                                   ? Colors.white
-                                                  : textColor,
+                                                  : _textColor,
                                               fontFamily: 'Roboto-Medium')))
                                 },
                                 padding: const EdgeInsets.all(5),
@@ -930,16 +744,12 @@ Widget showWebThemeSettings(SampleModel model) {
                                 selectedColor: model.paletteColor,
                                 pressedColor: model.paletteColor,
                                 borderColor: model.paletteColor,
-                                groupValue: selectedValue,
+                                groupValue: _selectedValue,
                                 onValueChanged: (int value) {
-                                  selectedValue = value;
+                                  _selectedValue = value;
                                   model.currentThemeData = (value == 0)
-                                      ? ThemeData.from(
-                                          colorScheme:
-                                              const ColorScheme.light())
-                                      : ThemeData.from(
-                                          colorScheme:
-                                              const ColorScheme.dark());
+                                      ? ThemeData.light()
+                                      : ThemeData.dark();
 
                                   setState(() {
                                     /// update the theme changes
@@ -967,6 +777,8 @@ Widget showWebThemeSettings(SampleModel model) {
                                   padding:
                                       const EdgeInsets.fromLTRB(15, 0, 10, 30),
                                   child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children:
@@ -984,7 +796,7 @@ Widget showWebThemeSettings(SampleModel model) {
                                   model.paletteColor),
                             ),
                             onPressed: () => _applyThemeAndPaletteColor(
-                                model, context, selectedValue),
+                                model, context, _selectedValue),
                             child: const Text('APPLY',
                                 style: TextStyle(
                                     fontSize: 16,
@@ -1007,11 +819,6 @@ void _applyThemeAndPaletteColor(
       ? model.currentPrimaryColor
       : model.currentPaletteColor;
   model.paletteColor = model.currentPaletteColor;
-  model.currentThemeData = model.currentThemeData!.copyWith(
-      colorScheme: model.currentThemeData!.colorScheme.copyWith(
-          primary: model.currentPaletteColor,
-          secondary: model.currentPaletteColor,
-          onPrimary: Colors.white));
   model.changeTheme(model.currentThemeData!);
   // ignore: invalid_use_of_protected_member
   model.notifyListeners();
@@ -1020,9 +827,9 @@ void _applyThemeAndPaletteColor(
 
 /// Adding the palette color in the theme setting panel.
 List<Widget> _addColorPalettes(SampleModel model, [StateSetter? setState]) {
-  final List<Widget> colorPaletteWidgets = <Widget>[];
+  final List<Widget> _colorPaletteWidgets = <Widget>[];
   for (int i = 0; i < model.paletteColors!.length; i++) {
-    colorPaletteWidgets.add(Material(
+    _colorPaletteWidgets.add(Material(
         color: model.bottomSheetBackgroundColor,
         child: Ink(
           decoration: BoxDecoration(
@@ -1041,7 +848,7 @@ List<Widget> _addColorPalettes(SampleModel model, [StateSetter? setState]) {
           ),
         )));
   }
-  return colorPaletteWidgets;
+  return _colorPaletteWidgets;
 }
 
 /// Changing the palete color of the application.
@@ -1065,14 +872,14 @@ void _changeColorPalette(SampleModel model, int index,
 
 /// Getting status of the control/subitems/sample.
 String getStatusTag(SubItem item) {
-  final bool isWeb =
+  final bool _isWeb =
       kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux;
   String status = '';
   if (item.subItems == null) {
     status = (item.status == 'new' || item.status == 'New')
-        ? (isWeb ? 'New' : 'N')
+        ? (_isWeb ? 'New' : 'N')
         : (item.status == 'updated' || item.status == 'Updated')
-            ? (isWeb ? 'Updated' : 'U')
+            ? (_isWeb ? 'Updated' : 'U')
             : '';
   } else {
     int newCount = 0;
@@ -1099,9 +906,9 @@ String getStatusTag(SubItem item) {
       }
     }
     status = (newCount != 0 && newCount == item.subItems!.length)
-        ? (isWeb ? 'New' : 'N')
+        ? (_isWeb ? 'New' : 'N')
         : (newCount != 0 || updateCount != 0)
-            ? (isWeb ? 'Updated' : 'U')
+            ? (_isWeb ? 'Updated' : 'U')
             : '';
   }
   return status;
@@ -1109,27 +916,27 @@ String getStatusTag(SubItem item) {
 
 /// show bottom sheet which contains theme settings.
 void showBottomSettingsPanel(SampleModel model, BuildContext context) {
-  int selectedIndex = model.selectedThemeIndex;
-  final double orientationPadding =
+  int _selectedIndex = model.selectedThemeIndex;
+  final double _orientationPadding =
       ((MediaQuery.of(context).size.width) / 100) * 10;
-  final double width = MediaQuery.of(context).size.width * 0.3;
-  final Color textColor =
-      model.themeData.colorScheme.brightness == Brightness.light
-          ? const Color.fromRGBO(84, 84, 84, 1)
-          : const Color.fromRGBO(218, 218, 218, 1);
+  final double _width = MediaQuery.of(context).size.width * 0.3;
+  final Color _textColor = model.themeData.brightness == Brightness.light
+      ? const Color.fromRGBO(84, 84, 84, 1)
+      : const Color.fromRGBO(218, 218, 218, 1);
   showRoundedModalBottomSheet<dynamic>(
       context: context,
       color: model.bottomSheetBackgroundColor,
-      builder: (BuildContext context) => SizedBox(
+      builder: (BuildContext context) => Container(
           height: 250,
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 5, 0, 0),
                 child: Stack(children: <Widget>[
-                  SizedBox(
+                  Container(
                     height: 40,
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text('Settings',
@@ -1166,58 +973,52 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                             return CupertinoSegmentedControl<int>(
                               children: <int, Widget>{
                                 0: Container(
-                                    width: width,
+                                    width: _width,
                                     alignment: Alignment.center,
                                     child: Text('System theme',
                                         style: TextStyle(
-                                            color: selectedIndex == 0
+                                            color: _selectedIndex == 0
                                                 ? Colors.white
-                                                : textColor,
+                                                : _textColor,
                                             fontFamily: 'HeeboMedium'))),
                                 1: Container(
-                                    width: width,
+                                    width: _width,
                                     alignment: Alignment.center,
                                     child: Text('Light theme',
                                         style: TextStyle(
-                                            color: selectedIndex == 1
+                                            color: _selectedIndex == 1
                                                 ? Colors.white
-                                                : textColor,
+                                                : _textColor,
                                             fontFamily: 'HeeboMedium'))),
                                 2: Container(
-                                    width: width,
+                                    width: _width,
                                     alignment: Alignment.center,
                                     child: Text('Dark theme',
                                         style: TextStyle(
-                                            color: selectedIndex == 2
+                                            color: _selectedIndex == 2
                                                 ? Colors.white
-                                                : textColor,
+                                                : _textColor,
                                             fontFamily: 'HeeboMedium')))
                               },
                               unselectedColor: Colors.transparent,
                               selectedColor: model.paletteColor,
                               pressedColor: model.paletteColor,
                               borderColor: model.paletteColor,
-                              groupValue: selectedIndex,
+                              groupValue: _selectedIndex,
                               padding:
                                   const EdgeInsets.fromLTRB(10, 15, 10, 15),
                               onValueChanged: (int value) {
-                                selectedIndex = value;
+                                _selectedIndex = value;
                                 if (value == 0) {
                                   model.currentThemeData =
                                       model.systemTheme.brightness !=
                                               Brightness.dark
-                                          ? ThemeData.from(
-                                              colorScheme:
-                                                  const ColorScheme.light())
-                                          : ThemeData.from(
-                                              colorScheme:
-                                                  const ColorScheme.dark());
+                                          ? ThemeData.light()
+                                          : ThemeData.dark();
                                 } else if (value == 1) {
-                                  model.currentThemeData = ThemeData.from(
-                                      colorScheme: const ColorScheme.light());
+                                  model.currentThemeData = ThemeData.light();
                                 } else {
-                                  model.currentThemeData = ThemeData.from(
-                                      colorScheme: const ColorScheme.dark());
+                                  model.currentThemeData = ThemeData.dark();
                                 }
                                 setState(() {
                                   /// update the theme changes to
@@ -1231,37 +1032,43 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                       padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                       child: MediaQuery.of(context).orientation ==
                               Orientation.portrait
-                          ? Row(
+                          ? Container(
+                              child: Row(
                               children: <Widget>[
                                 Expanded(
                                   child: Padding(
                                     padding: const EdgeInsets.fromLTRB(
                                         15, 0, 10, 30),
                                     child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: _addColorPalettes(model)),
                                   ),
                                 ),
                               ],
-                            )
-                          : Row(
+                            ))
+                          : Container(
+                              child: Row(
                               children: <Widget>[
                                 Expanded(
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(
-                                        orientationPadding + 10,
+                                        _orientationPadding + 10,
                                         0,
-                                        orientationPadding + 10,
+                                        _orientationPadding + 10,
                                         30),
                                     child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: _addColorPalettes(model)),
                                   ),
                                 ),
                               ],
-                            ),
+                            )),
                     ),
                   ],
                 ),
@@ -1269,7 +1076,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
               Align(
                   alignment: FractionalOffset.bottomCenter,
                   child: Container(
-                    margin: EdgeInsets.zero,
+                    margin: const EdgeInsets.all(0),
                     height: 50,
                     width: double.infinity,
                     child: ElevatedButton(
@@ -1278,7 +1085,7 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
                               model.paletteColor),
                         ),
                         onPressed: () => _applyThemeAndPaletteColor(
-                            model, context, selectedIndex),
+                            model, context, _selectedIndex),
                         child: const Text('APPLY',
                             style: TextStyle(
                                 fontFamily: 'HeeboMedium',
@@ -1290,10 +1097,10 @@ void showBottomSettingsPanel(SampleModel model, BuildContext context) {
 
 ///To show the settings panel content in the bottom sheet
 void showBottomSheetSettingsPanel(BuildContext context, Widget propertyWidget) {
-  final SampleModel model = SampleModel.instance;
+  final SampleModel _model = SampleModel.instance;
   showRoundedModalBottomSheet<dynamic>(
       context: context,
-      color: model.bottomSheetBackgroundColor,
+      color: _model.bottomSheetBackgroundColor,
       builder: (BuildContext context) => Container(
             padding: const EdgeInsets.fromLTRB(15, 0, 0, 5),
             child: Stack(children: <Widget>[
@@ -1302,14 +1109,14 @@ void showBottomSheetSettingsPanel(BuildContext context, Widget propertyWidget) {
                 children: <Widget>[
                   Text('Settings',
                       style: TextStyle(
-                          color: model.textColor,
+                          color: _model.textColor,
                           fontSize: 18,
                           letterSpacing: 0.34,
                           fontWeight: FontWeight.w500)),
                   IconButton(
                     icon: Icon(
                       Icons.close,
-                      color: model.textColor,
+                      color: _model.textColor,
                     ),
                     onPressed: () {
                       Navigator.pop(context);
@@ -1319,9 +1126,8 @@ void showBottomSheetSettingsPanel(BuildContext context, Widget propertyWidget) {
               ),
               Theme(
                   data: ThemeData(
-                      brightness: model.themeData.colorScheme.brightness,
-                      primaryColor: model.backgroundColor,
-                      colorScheme: model.themeData.colorScheme),
+                      brightness: _model.themeData.brightness,
+                      primaryColor: _model.backgroundColor),
                   child: Padding(
                       padding: const EdgeInsets.fromLTRB(10, 50, 0, 0),
                       child: propertyWidget))
@@ -1331,21 +1137,15 @@ void showBottomSheetSettingsPanel(BuildContext context, Widget propertyWidget) {
 
 ///To show the sample description in the bottom sheet
 void showBottomInfo(BuildContext context, String information) {
-  final SampleModel model = SampleModel.instance;
+  final SampleModel _model = SampleModel.instance;
   if (information != null && information != '') {
-    List<TextSpan>? textSpans;
-    TextSpan? textSpan;
-    textSpans = getTextSpan(information, model);
-    textSpan = textSpans[0];
-    textSpans.removeAt(0);
     showRoundedModalBottomSheet<dynamic>(
         context: context,
-        color: model.bottomSheetBackgroundColor,
+        color: _model.bottomSheetBackgroundColor,
         builder: (BuildContext context) => Theme(
             data: ThemeData(
-                brightness: model.themeData.colorScheme.brightness,
-                primaryColor: model.backgroundColor,
-                colorScheme: model.themeData.colorScheme),
+                brightness: _model.themeData.brightness,
+                primaryColor: _model.backgroundColor),
             child: Container(
               padding: const EdgeInsets.fromLTRB(15, 0, 0, 5),
               child: Stack(children: <Widget>[
@@ -1354,14 +1154,14 @@ void showBottomInfo(BuildContext context, String information) {
                   children: <Widget>[
                     Text('Description',
                         style: TextStyle(
-                            color: model.textColor,
+                            color: _model.textColor,
                             fontSize: 18,
                             letterSpacing: 0.34,
                             fontWeight: FontWeight.bold)),
                     IconButton(
                       icon: Icon(
                         Icons.close,
-                        color: model.textColor,
+                        color: _model.textColor,
                       ),
                       onPressed: () {
                         Navigator.pop(context);
@@ -1371,19 +1171,16 @@ void showBottomInfo(BuildContext context, String information) {
                 ),
                 Padding(
                     padding: const EdgeInsets.fromLTRB(0, 45, 12, 15),
-                    child: ListView(shrinkWrap: true, children: <Widget>[
-                      RichText(
+                    child: ListView(shrinkWrap: true, children: [
+                      Text(
+                        information,
                         textAlign: TextAlign.justify,
-                        text: TextSpan(
-                          text: textSpan!.text,
-                          style: TextStyle(
-                              color: model.textColor,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 15.0,
-                              letterSpacing: 0.2,
-                              height: 1.2),
-                          children: textSpans,
-                        ),
+                        style: TextStyle(
+                            color: _model.textColor,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 15.0,
+                            letterSpacing: 0.2,
+                            height: 1.2),
                       )
                     ]))
               ]),

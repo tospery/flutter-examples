@@ -27,6 +27,11 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
   String _annotationValue = '9';
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
       // _firstMarkerSize = 27;
@@ -43,9 +48,10 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
             startAngle: 270,
             endAngle: 270,
             radiusFactor: 0.85,
+            minimum: 0,
             maximum: 12,
             interval: 3,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 color: Color.fromRGBO(128, 94, 246, 0.3),
                 thickness: 0.075,
                 thicknessUnit: GaugeSizeUnit.factor),
@@ -54,10 +60,10 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
             offsetUnit: GaugeSizeUnit.factor,
             onAxisTapped: handlePointerValueChanged,
             minorTicksPerInterval: 30,
-            minorTickStyle: const MinorTickStyle(
-                length: 0.05, lengthUnit: GaugeSizeUnit.factor),
-            majorTickStyle: const MajorTickStyle(
-                length: 0.1, lengthUnit: GaugeSizeUnit.factor),
+            minorTickStyle:
+                MinorTickStyle(length: 0.05, lengthUnit: GaugeSizeUnit.factor),
+            majorTickStyle:
+                MajorTickStyle(length: 0.1, lengthUnit: GaugeSizeUnit.factor),
             pointers: <GaugePointer>[
               RangePointer(
                   color: const Color.fromRGBO(128, 94, 246, 1),
@@ -84,7 +90,7 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(
-                        _annotationValue,
+                        '$_annotationValue',
                         style: TextStyle(
                           fontSize: _annotationFontSize,
                           fontFamily: 'Times',
@@ -108,6 +114,11 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
   void handlePointerValueChanged(double value) {
@@ -119,7 +130,7 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
     if ((args.value.toInt() - _value).abs() > 2.4) {
       args.cancel = true;
       if (_value > 6) {
-        const double value = 12;
+        final double value = 12;
         _setPointerValue(value);
       }
     }
@@ -132,7 +143,7 @@ class _RadialSliderLabelsTicksState extends SampleViewState {
       _markerValue = _value;
       // _currentValue = _value.roundToDouble();
       // final int _value = _currentValue.round().toInt();
-      _annotationValue = '${_value.round()}';
+      _annotationValue = '${_value.round().toInt()}';
     });
   }
 }

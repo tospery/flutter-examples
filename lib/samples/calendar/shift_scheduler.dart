@@ -41,8 +41,6 @@ class _ShiftSchedulerState extends SampleViewState {
     CalendarView.timelineMonth
   ];
 
-  late List<DateTime> _visibleDates;
-
   bool _isAllDay = false;
   String _subject = '';
   int _selectedColorIndex = 0;
@@ -62,10 +60,6 @@ class _ShiftSchedulerState extends SampleViewState {
     _addAppointments();
     _events = _ShiftDataSource(_shiftCollection, _employeeCollection);
     super.initState();
-  }
-
-  void _onViewChanged(ViewChangedDetails visibleDatesChangedDetails) {
-    _visibleDates = visibleDatesChangedDetails.visibleDates;
   }
 
   /// Navigates to appointment editor page when the calendar elements tapped
@@ -89,10 +83,7 @@ class _ShiftSchedulerState extends SampleViewState {
     } else {
       if (calendarTapDetails.appointments != null &&
           calendarTapDetails.targetElement == CalendarElement.appointment) {
-        final dynamic appointment = calendarTapDetails.appointments![0];
-        if (appointment is Appointment) {
-          _selectedAppointment = appointment;
-        }
+        _selectedAppointment = calendarTapDetails.appointments![0];
       }
 
       final DateTime selectedDate = calendarTapDetails.date!;
@@ -101,7 +92,7 @@ class _ShiftSchedulerState extends SampleViewState {
       /// To open the appointment editor for web,
       /// when the screen width is greater than 767.
       if (model.isWebFullView && !model.isMobileResolution) {
-        final bool isAppointmentTapped =
+        final bool _isAppointmentTapped =
             calendarTapDetails.targetElement == CalendarElement.appointment;
         showDialog<Widget>(
             context: context,
@@ -131,7 +122,7 @@ class _ShiftSchedulerState extends SampleViewState {
                 _events.appointments!.add(appointment[0]);
 
                 SchedulerBinding.instance
-                    .addPostFrameCallback((Duration duration) {
+                    ?.addPostFrameCallback((Duration duration) {
                   _events.notifyListeners(
                       CalendarDataSourceAction.add, appointment);
                 });
@@ -152,9 +143,9 @@ class _ShiftSchedulerState extends SampleViewState {
                   return true;
                 },
                 child: Center(
-                    child: SizedBox(
-                        width: isAppointmentTapped ? 400 : 500,
-                        height: isAppointmentTapped
+                    child: Container(
+                        width: _isAppointmentTapped ? 400 : 500,
+                        height: _isAppointmentTapped
                             ? (_selectedAppointment!.location == null ||
                                     _selectedAppointment!.location!.isEmpty
                                 ? 200
@@ -163,12 +154,12 @@ class _ShiftSchedulerState extends SampleViewState {
                         child: Theme(
                             data: model.themeData,
                             child: Card(
-                              margin: EdgeInsets.zero,
+                              margin: const EdgeInsets.all(0.0),
                               color: model.cardThemeColor,
                               shape: const RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4))),
-                              child: isAppointmentTapped
+                              child: _isAppointmentTapped
                                   ? displayAppointmentDetails(
                                       context,
                                       targetElement,
@@ -178,8 +169,7 @@ class _ShiftSchedulerState extends SampleViewState {
                                       _colorCollection,
                                       _colorNames,
                                       _events,
-                                      _timeZoneCollection,
-                                      _visibleDates)
+                                      _timeZoneCollection)
                                   : PopUpAppointmentEditor(
                                       model,
                                       newAppointment,
@@ -188,8 +178,7 @@ class _ShiftSchedulerState extends SampleViewState {
                                       _colorCollection,
                                       _colorNames,
                                       _selectedAppointment!,
-                                      _timeZoneCollection,
-                                      _visibleDates),
+                                      _timeZoneCollection),
                             )))),
               );
             });
@@ -197,7 +186,7 @@ class _ShiftSchedulerState extends SampleViewState {
         /// Navigates to the appointment editor page on mobile
         Navigator.push<Widget>(
           context,
-          MaterialPageRoute<Widget>(
+          MaterialPageRoute(
               builder: (BuildContext context) => AppointmentEditor(
                   model,
                   _selectedAppointment,
@@ -218,11 +207,8 @@ class _ShiftSchedulerState extends SampleViewState {
     return Container(
       color: model.cardThemeColor,
       child: Theme(
-          data: model.themeData.copyWith(
-              colorScheme: model.themeData.colorScheme
-                  .copyWith(secondary: model.backgroundColor)),
-          child:
-              _getShiftScheduler(_events, _onCalendarTapped, _onViewChanged)),
+          data: model.themeData.copyWith(accentColor: model.backgroundColor),
+          child: _getShiftScheduler(_events, _onCalendarTapped)),
     );
   }
 
@@ -424,23 +410,23 @@ class _ShiftSchedulerState extends SampleViewState {
     final Random random = Random();
     for (int i = 0; i < _employeeCollection.length; i++) {
       _specialTimeRegions.add(TimeRegion(
-          startTime: DateTime(date.year, date.month, date.day, 13),
-          endTime: DateTime(date.year, date.month, date.day, 14),
+          startTime: DateTime(date.year, date.month, date.day, 13, 0, 0),
+          endTime: DateTime(date.year, date.month, date.day, 14, 0, 0),
           text: 'Lunch',
           color: Colors.grey.withOpacity(0.2),
           resourceIds: <Object>[_employeeCollection[i].id],
           recurrenceRule: 'FREQ=DAILY;INTERVAL=1'));
 
-      if (i.isEven) {
+      if (i % 2 == 0) {
         continue;
       }
 
-      final DateTime startDate =
-          DateTime(date.year, date.month, date.day, 17 + random.nextInt(7));
+      final DateTime startDate = DateTime(
+          date.year, date.month, date.day, 17 + random.nextInt(7), 0, 0);
 
       _specialTimeRegions.add(TimeRegion(
         startTime: startDate,
-        endTime: startDate.add(const Duration(hours: 1)),
+        endTime: startDate.add(Duration(hours: 1)),
         text: 'Not Available',
         color: Colors.grey.withOpacity(0.2),
         enablePointerInteraction: false,
@@ -454,18 +440,18 @@ class _ShiftSchedulerState extends SampleViewState {
   void _addAppointments() {
     final Random random = Random();
     for (int i = 0; i < _employeeCollection.length; i++) {
-      final List<Object> employeeIds = <Object>[_employeeCollection[i].id];
+      final _employeeIds = [_employeeCollection[i].id];
       if (i == _employeeCollection.length - 1) {
         int index = random.nextInt(5);
         index = index == i ? index + 1 : index;
-        final Object employeeId = _employeeCollection[index].id;
+        final employeeId = _employeeCollection[index].id;
         if (employeeId is String) {
-          employeeIds.add(employeeId);
+          _employeeIds.add(employeeId);
         }
       }
 
       for (int k = 0; k < 365; k++) {
-        if (employeeIds.length > 1 && k.isEven) {
+        if (_employeeIds.length > 1 && k % 2 == 0) {
           continue;
         }
         for (int j = 0; j < 2; j++) {
@@ -473,16 +459,16 @@ class _ShiftSchedulerState extends SampleViewState {
           int startHour = 9 + random.nextInt(6);
           startHour =
               startHour >= 13 && startHour <= 14 ? startHour + 1 : startHour;
-          final DateTime shiftStartTime =
-              DateTime(date.year, date.month, date.day, startHour);
+          final DateTime _shiftStartTime =
+              DateTime(date.year, date.month, date.day, startHour, 0, 0);
           _shiftCollection.add(Appointment(
-              startTime: shiftStartTime,
-              endTime: shiftStartTime.add(const Duration(hours: 1)),
+              startTime: _shiftStartTime,
+              endTime: _shiftStartTime.add(Duration(hours: 1)),
               subject: _subjectCollection[random.nextInt(8)],
               color: _colorCollection[random.nextInt(8)],
               startTimeZone: '',
               endTimeZone: '',
-              resourceIds: employeeIds));
+              resourceIds: _employeeIds));
         }
       }
     }
@@ -515,7 +501,7 @@ class _ShiftSchedulerState extends SampleViewState {
 
   /// Returns the calendar widget based on the properties passed
   SfCalendar _getShiftScheduler(
-      [CalendarDataSource? calendarDataSource,
+      [CalendarDataSource? _calendarDataSource,
       dynamic calendarTapCallback,
       dynamic viewChangedCallback]) {
     return SfCalendar(
@@ -525,7 +511,7 @@ class _ShiftSchedulerState extends SampleViewState {
       timeRegionBuilder: _getSpecialRegionWidget,
       specialRegions: _specialTimeRegions,
       showNavigationArrow: model.isWebFullView,
-      dataSource: calendarDataSource,
+      dataSource: _calendarDataSource,
       onViewChanged: viewChangedCallback,
       onTap: calendarTapCallback,
     );

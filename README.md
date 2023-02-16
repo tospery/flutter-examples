@@ -34,7 +34,6 @@ The <b>lib/samples</b> directory contains the Flutter widget examples for each w
 | Charts | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/chart) |
 | DataGrid | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/datagrid) |
 | Date Range Picker | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/date_picker) | 
-| Linear Gauge | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/linear_gauge) | 
 | Maps | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/maps) |
 | PDF | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/pdf) |
 | PDF Viewer | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/pdf_viewer) | 
@@ -45,7 +44,6 @@ The <b>lib/samples</b> directory contains the Flutter widget examples for each w
 | Slider | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/sliders/slider) |
 | Spark Charts | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/sparkline) |
 | Signature Pad | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/signature_pad) | 
-| Treemap | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/treemap) | 
 | XlsIO | [Link](https://github.com/syncfusion/flutter-examples/tree/master/lib/samples/xlsio) |
 
 ## <a name="license"></a>License ##
@@ -81,16 +79,13 @@ Run your application either using `F5` or `Run > Start Debugging`.
 Explore the full capabilities of our Flutter widgets on your device by installing our sample browser applications from the below app stores, and view samples code in GitHub.
 
 <p align="center">
-  <a href="https://play.google.com/store/apps/details?id=com.syncfusion.flutter.examples"><img src="https://cdn.syncfusion.com/content/images/FTControl/google-play-store.png"/></a>
-  <a href="https://flutter.syncfusion.com"><img src="https://cdn.syncfusion.com/content/images/FTControl/web-sample-browser.png"/></a>
-  <a href="https://www.microsoft.com/en-us/p/syncfusion-flutter-gallery/9nhnbwcsf85d?activetab=pivot:overviewtab"><img src="https://cdn.syncfusion.com/content/images/FTControl/windows-store.png"/></a> 
+  <a href="https://play.google.com/store/apps/details?id=com.syncfusion.flutter.examples"><img src="https://cdn.syncfusion.com/content/images/FTControl/google-play.png"/></a>
+  <a href="https://apps.apple.com/us/app/syncfusion-flutter-ui-widgets/id1475231341"><img src="https://cdn.syncfusion.com/content/images/FTControl/apple-button.png"/></a>
+  </p>
+  <p align="center">
+  <a href="https://github.com/syncfusion/flutter-examples"><img src="https://cdn.syncfusion.com/content/images/FTControl/GitHub.png"/></a>
+  <a href="https://flutter.syncfusion.com"><img src="https://cdn.syncfusion.com/content/images/FTControl/web_sample_browser.png"/></a>  
 </p>
-<p align="center">
-  <a href="https://install.appcenter.ms/orgs/syncfusion-demos/apps/syncfusion-flutter-gallery/distribution_groups/release"><img src="https://cdn.syncfusion.com/content/images/FTControl/macos-app-center.png"/></a>
-  <a href="https://snapcraft.io/syncfusion-flutter-gallery"><img src="https://cdn.syncfusion.com/content/images/FTControl/snap-store.png"/></a>
-  <a href="https://github.com/syncfusion/flutter-examples"><img src="https://cdn.syncfusion.com/content/images/FTControl/github-samples.png"/></a>
-</p>
-
 
 ## Useful links
 Take a look at the following to learn more about Syncfusion Flutter widgets:
@@ -110,5 +105,4 @@ Take a look at the following to learn more about Syncfusion Flutter widgets:
 
 Founded in 2001 and headquartered in Research Triangle Park, N.C., Syncfusion has more than 20,000 customers and more than 1 million users, including large financial institutions, Fortune 500 companies, and global IT consultancies.
 
-Today we provide 1,000+ controls and frameworks for web ([ASP.NET Core](https://www.syncfusion.com/aspnet-core-ui-controls), [ASP.NET MVC](https://www.syncfusion.com/aspnet-mvc-ui-controls), [ASP.NET WebForms](https://www.syncfusion.com/jquery/aspnet-web-forms-ui-controls), [JavaScript](https://www.syncfusion.com/javascript-ui-controls), [Angular](https://www.syncfusion.com/angular-ui-components), [React](https://www.syncfusion.com/react-ui-components), [Vue](https://www.syncfusion.com/vue-ui-components), and [Blazor](https://www.syncfusion.com/blazor-components), mobile ([Xamarin](https://www.syncfusion.com/xamarin-ui-controls), [Flutter](https://www.syncfusion.com/flutter-widgets), [UWP](https://www.syncfusion.com/uwp-ui-controls), and [JavaScript](https://www.syncfusion.com/javascript-ui-controls)), and desktop development ([WinForms](https://www.syncfusion.com/winforms-ui-controls), [WPF](https://www.syncfusion.com/wpf-ui-controls), and [UWP](https://www.syncfusion.com/uwp-ui-controls) and [WinUI](https://www.syncfusion.com/winui-controls)). We provide ready-to deploy enterprise software for dashboards, reports, data integration, and big data processing. Many customers have saved millions in licensing fees by deploying our software.
-
+Today we provide 1,000+ controls and frameworks for web ([ASP.NET Core](https://www.syncfusion.com/aspnet-core-ui-controls), [ASP.NET MVC](https://www.syncfusion.com/aspnet-mvc-ui-controls), [ASP.NET WebForms](https://www.syncfusion.com/jquery/aspnet-web-forms-ui-controls), [JavaScript](https://www.syncfusion.com/javascript-ui-controls), [Angular](https://www.syncfusion.com/angular-ui-components), [React](https://www.syncfusion.com/react-ui-components), [Vue](https://www.syncfusion.com/vue-ui-components), and [Blazor](https://www.syncfusion.com/blazor-components), mobile ([Xamarin](https://www.syncfusion.com/xamarin-ui-controls), [Flutter](https://www.syncfusion.com/flutter-widgets), [UWP](https://www.syncfusion.com/uwp-ui-controls), and [JavaScript](https://www.syncfusion.com/javascript-ui-controls)), and desktop development ([WinForms](https://www.syncfusion.com/winforms-ui-controls), [WPF](https://www.syncfusion.com/wpf-ui-controls), and [UWP](https://www.syncfusion.com/uwp-ui-controls)). We provide ready-to deploy enterprise software for dashboards, reports, data integration, and big data processing. Many customers have saved millions in licensing fees by deploying our software.

@@ -20,8 +20,34 @@ class _SplineRangeAreaState extends SampleViewState {
   _SplineRangeAreaState();
 
   @override
-  void initState() {
-    chartData = <ChartSampleData>[
+  Widget build(BuildContext context) {
+    return _buildSplineRangeAreaChart();
+  }
+
+  ///Get chart with spline range area chart
+  SfCartesianChart _buildSplineRangeAreaChart() {
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0,
+      title: ChartTitle(text: 'Product price comparison'),
+      legend: Legend(isVisible: true),
+      primaryXAxis: CategoryAxis(
+          majorGridLines: MajorGridLines(width: 0),
+          labelPlacement: LabelPlacement.onTicks),
+      primaryYAxis: NumericAxis(
+          minimum: 0,
+          maximum: 60,
+          axisLine: AxisLine(width: 0),
+          labelFormat: '\${value}',
+          majorTickLines: MajorTickLines(size: 0)),
+      series: _getSplineAreaSeries(),
+      tooltipBehavior: TooltipBehavior(enable: true),
+    );
+  }
+
+  /// Returns the list of chart series
+  /// which need to render on the spline range area chart.
+  List<SplineRangeAreaSeries<ChartSampleData, String>> _getSplineAreaSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
           x: 'Jan',
           y: 45,
@@ -59,68 +85,29 @@ class _SplineRangeAreaState extends SampleViewState {
           secondSeriesYValue: 24,
           thirdSeriesYValue: 10)
     ];
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildSplineRangeAreaChart();
-  }
-
-  List<ChartSampleData>? chartData;
-
-  ///Get chart with spline range area chart
-  SfCartesianChart _buildSplineRangeAreaChart() {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(text: 'Product price comparison'),
-      legend: Legend(isVisible: true),
-      primaryXAxis: CategoryAxis(
-          majorGridLines: const MajorGridLines(width: 0),
-          labelPlacement: LabelPlacement.onTicks),
-      primaryYAxis: NumericAxis(
-          minimum: 0,
-          maximum: 60,
-          axisLine: const AxisLine(width: 0),
-          labelFormat: r'${value}',
-          majorTickLines: const MajorTickLines(size: 0)),
-      series: _getSplineAreaSeries(),
-      tooltipBehavior: TooltipBehavior(enable: true),
-    );
-  }
-
-  /// Returns the list of chart series
-  /// which need to render on the spline range area chart.
-  List<SplineRangeAreaSeries<ChartSampleData, String>> _getSplineAreaSeries() {
     return <SplineRangeAreaSeries<ChartSampleData, String>>[
       SplineRangeAreaSeries<ChartSampleData, String>(
-        dataSource: chartData!,
+        dataSource: chartData,
         color: const Color.fromRGBO(75, 135, 185, 0.5),
         borderColor: const Color.fromRGBO(75, 135, 185, 1),
         borderWidth: 3,
         borderDrawMode: RangeAreaBorderMode.excludeSides,
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         highValueMapper: (ChartSampleData sales, _) => sales.y,
         lowValueMapper: (ChartSampleData sales, _) => sales.yValue,
         name: 'Product A',
       ),
       SplineRangeAreaSeries<ChartSampleData, String>(
-        dataSource: chartData!,
+        dataSource: chartData,
         borderColor: const Color.fromRGBO(192, 108, 132, 1),
         color: const Color.fromRGBO(192, 108, 132, 0.5),
         borderWidth: 3,
         borderDrawMode: RangeAreaBorderMode.excludeSides,
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         highValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
         lowValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
         name: 'Product B',
       )
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
   }
 }

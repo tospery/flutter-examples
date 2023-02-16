@@ -1,15 +1,17 @@
+///Dart import
+import 'dart:typed_data';
+
 ///Package imports
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 ///XlsIO import
-// ignore: depend_on_referenced_packages
-import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Alignment;
 
 ///Local imports
 import '../../../model/sample_view.dart';
-import '../../common/export/save_file_mobile.dart'
-    if (dart.library.html) '../../common/export/save_file_web.dart';
+import '../helper/save_file_mobile.dart'
+    if (dart.library.html) '../helper/save_file_web.dart';
 
 /// Render XlsIO of balance sheet
 class BalanceSheetXlsIO extends SampleView {
@@ -28,28 +30,32 @@ class _BalanceSheetXlsIOState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'This sample showcases on how to create a simple Excel report for balance sheet with data, autofit, image hyperlink, and protection using XlsIO.',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 20, width: 30),
-            Align(
-                child: TextButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(model.backgroundColor),
-                padding: model.isMobile
-                    ? null
-                    : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15)),
-              ),
-              onPressed: _generateExcel,
-              child: const Text('Generate Excel',
-                  style: TextStyle(color: Colors.white)),
-            ))
-          ],
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'This sample showcases on how to create a simple Excel report for balance sheet with data, autofit, image hyperlink, and protection using XlsIO.',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 20, width: 30),
+              Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          model.backgroundColor),
+                      padding: model.isMobile
+                          ? null
+                          : MaterialStateProperty.all(EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15)),
+                    ),
+                    onPressed: _generateExcel,
+                    child: const Text('Generate Excel',
+                        style: TextStyle(color: Colors.white)),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -69,18 +75,18 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     final Worksheet sheet4 = workbook.worksheets.addWithName('Categories');
     sheet4.showGridlines = false;
 
-    final List<Style> styles = balanceSheetStyles(workbook);
+    final List styles = balanceSheetStyles(workbook);
 
     sheet.enableSheetCalculations();
-    sheet.getRangeByName('A1').columnWidth = 0.96;
+    sheet.getRangeByName('A1').columnWidth = 1.69;
     sheet.getRangeByIndex(2, 1).rowHeight = 30;
     sheet.getRangeByName('A3').rowHeight = 40;
 
     final Range range = sheet.getRangeByIndex(3, 2);
     range.setText('Balance Sheet');
     range.cellStyle = styles[0];
-    range.columnWidth = 15.41;
-    sheet.getRangeByIndex(1, 3).columnWidth = 15.41;
+    range.columnWidth = 16.14;
+    sheet.getRangeByIndex(1, 3).columnWidth = 16.14;
 
     sheet.getRangeByName('B5:C5').merge();
     sheet.getRangeByName('B6:C6').merge();
@@ -128,16 +134,18 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     sheet.getRangeByName('D14:E14').cellStyle = styles[9];
     sheet.getRangeByName('B14').text = 'Balance';
 
-    sheet.getRangeByName('D4:E14').autoFitColumns();
+    sheet.getRangeByName('D1').columnWidth = 11.10;
+    sheet.getRangeByName('E1').columnWidth = 14.00;
+    // sheet.getRangeByName('D4:E14').autoFitColumns();
 
     // Sheet2
-    sheet2.getRangeByName('A1').columnWidth = 0.96;
+    sheet2.getRangeByName('A1').columnWidth = 1.69;
 
     sheet2.getRangeByName('B1').text = 'Assets';
     sheet2.getRangeByName('B1:E1').cellStyle = styles[0];
-    sheet2.getRangeByIndex(1, 2).columnWidth = 15.27;
+    sheet2.getRangeByIndex(1, 2).columnWidth = 16;
 
-    sheet2.getRangeByIndex(1, 3).columnWidth = 31.27;
+    sheet2.getRangeByIndex(1, 3).columnWidth = 32;
 
     range1 = sheet2.getRangeByName('D2');
     range1.cellStyle = styles[5];
@@ -194,18 +202,21 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     sheet2.getRangeByName('E12').number = -46500;
     sheet2.getRangeByName('E13').number = 4000;
 
-    sheet2.getRangeByName('C3:C13').autoFitRows();
-    sheet2.autoFitColumn(4);
-    sheet2.autoFitColumn(5);
+    sheet2.getRangeByName('D1').columnWidth = 11.10;
+    sheet2.getRangeByName('E1').columnWidth = 14.00;
+    // sheet2.getRangeByName('C3:C13').autoFitRows();
+    // sheet2.autoFitColumn(4);
+    // sheet2.autoFitColumn(5);
 
     // sheet3
-    sheet3.getRangeByName('A1').columnWidth = 0.96;
-    sheet3.getRangeByIndex(1, 3).columnWidth = 22.27;
+    sheet3.getRangeByName('A1').columnWidth = 1.69;
+    sheet3.getRangeByIndex(1, 3).columnWidth = 23;
 
     sheet3.getRangeByName('B1').text = 'Liabilities';
     sheet3.getRangeByName('B1:E1').cellStyle = styles[0];
 
-    sheet3.autoFitColumn(2);
+    sheet3.getRangeByName('B1').columnWidth = 22.10;
+    // sheet3.autoFitColumn(2);
 
     range1 = sheet3.getRangeByName('D2');
     range1.cellStyle = styles[5];
@@ -258,16 +269,18 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     sheet3.getRangeByName('E11').number = 12500;
     sheet3.getRangeByName('E12').number = 20700;
 
-    sheet3.getRangeByName('C3:C12').autoFitRows();
-    sheet3.autoFitColumn(4);
-    sheet3.autoFitColumn(5);
+    sheet3.getRangeByName('D1').columnWidth = 11.10;
+    sheet3.getRangeByName('E1').columnWidth = 14.00;
+    // sheet3.getRangeByName('C3:C12').autoFitRows();
+    // sheet3.autoFitColumn(4);
+    // sheet3.autoFitColumn(5);
 
     // sheet4
-    sheet4.getRangeByName('A1').columnWidth = 0.96;
+    sheet4.getRangeByName('A1').columnWidth = 1.69;
 
     sheet4.getRangeByName('B1').text = 'Categories';
     sheet4.getRangeByName('B1').cellStyle = styles[0];
-    sheet4.getRangeByName('B1').columnWidth = 59.27;
+    sheet4.getRangeByName('B1').columnWidth = 60;
 
     sheet4.getRangeByName('B3:B8').cellStyle = styles[7];
     sheet4.getRangeByIndex(3, 2).text = 'Current Assets';
@@ -277,47 +290,47 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     sheet4.getRangeByIndex(7, 2).text = 'Long-term Liabilities';
     sheet4.getRangeByIndex(8, 2).text = 'Owner Equity';
 
-    sheet.getRangeByIndex(6, 4).formula = r'=SUM(Assets!$D$4:$D$8)';
-    sheet.getRangeByIndex(7, 4).formula = r'=SUM(Assets!$D$9:$D$12)';
-    sheet.getRangeByIndex(8, 4).formula = r'=SUM(Assets!D13)';
-    sheet.getRangeByIndex(9, 4).formula = r'=SUM(Liabilities!$D$4:$D$8)';
-    sheet.getRangeByIndex(10, 4).formula = r'=SUM(Liabilities!$D$9:$D$10)';
-    sheet.getRangeByIndex(11, 4).formula = r'=SUM(Liabilities!$D$11:$D$12)';
+    sheet.getRangeByIndex(6, 4).formula = '=SUM(Assets!\$D\$4:\$D\$8)';
+    sheet.getRangeByIndex(7, 4).formula = '=SUM(Assets!\$D\$9:\$D\$12)';
+    sheet.getRangeByIndex(8, 4).formula = '=SUM(Assets!D13)';
+    sheet.getRangeByIndex(9, 4).formula = '=SUM(Liabilities!\$D\$4:\$D\$8)';
+    sheet.getRangeByIndex(10, 4).formula = '=SUM(Liabilities!\$D\$9:\$D\$10)';
+    sheet.getRangeByIndex(11, 4).formula = '=SUM(Liabilities!\$D\$11:\$D\$12)';
     sheet.getRangeByIndex(12, 4).formula =
-        r'=SUM(SUM(Assets!$D$4:$D$8),SUM(Assets!$D$9:$D$12),SUM(Assets!$D$13))';
+        '=SUM(SUM(Assets!\$D\$4:\$D\$8),SUM(Assets!\$D\$9:\$D\$12),SUM(Assets!\$D\$13))';
     sheet.getRangeByIndex(13, 4).formula =
-        r'=SUM(SUM(Liabilities!$D$4:$D$8), SUM(Liabilities!$D$9:$D$10), SUM(Liabilities!$D$11:$D$12))';
+        '=SUM(SUM(Liabilities!\$D\$4:\$D\$8), SUM(Liabilities!\$D\$9:\$D\$10), SUM(Liabilities!\$D\$11:\$D\$12))';
     sheet.getRangeByIndex(14, 4).formula = '=D12-D13';
 
-    sheet.getRangeByIndex(6, 5).formula = r'=SUM(Assets!$E$4:$E$8)';
-    sheet.getRangeByIndex(7, 5).formula = r'=SUM(Assets!$E$9:$E$12)';
-    sheet.getRangeByIndex(8, 5).formula = r'=SUM(Assets!E13)';
-    sheet.getRangeByIndex(9, 5).formula = r'=SUM(Liabilities!$E$4:$E$8)';
-    sheet.getRangeByIndex(10, 5).formula = r'=SUM(Liabilities!$E$9:$E$10)';
-    sheet.getRangeByIndex(11, 5).formula = r'=SUM(Liabilities!$E$11:$E$12)';
+    sheet.getRangeByIndex(6, 5).formula = '=SUM(Assets!\$E\$4:\$E\$8)';
+    sheet.getRangeByIndex(7, 5).formula = '=SUM(Assets!\$E\$9:\$E\$12)';
+    sheet.getRangeByIndex(8, 5).formula = '=SUM(Assets!E13)';
+    sheet.getRangeByIndex(9, 5).formula = '=SUM(Liabilities!\$E\$4:\$E\$8)';
+    sheet.getRangeByIndex(10, 5).formula = '=SUM(Liabilities!\$E\$9:\$E\$10)';
+    sheet.getRangeByIndex(11, 5).formula = '=SUM(Liabilities!\$E\$11:\$E\$12)';
     sheet.getRangeByIndex(12, 5).formula =
-        r'=SUM(SUM(Assets!$E$4:$E$8),SUM(Assets!$E$9:$E$12),SUM(Assets!$E$13))';
+        '=SUM(SUM(Assets!\$E\$4:\$E\$8),SUM(Assets!\$E\$9:\$E\$12),SUM(Assets!\$E\$13))';
     sheet.getRangeByIndex(13, 5).formula =
-        r'=SUM(SUM(Liabilities!$E$4:$E$8), SUM(Liabilities!$E$9:$E$10), SUM(Liabilities!$E$11:$E$12))';
+        '=SUM(SUM(Liabilities!\$E\$4:\$E\$8), SUM(Liabilities!\$E\$9:\$E\$10), SUM(Liabilities!\$E\$11:\$E\$12))';
     sheet.getRangeByIndex(14, 5).formula = '=E12-E13';
 
     // sheet1 Image Hyperlink
     final Picture picture =
-        sheet.pictures.addStream(2, 2, await _readImageData('assets.jpg'));
+        sheet.pictures.addStream(2, 2, await _readImageData('assets.png'));
     picture.height = 30;
     picture.width = 100;
     sheet.hyperlinks
         .addImage(picture, HyperlinkType.workbook, 'Assets!B1', 'Assets');
 
     final Picture picture1 =
-        sheet.pictures.addStream(2, 3, await _readImageData('liabilities.jpg'));
+        sheet.pictures.addStream(2, 3, await _readImageData('liabilities.png'));
     picture1.height = 30;
     picture1.width = 100;
     sheet.hyperlinks.addImage(
         picture1, HyperlinkType.workbook, 'Liabilities!B1', 'Liabilities');
 
     final Picture picture2 =
-        sheet.pictures.addStream(2, 4, await _readImageData('categories.jpg'));
+        sheet.pictures.addStream(2, 4, await _readImageData('categories.png'));
     picture2.height = 30;
     picture2.width = 100;
     sheet.hyperlinks.addImage(
@@ -335,15 +348,15 @@ class _BalanceSheetXlsIOState extends SampleViewState {
 
     workbook.protect(true, true, 'Syncfusion');
 
-    final List<int> bytes = workbook.saveAsStream();
+    final List<int>? bytes = workbook.saveAsStream();
     workbook.dispose();
 
     //Launch file.
-    await FileSaveHelper.saveAndLaunchFile(bytes, 'BalanceSheet.xlsx');
+    await FileSaveHelper.saveAndLaunchFile(bytes!, 'BalanceSheet.xlsx');
   }
 
   // Create styles for worksheet
-  List<Style> balanceSheetStyles(Workbook workbook) {
+  List balanceSheetStyles(Workbook workbook) {
     final Style style = workbook.styles.add('Style');
     style.fontColor = '#308DA2';
     style.fontSize = 28;
@@ -369,7 +382,7 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     style2.borders.bottom.color = '#A6A6A6';
     style2.borders.right.lineStyle = LineStyle.thin;
     style2.borders.right.color = '#A6A6A6';
-    style2.numberFormat = r'_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)';
+    style2.numberFormat = '_(\$* #,##0_);_(\$* (#,##0);_(\$* "-"_);_(@_)';
 
     final Style style3 = workbook.styles.add('style3');
     style3.backColor = '#F2F2F2';
@@ -407,7 +420,7 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     style6.vAlign = VAlignType.center;
     style6.borders.right.lineStyle = LineStyle.thin;
     style6.borders.right.color = '#A6A6A6';
-    style6.numberFormat = r'_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)';
+    style6.numberFormat = '_(\$* #,##0_);_(\$* (#,##0);_(\$* "-"_);_(@_)';
 
     final Style style7 = workbook.styles.add('Style7');
     style7.fontColor = '#595959';
@@ -424,7 +437,7 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     style8.borders.bottom.color = '#308DA2';
     style8.borders.right.lineStyle = LineStyle.thin;
     style8.borders.right.color = '#A6A6A6';
-    style8.numberFormat = r'_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)';
+    style8.numberFormat = '_(\$* #,##0_);_(\$* (#,##0);_(\$* "-"_);_(@_)';
 
     final Style style9 = workbook.styles.add('style9');
     style9.backColor = '#CFEBF1';
@@ -434,9 +447,9 @@ class _BalanceSheetXlsIOState extends SampleViewState {
     style9.borders.bottom.color = '#308DA2';
     style9.borders.right.lineStyle = LineStyle.thin;
     style9.borders.right.color = '#A6A6A6';
-    style9.numberFormat = r'_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)';
+    style9.numberFormat = '_(\$* #,##0_);_(\$* (#,##0);_(\$* "-"_);_(@_)';
 
-    return <Style>[
+    return [
       style,
       style1,
       style2,

@@ -18,8 +18,7 @@ class ColumnDefault extends SampleView {
 
 class _ColumnDefaultState extends SampleViewState {
   _ColumnDefaultState();
-
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
@@ -39,12 +38,12 @@ class _ColumnDefaultState extends SampleViewState {
       title: ChartTitle(
           text: isCardView ? '' : 'Population growth of various countries'),
       primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
+          axisLine: AxisLine(width: 0),
           labelFormat: '{value}%',
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getDefaultColumnSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -52,20 +51,21 @@ class _ColumnDefaultState extends SampleViewState {
 
   /// Get default column series
   List<ColumnSeries<ChartSampleData, String>> _getDefaultColumnSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'China', y: 0.541),
+      ChartSampleData(x: 'Brazil', y: 0.818),
+      ChartSampleData(x: 'Bolivia', y: 1.51),
+      ChartSampleData(x: 'Mexico', y: 1.302),
+      ChartSampleData(x: 'Egypt', y: 2.017),
+      ChartSampleData(x: 'Mongolia', y: 1.683),
+    ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'China', y: 0.541),
-          ChartSampleData(x: 'Brazil', y: 0.818),
-          ChartSampleData(x: 'Bolivia', y: 1.51),
-          ChartSampleData(x: 'Mexico', y: 1.302),
-          ChartSampleData(x: 'Egypt', y: 2.017),
-          ChartSampleData(x: 'Mongolia', y: 1.683),
-        ],
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        dataSource: chartData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
-        dataLabelSettings: const DataLabelSettings(
-            isVisible: true, textStyle: TextStyle(fontSize: 10)),
+        dataLabelSettings: DataLabelSettings(
+            isVisible: true, textStyle: const TextStyle(fontSize: 10)),
       )
     ];
   }

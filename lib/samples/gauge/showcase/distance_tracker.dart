@@ -43,12 +43,14 @@ class _DistanceTrackerExampleState extends SampleViewState {
             showLabels: false,
             showTicks: false,
             radiusFactor: 0.8,
+            minimum: 0,
             maximum: 240,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 cornerStyle: CornerStyle.startCurve, thickness: 5),
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
                   angle: 90,
+                  positionFactor: 0,
                   widget: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -70,26 +72,28 @@ class _DistanceTrackerExampleState extends SampleViewState {
                     ],
                   )),
               GaugeAnnotation(
-                angle: 124,
-                positionFactor: 1.1,
-                widget:
-                    Text('0', style: TextStyle(fontSize: isCardView ? 12 : 14)),
-              ),
+                  angle: 124,
+                  positionFactor: 1.1,
+                  widget: Container(
+                    child: Text('0',
+                        style: TextStyle(fontSize: isCardView ? 12 : 14)),
+                  )),
               GaugeAnnotation(
-                angle: 54,
-                positionFactor: 1.1,
-                widget: Text('240',
-                    style: TextStyle(fontSize: isCardView ? 12 : 14)),
-              ),
+                  angle: 54,
+                  positionFactor: 1.1,
+                  widget: Container(
+                    child: Text('240',
+                        style: TextStyle(fontSize: isCardView ? 12 : 14)),
+                  )),
             ],
             pointers: <GaugePointer>[
-              const RangePointer(
+              RangePointer(
                 value: 142,
                 width: 18,
                 pointerOffset: -6,
                 cornerStyle: CornerStyle.bothCurve,
-                color: Color(0xFFF67280),
-                gradient: SweepGradient(
+                color: const Color(0xFFF67280),
+                gradient: const SweepGradient(
                     colors: <Color>[Color(0xFFFF7676), Color(0xFFF54EA2)],
                     stops: <double>[0.25, 0.75]),
               ),

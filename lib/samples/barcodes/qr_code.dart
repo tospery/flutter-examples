@@ -18,8 +18,19 @@ class QRCodeGenerator extends SampleView {
 class _QRCodeGeneratorState extends SampleViewState {
   _QRCodeGeneratorState();
 
-  late List<String> _encoding;
-  late List<String> _errorCorrectionLevels;
+  final List<String> _encoding = <String>[
+    'Numeric',
+    'AlphaNumeric',
+    'Binary',
+  ];
+
+  final List<String> _errorCorrectionLevels = <String>[
+    'High',
+    'Quartile',
+    'Medium',
+    'Low'
+  ];
+
   late ErrorCorrectionLevel _errorCorrectionLevel;
   late String _selectedErrorCorrectionLevel;
   late QRInputMode _inputMode;
@@ -30,15 +41,9 @@ class _QRCodeGeneratorState extends SampleViewState {
   @override
   void initState() {
     super.initState();
-    _encoding = <String>[
-      'numeric',
-      'alphaNumeric',
-      'binary',
-    ];
-    _errorCorrectionLevels = <String>['high', 'quartile', 'medium', 'low'];
-    _selectedInputMode = 'binary';
+    _selectedInputMode = 'Binary';
     _inputValue = 'http://www.syncfusion.com';
-    _selectedErrorCorrectionLevel = 'quartile';
+    _selectedErrorCorrectionLevel = 'Quartile';
     _errorCorrectionLevel = ErrorCorrectionLevel.quartile;
     _inputMode = QRInputMode.binary;
     _textEditingController = TextEditingController.fromValue(
@@ -56,13 +61,13 @@ class _QRCodeGeneratorState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    EdgeInsets padding = EdgeInsets.zero;
-    double margin;
+    EdgeInsets _padding = const EdgeInsets.all(0);
+    double _margin;
     if (!model.isWebFullView) {
-      margin = (MediaQuery.of(context).size.width -
+      _margin = (MediaQuery.of(context).size.width -
               MediaQuery.of(context).size.width * 0.6) /
           2;
-      padding = EdgeInsets.fromLTRB(margin, 0, margin, 0);
+      _padding = EdgeInsets.fromLTRB(_margin, 0, _margin, 0);
     }
 
     return Scaffold(
@@ -72,7 +77,7 @@ class _QRCodeGeneratorState extends SampleViewState {
         padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
         child: Container(
             child: _buildQRCodeGenerator(
-                _inputValue, _errorCorrectionLevel, _inputMode, padding)),
+                _inputValue, _errorCorrectionLevel, _inputMode, _padding)),
       ),
     );
   }
@@ -87,14 +92,13 @@ class _QRCodeGeneratorState extends SampleViewState {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: SizedBox(
+              child: Container(
                 height: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Text('Input value:   ',
-                        overflow: TextOverflow.clip,
-                        softWrap: false,
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
@@ -113,10 +117,12 @@ class _QRCodeGeneratorState extends SampleViewState {
                                     enabledBorder: UnderlineInputBorder(
                                         borderSide: BorderSide(
                                             color: model.textColor))),
+                                autofocus: false,
                                 keyboardType: TextInputType.text,
-                                onChanged: (String text) {
+                                maxLines: null,
+                                onChanged: (String _text) {
                                   setState(() {
-                                    _inputValue = text;
+                                    _inputValue = _text;
                                   });
                                 },
                                 controller: _textEditingController),
@@ -128,16 +134,15 @@ class _QRCodeGeneratorState extends SampleViewState {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: SizedBox(
+              child: Container(
                 height: 50,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
                       child: Text(
                         'Input mode:',
-                        overflow: TextOverflow.clip,
-                        softWrap: false,
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
@@ -149,14 +154,13 @@ class _QRCodeGeneratorState extends SampleViewState {
                         height: 50,
                         alignment: Alignment.bottomLeft,
                         child: DropdownButton<String>(
-                            focusColor: Colors.transparent,
-                            underline: Container(
-                                color: const Color(0xFFBDBDBD), height: 1),
+                            underline:
+                                Container(color: Color(0xFFBDBDBD), height: 1),
                             value: _selectedInputMode,
                             items: _encoding.map((String value) {
                               return DropdownMenuItem<String>(
-                                  value: (value != null) ? value : 'binary',
-                                  child: Text(value,
+                                  value: (value != null) ? value : 'Binary',
+                                  child: Text('$value',
                                       textAlign: TextAlign.center,
                                       style:
                                           TextStyle(color: model.textColor)));
@@ -173,16 +177,15 @@ class _QRCodeGeneratorState extends SampleViewState {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: SizedBox(
+              child: Container(
                 height: 70,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
                       child: Text(
                         'Error level:   ',
-                        overflow: TextOverflow.clip,
-                        softWrap: false,
                         style: TextStyle(
                             fontSize: 16.0,
                             fontWeight: FontWeight.bold,
@@ -194,14 +197,13 @@ class _QRCodeGeneratorState extends SampleViewState {
                         height: 50,
                         alignment: Alignment.bottomLeft,
                         child: DropdownButton<String>(
-                            focusColor: Colors.transparent,
-                            underline: Container(
-                                color: const Color(0xFFBDBDBD), height: 1),
+                            underline:
+                                Container(color: Color(0xFFBDBDBD), height: 1),
                             value: _selectedErrorCorrectionLevel,
                             items: _errorCorrectionLevels.map((String value) {
                               return DropdownMenuItem<String>(
-                                  value: (value != null) ? value : 'quartile',
-                                  child: Text(value,
+                                  value: (value != null) ? value : 'Quartile',
+                                  child: Text('$value',
                                       textAlign: TextAlign.center,
                                       style:
                                           TextStyle(color: model.textColor)));
@@ -224,13 +226,13 @@ class _QRCodeGeneratorState extends SampleViewState {
   void _onInputModeChanged(String item) {
     _selectedInputMode = item;
     switch (_selectedInputMode) {
-      case 'numeric':
+      case 'Numeric':
         _inputMode = QRInputMode.numeric;
         break;
-      case 'alphaNumeric':
+      case 'AlphaNumeric':
         _inputMode = QRInputMode.alphaNumeric;
         break;
-      case 'binary':
+      case 'Binary':
         _inputMode = QRInputMode.binary;
         break;
     }
@@ -243,16 +245,16 @@ class _QRCodeGeneratorState extends SampleViewState {
   void _onErrorCorrectionLevelChanged(String item) {
     _selectedErrorCorrectionLevel = item;
     switch (_selectedErrorCorrectionLevel) {
-      case 'high':
+      case 'High':
         _errorCorrectionLevel = ErrorCorrectionLevel.high;
         break;
-      case 'quartile':
+      case 'Quartile':
         _errorCorrectionLevel = ErrorCorrectionLevel.quartile;
         break;
-      case 'medium':
+      case 'Medium':
         _errorCorrectionLevel = ErrorCorrectionLevel.medium;
         break;
-      case 'low':
+      case 'Low':
         _errorCorrectionLevel = ErrorCorrectionLevel.low;
         break;
     }
@@ -263,23 +265,24 @@ class _QRCodeGeneratorState extends SampleViewState {
 
   /// Returns the QR barcode
   Widget _buildQRCodeGenerator(
-      String inputValue,
-      ErrorCorrectionLevel correctionLevel,
-      QRInputMode inputMode,
-      EdgeInsets padding) {
+      String _inputValue,
+      ErrorCorrectionLevel _correctionLevel,
+      QRInputMode _inputMode,
+      EdgeInsets _padding) {
     return Center(
-      child: SizedBox(
+      child: Container(
           height: model.isWebFullView ? 300 : double.infinity,
           child: Padding(
-            padding: padding,
+            padding: _padding,
             child: SfBarcodeGenerator(
-              value: inputValue,
+              value: _inputValue,
               textAlign: TextAlign.justify,
               textSpacing: 10,
+              showValue: false,
               symbology: QRCode(
-                  inputMode: inputMode,
+                  inputMode: _inputMode,
                   codeVersion: QRCodeVersion.auto,
-                  errorCorrectionLevel: correctionLevel),
+                  errorCorrectionLevel: _correctionLevel),
             ),
           )),
     );

@@ -1,7 +1,9 @@
+///Dart import
+import 'dart:typed_data';
+
 ///Package imports
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Pdf import
@@ -60,6 +62,7 @@ class _CertificatePdfState extends SampleViewState {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text(
                   'This sample showcase how to dynamically generates the course completion certificate for online learning portal with participant name, course name and date of completion.',
@@ -68,8 +71,7 @@ class _CertificatePdfState extends SampleViewState {
                   decoration: InputDecoration(
                       labelText: 'Recipient Name',
                       labelStyle: TextStyle(
-                          color: model.themeData.colorScheme.brightness ==
-                                  Brightness.light
+                          color: model.themeData.brightness == Brightness.light
                               ? Colors.grey
                               : Colors.lightBlue)),
                   controller: _nameController,
@@ -78,8 +80,7 @@ class _CertificatePdfState extends SampleViewState {
                   decoration: InputDecoration(
                       labelText: 'Course Name',
                       labelStyle: TextStyle(
-                          color: model.themeData.colorScheme.brightness ==
-                                  Brightness.light
+                          color: model.themeData.brightness == Brightness.light
                               ? Colors.grey
                               : Colors.lightBlue)),
                   controller: _courceNameController,
@@ -88,8 +89,7 @@ class _CertificatePdfState extends SampleViewState {
                   decoration: InputDecoration(
                       labelText: 'Date',
                       labelStyle: TextStyle(
-                          color: model.themeData.colorScheme.brightness ==
-                                  Brightness.light
+                          color: model.themeData.brightness == Brightness.light
                               ? Colors.grey
                               : Colors.lightBlue)),
                   controller: _dateController,
@@ -105,8 +105,8 @@ class _CertificatePdfState extends SampleViewState {
                       MaterialStateProperty.all<Color>(model.backgroundColor),
                   padding: model.isMobile
                       ? null
-                      : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 15)),
+                      : MaterialStateProperty.all(
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 15)),
                 ),
                 child: const Text(
                   'Generate PDF',
@@ -152,7 +152,7 @@ class _CertificatePdfState extends SampleViewState {
         bounds: Rect.fromLTWH(x, 385, 0, 0),
         brush: PdfSolidBrush(PdfColor(20, 58, 86)));
     //Save and launch the document
-    final List<int> bytes = await document.save();
+    final List<int> bytes = document.save();
     //Dispose the document.
     document.dispose();
     //Save and launch file.

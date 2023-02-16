@@ -33,14 +33,14 @@ class _DataLabelTemplateState extends SampleViewState {
               : 'Percentage of people using social media on a daily basis'),
       plotAreaBorderWidth: 0,
       primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
-        majorTickLines: const MajorTickLines(size: 0),
+        majorGridLines: MajorGridLines(width: 0),
+        majorTickLines: MajorTickLines(size: 0),
       ),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
+          axisLine: AxisLine(width: 0),
           interval: 20,
           maximum: 120,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getMarkeSeries(),
     );
   }
@@ -48,50 +48,59 @@ class _DataLabelTemplateState extends SampleViewState {
   /// Returns the list of chart which need to
   /// render on the chart with marker template.
   List<ColumnSeries<ChartSampleData, String>> _getMarkeSeries() {
+    final List<Color> color = <Color>[];
+    color.add(Color.fromRGBO(93, 80, 202, 1));
+    color.add(Color.fromRGBO(183, 45, 145, 1));
+    color.add(Color.fromRGBO(250, 203, 118, 1));
+
+    final List<double> stops = <double>[];
+    stops.add(0.0);
+    stops.add(0.5);
+    stops.add(1.0);
+
+    final LinearGradient gradientColors = LinearGradient(
+        colors: color,
+        stops: stops,
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter);
+
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(
+        x: 'YouTube',
+        y: 51,
+        pointColor: Color.fromRGBO(192, 33, 39, 1),
+      ),
+      ChartSampleData(
+        x: 'Twitter',
+        y: 42,
+        pointColor: Color.fromRGBO(26, 157, 235, 1),
+      ),
+      ChartSampleData(
+        x: 'Instagram',
+        y: 63,
+      ),
+      ChartSampleData(
+        x: 'Snapchat',
+        y: 61,
+        pointColor: Color.fromRGBO(254, 250, 55, 1),
+      ),
+      ChartSampleData(
+        x: 'Facebook',
+        y: 74,
+        pointColor: Color.fromRGBO(47, 107, 167, 1),
+      ),
+    ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
         onCreateRenderer: (ChartSeries<ChartSampleData, String> series) {
           return _CustomColumnSeriesRenderer();
         },
         animationDuration: 0,
-        dataSource: <ChartSampleData>[
-          ChartSampleData(
-            x: 'YouTube',
-            y: 51,
-            pointColor: const Color.fromRGBO(192, 33, 39, 1),
-          ),
-          ChartSampleData(
-            x: 'Twitter',
-            y: 42,
-            pointColor: const Color.fromRGBO(26, 157, 235, 1),
-          ),
-          ChartSampleData(
-            x: 'Instagram',
-            y: 63,
-          ),
-          ChartSampleData(
-            x: 'Snapchat',
-            y: 61,
-            pointColor: const Color.fromRGBO(254, 250, 55, 1),
-          ),
-          ChartSampleData(
-            x: 'Facebook',
-            y: 74,
-            pointColor: const Color.fromRGBO(47, 107, 167, 1),
-          ),
-        ],
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        dataSource: chartData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
         pointColorMapper: (ChartSampleData sales, _) => sales.pointColor,
-        gradient: const LinearGradient(colors: <Color>[
-          Color.fromRGBO(93, 80, 202, 1),
-          Color.fromRGBO(183, 45, 145, 1),
-          Color.fromRGBO(250, 203, 118, 1)
-        ], stops: <double>[
-          0.0,
-          0.5,
-          1.0
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        gradient: gradientColors,
         dataLabelSettings: DataLabelSettings(
             isVisible: true,
             builder: (dynamic data, dynamic point, dynamic series,
@@ -101,7 +110,7 @@ class _DataLabelTemplateState extends SampleViewState {
                   height: 50,
                   width: 50,
                   child: Column(children: <Widget>[
-                    SizedBox(
+                    Container(
                       height: 35,
                       child: Image.asset(
                         _getImageTemplate(pointIndex),
@@ -109,11 +118,11 @@ class _DataLabelTemplateState extends SampleViewState {
                         width: 30,
                       ),
                     ),
-                    SizedBox(
+                    Container(
                       height: 15,
                       child: Text(
-                        data.y.toString() + '%',
-                        style: const TextStyle(
+                        (data.y.toString() + '%'),
+                        style: TextStyle(
                           fontSize: 10,
                         ),
                       ),
@@ -125,7 +134,7 @@ class _DataLabelTemplateState extends SampleViewState {
   }
 
   String _getImageTemplate(int pointIndex) {
-    final String path = pointIndex == 0
+    final String path = (pointIndex == 0
         ? 'images/youtube.png'
         : (pointIndex == 1
             ? 'images/maps_twitter.png'
@@ -133,7 +142,7 @@ class _DataLabelTemplateState extends SampleViewState {
                 ? 'images/maps_instagram.png'
                 : (pointIndex == 3
                     ? 'images/maps_snapchat.png'
-                    : 'images/maps_facebook.png')));
+                    : 'images/maps_facebook.png'))));
     return path;
   }
 }
@@ -155,7 +164,7 @@ class _ColumnCustomPainter extends ColumnSegment {
   void onPaint(Canvas canvas) {
     Paint? myPaint = fillPaint;
     if (currentSegmentIndex == 0) {
-      myPaint = Paint()..color = const Color.fromRGBO(192, 33, 39, 1);
+      myPaint = Paint()..color = Color.fromRGBO(192, 33, 39, 1);
     } else if (currentSegmentIndex == 1) {
       myPaint = Paint()..color = const Color.fromRGBO(26, 157, 235, 1);
     } else if (currentSegmentIndex == 2) {

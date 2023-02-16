@@ -25,8 +25,6 @@ class _LegendCustomizedState extends SampleViewState {
     return _buildLegendCustomizedChart();
   }
 
-  List<ChartSampleData>? chartData;
-
   /// Returns the line chart with customized legends.
   SfCartesianChart _buildLegendCustomizedChart() {
     return SfCartesianChart(
@@ -39,24 +37,24 @@ class _LegendCustomizedState extends SampleViewState {
         toggleSeriesVisibility: false,
         legendItemBuilder:
             (String name, dynamic series, dynamic point, int index) {
-          return SizedBox(
+          return Container(
               height: 30,
               width: 90,
               child: Row(children: <Widget>[
                 Container(child: _getImage(index)),
-                SizedBox(child: Text(series.name)),
+                Container(child: Text(series.name)),
               ]));
         },
       ),
       primaryXAxis: NumericAxis(
           edgeLabelPlacement: EdgeLabelPlacement.shift,
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           interval: 1),
       primaryYAxis: NumericAxis(
           minimum: 0,
           maximum: 120,
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(color: Colors.transparent)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(color: Colors.transparent)),
       series: _getLegendCustomizedSeries(),
       tooltipBehavior: TooltipBehavior(enable: true),
     );
@@ -64,53 +62,7 @@ class _LegendCustomizedState extends SampleViewState {
 
   /// Returns the list of chart series which need to render on the line chart.
   List<ChartSeries<ChartSampleData, num>> _getLegendCustomizedSeries() {
-    return <ChartSeries<ChartSampleData, num>>[
-      LineSeries<ChartSampleData, num>(
-        width: 2,
-        markerSettings: const MarkerSettings(isVisible: true),
-        dataSource: chartData!,
-        xValueMapper: (ChartSampleData sales, _) => sales.x as num,
-        yValueMapper: (ChartSampleData sales, _) => sales.y,
-        name: 'Truck',
-      ),
-      LineSeries<ChartSampleData, num>(
-          markerSettings: const MarkerSettings(isVisible: true),
-          width: 2,
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
-          yValueMapper: (ChartSampleData sales, _) => sales.yValue,
-          name: 'Car'),
-      LineSeries<ChartSampleData, num>(
-          markerSettings: const MarkerSettings(isVisible: true),
-          width: 2,
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
-          yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
-          name: 'Bike'),
-      LineSeries<ChartSampleData, num>(
-          markerSettings: const MarkerSettings(isVisible: true),
-          width: 2,
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
-          yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
-          name: 'Bicycle')
-    ];
-  }
-
-  /// Method to get the images for customizing the legends of line chart series.
-  Image _getImage(int index) {
-    final List<Image> images = <Image>[
-      Image.asset('images/truck_legend.png'),
-      Image.asset('images/car_legend.png'),
-      Image.asset('images/bike_legend.png'),
-      Image.asset('images/cycle_legend.png')
-    ];
-    return images[index];
-  }
-
-  @override
-  void initState() {
-    chartData = <ChartSampleData>[
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
           x: 2005,
           y: 38,
@@ -136,12 +88,47 @@ class _LegendCustomizedState extends SampleViewState {
           secondSeriesYValue: 80,
           thirdSeriesYValue: 90),
     ];
-    super.initState();
+    return <ChartSeries<ChartSampleData, num>>[
+      LineSeries<ChartSampleData, num>(
+        width: 2,
+        markerSettings: MarkerSettings(isVisible: true),
+        dataSource: chartData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
+        yValueMapper: (ChartSampleData sales, _) => sales.y,
+        name: 'Truck',
+      ),
+      LineSeries<ChartSampleData, num>(
+          markerSettings: MarkerSettings(isVisible: true),
+          width: 2,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          yValueMapper: (ChartSampleData sales, _) => sales.yValue,
+          name: 'Car'),
+      LineSeries<ChartSampleData, num>(
+          markerSettings: MarkerSettings(isVisible: true),
+          width: 2,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
+          name: 'Bike'),
+      LineSeries<ChartSampleData, num>(
+          markerSettings: MarkerSettings(isVisible: true),
+          width: 2,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
+          yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
+          name: 'Bicycle')
+    ];
   }
 
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
+  /// Method to get the images for customizing the legends of line chart series.
+  Image _getImage(int index) {
+    final List<Image> images = <Image>[
+      Image.asset('images/truck_legend.png'),
+      Image.asset('images/car_legend.png'),
+      Image.asset('images/bike_legend.png'),
+      Image.asset('images/cycle_legend.png')
+    ];
+    return images[index];
   }
 }

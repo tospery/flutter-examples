@@ -20,30 +20,23 @@ class MarkerPointerExample extends SampleView {
 class _MarkerPointerExampleState extends SampleViewState {
   _MarkerPointerExampleState();
 
-  late List<String> _markerTypes;
+  final List<String> _markerTypes = <String>[
+    'Circle',
+    'Diamond',
+    'Inverted triangle',
+    'Rectangle',
+    'Triangle',
+  ];
 
-  String _selectedMarkerType = 'invertedTriangle';
+  String _selectedMarkerType = 'Inverted triangle';
   MarkerType _markerType = MarkerType.invertedTriangle;
   double _elevation = 4;
 
   @override
   void initState() {
-    _selectedMarkerType = 'invertedTriangle';
+    _selectedMarkerType = 'Inverted triangle';
     _markerType = MarkerType.invertedTriangle;
-    _markerTypes = <String>[
-      'circle',
-      'diamond',
-      'invertedTriangle',
-      'rectangle',
-      'triangle',
-    ];
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _markerTypes.clear();
-    super.dispose();
   }
 
   @override
@@ -56,7 +49,8 @@ class _MarkerPointerExampleState extends SampleViewState {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
       return ListView(shrinkWrap: true, children: <Widget>[
-        Row(
+        Container(
+            child: Row(
           children: <Widget>[
             Text('Marker type ',
                 style: TextStyle(
@@ -66,13 +60,12 @@ class _MarkerPointerExampleState extends SampleViewState {
             Container(
               padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
               child: DropdownButton<String>(
-                  underline:
-                      Container(color: const Color(0xFFBDBDBD), height: 1),
+                  underline: Container(color: Color(0xFFBDBDBD), height: 1),
                   value: _selectedMarkerType,
                   items: _markerTypes.map((String value) {
                     return DropdownMenuItem<String>(
-                        value: (value != null) ? value : 'invertedTriangle',
-                        child: Text(value,
+                        value: (value != null) ? value : 'Inverted triangle',
+                        child: Text('$value',
                             style: TextStyle(color: model.textColor)));
                   }).toList(),
                   onChanged: (String? value) {
@@ -81,30 +74,35 @@ class _MarkerPointerExampleState extends SampleViewState {
                   }),
             ),
           ],
-        ),
-        Row(
+        )),
+        Container(
+            child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text('Elevation',
                 style: TextStyle(fontSize: 16.0, color: model.textColor)),
             Container(
               padding: !model.isWebFullView
-                  ? const EdgeInsets.fromLTRB(40, 0, 0, 0)
-                  : const EdgeInsets.fromLTRB(50, 0, 0, 0),
+                  ? EdgeInsets.fromLTRB(40, 0, 0, 0)
+                  : EdgeInsets.fromLTRB(50, 0, 0, 0),
               child: CustomDirectionalButtons(
                 maxValue: 15,
+                minValue: 0,
                 initialValue: _elevation,
                 onChanged: (double val) {
                   setState(() {
                     _elevation = val;
                   });
                 },
+                step: 1,
                 loop: true,
                 iconColor: model.textColor,
                 style: TextStyle(fontSize: 16.0, color: model.textColor),
               ),
             ),
           ],
-        ),
+        )),
       ]);
     });
   }
@@ -113,15 +111,15 @@ class _MarkerPointerExampleState extends SampleViewState {
   void _onMarkerTypeChange(String item) {
     setState(() {
       _selectedMarkerType = item;
-      if (_selectedMarkerType == 'circle') {
+      if (_selectedMarkerType == 'Circle') {
         _markerType = MarkerType.circle;
-      } else if (_selectedMarkerType == 'diamond') {
+      } else if (_selectedMarkerType == 'Diamond') {
         _markerType = MarkerType.diamond;
-      } else if (_selectedMarkerType == 'invertedTriangle') {
+      } else if (_selectedMarkerType == 'Inverted triangle') {
         _markerType = MarkerType.invertedTriangle;
-      } else if (_selectedMarkerType == 'rectangle') {
+      } else if (_selectedMarkerType == 'Rectangle') {
         _markerType = MarkerType.rectangle;
-      } else if (_selectedMarkerType == 'triangle') {
+      } else if (_selectedMarkerType == 'Triangle') {
         _markerType = MarkerType.triangle;
       }
     });
@@ -153,24 +151,27 @@ class _MarkerPointerExampleState extends SampleViewState {
               GaugeAnnotation(
                   angle: 175,
                   positionFactor: 0.8,
-                  widget: Text('Min',
-                      style: TextStyle(
-                          fontSize: isCardView ? 12 : 16,
-                          fontWeight: FontWeight.bold))),
+                  widget: Container(
+                      child: Text('Min',
+                          style: TextStyle(
+                              fontSize: isCardView ? 12 : 16,
+                              fontWeight: FontWeight.bold)))),
               GaugeAnnotation(
                   angle: 270,
                   positionFactor: 0.1,
-                  widget: Text('70%',
-                      style: TextStyle(
-                          fontSize: isCardView ? 12 : 16,
-                          fontWeight: FontWeight.bold))),
+                  widget: Container(
+                      child: Text('70%',
+                          style: TextStyle(
+                              fontSize: isCardView ? 12 : 16,
+                              fontWeight: FontWeight.bold)))),
               GaugeAnnotation(
                   angle: 5,
                   positionFactor: 0.8,
-                  widget: Text('Max',
-                      style: TextStyle(
-                          fontSize: isCardView ? 12 : 16,
-                          fontWeight: FontWeight.bold)))
+                  widget: Container(
+                      child: Text('Max',
+                          style: TextStyle(
+                              fontSize: isCardView ? 12 : 16,
+                              fontWeight: FontWeight.bold))))
             ],
             ranges: <GaugeRange>[
               GaugeRange(

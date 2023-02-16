@@ -5,7 +5,6 @@ import 'dart:ui' as dart_ui;
 
 ///Package imports
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Chart import
@@ -35,26 +34,25 @@ class _ExportState extends SampleViewState {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        body: Column(children: <Widget>[
+        body: Column(children: [
           Expanded(child: _buildTemperatureMonitorExample()),
           Container(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(bottom: 10),
               child: Row(
-                children: <Widget>[
-                  const Spacer(),
+                children: [
+                  Spacer(),
                   Container(
-                      decoration: BoxDecoration(boxShadow: const <BoxShadow>[
+                      decoration: BoxDecoration(boxShadow: <BoxShadow>[
                         BoxShadow(
                           color: Colors.grey,
-                          offset: Offset(0, 4.0),
+                          offset: const Offset(0, 4.0),
                           blurRadius: 4.0,
                         ),
                       ], shape: BoxShape.circle, color: model.backgroundColor),
                       alignment: Alignment.center,
                       child: IconButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             behavior: SnackBarBehavior.floating,
                             duration: Duration(milliseconds: 100),
                             shape: RoundedRectangleBorder(
@@ -65,22 +63,21 @@ class _ExportState extends SampleViewState {
                           ));
                           _renderImage();
                         },
-                        icon: const Icon(Icons.image, color: Colors.white),
+                        icon: Icon(Icons.image, color: Colors.white),
                       )),
                   Container(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(boxShadow: const <BoxShadow>[
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      decoration: BoxDecoration(boxShadow: <BoxShadow>[
                         BoxShadow(
                           color: Colors.grey,
-                          offset: Offset(0, 4.0),
+                          offset: const Offset(0, 4.0),
                           blurRadius: 4.0,
                         ),
                       ], shape: BoxShape.circle, color: model.backgroundColor),
                       alignment: Alignment.center,
                       child: IconButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             behavior: SnackBarBehavior.floating,
                             duration: Duration(milliseconds: 2000),
                             shape: RoundedRectangleBorder(
@@ -91,8 +88,7 @@ class _ExportState extends SampleViewState {
                           ));
                           _renderPdf();
                         },
-                        icon: const Icon(Icons.picture_as_pdf,
-                            color: Colors.white),
+                        icon: Icon(Icons.picture_as_pdf, color: Colors.white),
                       )),
                 ],
               ))
@@ -106,13 +102,13 @@ class _ExportState extends SampleViewState {
       key: _key,
       backgroundColor: model.currentThemeData!.brightness == Brightness.light
           ? Colors.white
-          : const Color.fromRGBO(33, 33, 33, 1),
+          : Color.fromRGBO(33, 33, 33, 1),
       enableLoadingAnimation: true,
       title: GaugeTitle(
         text: isPortrait
             ? '\nHigh and low temperatures of London \nSep ‘20'
             : '\nHigh and low temperatures of London - Sep ‘20',
-        textStyle: const TextStyle(
+        textStyle: TextStyle(
           fontSize: 20.0,
           fontFamily: 'Segoe UI',
           fontStyle: FontStyle.normal,
@@ -120,6 +116,9 @@ class _ExportState extends SampleViewState {
       ),
       axes: <RadialAxis>[
         RadialAxis(
+            startAngle: 130,
+            endAngle: 50,
+            minimum: 0,
             maximum: 30,
             interval: 5,
             radiusFactor: model.isWebFullView ? 0.8 : 0.9,
@@ -141,10 +140,12 @@ class _ExportState extends SampleViewState {
                           )),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                        child: Text('Temp °C',
-                            style: TextStyle(
-                                color: model.textColor,
-                                fontSize: isPortrait ? 22 : 14)),
+                        child: Container(
+                          child: Text('Temp °C',
+                              style: TextStyle(
+                                  color: model.textColor,
+                                  fontSize: isPortrait ? 22 : 14)),
+                        ),
                       )
                     ],
                   ),
@@ -169,7 +170,7 @@ class _ExportState extends SampleViewState {
               cornerStyle: CornerStyle.bothCurve,
               gradient: SweepGradient(
                   colors: <Color>[Colors.grey.shade200, Colors.orange],
-                  stops: const <double>[0.25, 0.75]),
+                  stops: <double>[0.25, 0.75]),
               thickness: isPortrait ? 30 : 10,
             ))
       ],
@@ -177,20 +178,18 @@ class _ExportState extends SampleViewState {
   }
 
   Future<void> _renderImage() async {
-    final List<int> bytes = await _readImageData();
+    final bytes = await _readImageData();
     if (bytes != null) {
       final Directory documentDirectory =
           await getApplicationDocumentsDirectory();
       final String path = documentDirectory.path;
-      const String imageName = 'radialgauge.png';
-      imageCache.clear();
+      final String imageName = 'radialgauge.png';
+      imageCache!.clear();
       final File file = File('$path/$imageName');
       file.writeAsBytesSync(bytes);
-      if (!mounted) {
-        return;
-      }
-      await Navigator.of(context).push<dynamic>(
-        MaterialPageRoute<dynamic>(
+
+      await Navigator.of(context).push(
+        MaterialPageRoute(
           builder: (BuildContext context) {
             return Scaffold(
               appBar: AppBar(),
@@ -210,9 +209,6 @@ class _ExportState extends SampleViewState {
   Future<void> _renderPdf() async {
     final PdfDocument document = PdfDocument();
     final PdfBitmap bitmap = PdfBitmap(await _readImageData());
-    if (!mounted) {
-      return;
-    }
     document.pageSettings.orientation =
         MediaQuery.of(context).orientation == Orientation.landscape
             ? PdfPageOrientation.landscape
@@ -225,14 +221,14 @@ class _ExportState extends SampleViewState {
     page.graphics.drawImage(
         bitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5))),
       duration: Duration(milliseconds: 200),
       content: Text('Gauge has been exported as PDF document.'),
     ));
-    final List<int> bytes = document.saveSync();
+    final List<int> bytes = document.save();
     document.dispose();
     await FileSaveHelper.saveAndLaunchFile(bytes, 'radial_gauge.pdf');
   }
@@ -240,8 +236,7 @@ class _ExportState extends SampleViewState {
   Future<List<int>> _readImageData() async {
     final dart_ui.Image data =
         await _key.currentState!.toImage(pixelRatio: 3.0);
-    final ByteData? bytes =
-        await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
     return bytes!.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
   }
 }

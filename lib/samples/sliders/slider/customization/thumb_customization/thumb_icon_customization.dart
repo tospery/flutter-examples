@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -24,6 +23,32 @@ class ThumbCustomizationSliderPage extends SampleView {
 
 class _ThumbCustomizationSliderPageState extends SampleViewState {
   _ThumbCustomizationSliderPageState();
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _ThumbCustomizationSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 300, child: slider),
+          );
+  }
+}
+
+class _ThumbCustomizationSlider extends SampleView {
+  @override
+  _ThumbCustomizationSliderState createState() =>
+      _ThumbCustomizationSliderState();
+}
+
+class _ThumbCustomizationSliderState extends SampleViewState {
   double _thumbValue = 4.0;
   final double _thumbMin = 0.0;
   final double _thumbMax = 10.0;
@@ -45,7 +70,7 @@ class _ThumbCustomizationSliderPageState extends SampleViewState {
           value: _thumbValue,
           onChanged: (dynamic values) {
             setState(() {
-              _thumbValue = values as double;
+              _thumbValue = values;
             });
           },
         ));
@@ -70,8 +95,9 @@ class _ThumbCustomizationSliderPageState extends SampleViewState {
     return SfSliderTheme(
         data: SfSliderThemeData(thumbRadius: 14),
         child: SfSlider(
+          interval: 2.0,
+          min: 0.0,
           max: 10.0,
-          stepSize: 1,
           thumbIcon: Container(
               alignment: Alignment.center,
               child: Text(
@@ -82,7 +108,7 @@ class _ThumbCustomizationSliderPageState extends SampleViewState {
           value: _value,
           onChanged: (dynamic values) {
             setState(() {
-              _value = values as double;
+              _value = values;
             });
           },
         ));
@@ -120,13 +146,6 @@ class _ThumbCustomizationSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 300
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 300, child: slider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

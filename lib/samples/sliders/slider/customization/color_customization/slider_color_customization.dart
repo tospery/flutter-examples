@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -26,6 +24,32 @@ class SliderColorCustomizationPage extends SampleView {
 
 class _SliderColorCustomizationPageState extends SampleViewState {
   _SliderColorCustomizationPageState();
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _SliderColorCustomization();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 325, child: slider),
+          );
+  }
+}
+
+class _SliderColorCustomization extends SampleView {
+  @override
+  _SliderColorCustomizationState createState() =>
+      _SliderColorCustomizationState();
+}
+
+class _SliderColorCustomizationState extends SampleViewState {
   double _trackSliderValue = 0;
   double _thumbStrokeSliderValue = 50;
 
@@ -46,7 +70,7 @@ class _SliderColorCustomizationPageState extends SampleViewState {
             value: _trackSliderValue,
             onChanged: (dynamic values) {
               setState(() {
-                _trackSliderValue = values as double;
+                _trackSliderValue = values;
               });
             },
             enableTooltip: true,
@@ -56,18 +80,18 @@ class _SliderColorCustomizationPageState extends SampleViewState {
   SfSliderTheme _sliderWithThumbStrokeColorCustomization() {
     return SfSliderTheme(
         data: SfSliderThemeData(
-            inactiveDividerColor: model.isWebFullView
+            inactiveDivisorColor: model.isWebFullView
                 ? model.webBackgroundColor
                 : model.cardThemeColor,
-            activeDividerColor: model.isWebFullView
+            activeDivisorColor: model.isWebFullView
                 ? model.webBackgroundColor
                 : model.cardThemeColor,
-            activeDividerStrokeWidth: 2,
-            activeDividerStrokeColor: Colors.deepOrange.withOpacity(0.24),
-            inactiveDividerStrokeWidth: 2,
-            inactiveDividerStrokeColor: Colors.deepOrange,
-            activeDividerRadius: 5.0,
-            inactiveDividerRadius: 5.0,
+            activeDivisorStrokeWidth: 2,
+            activeDivisorStrokeColor: Colors.deepOrange.withOpacity(0.24),
+            inactiveDivisorStrokeWidth: 2,
+            inactiveDivisorStrokeColor: Colors.deepOrange,
+            activeDivisorRadius: 5.0,
+            inactiveDivisorRadius: 5.0,
             activeTrackColor: Colors.deepOrange,
             inactiveTrackColor: Colors.deepOrange.withOpacity(0.24),
             overlayColor: Colors.deepOrange.withOpacity(0.12),
@@ -79,12 +103,13 @@ class _SliderColorCustomizationPageState extends SampleViewState {
             thumbStrokeColor: Colors.deepOrange),
         child: SfSlider(
             interval: 25,
-            showDividers: true,
+            showDivisors: true,
+            min: 0.0,
             max: 100.0,
             value: _thumbStrokeSliderValue,
             onChanged: (dynamic values) {
               setState(() {
-                _thumbStrokeSliderValue = values as double;
+                _thumbStrokeSliderValue = values;
               });
             },
             enableTooltip: true,
@@ -113,7 +138,7 @@ class _SliderColorCustomizationPageState extends SampleViewState {
             columnSpacing10,
             _sliderWithTrackColorCustomization(),
             columnSpacing40,
-            title('Thumb and divider stroke color'),
+            title('Thumb and divisor stroke color'),
             columnSpacing10,
             _sliderWithThumbStrokeColorCustomization(),
             columnSpacing30,
@@ -123,13 +148,6 @@ class _SliderColorCustomizationPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 325
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 325, child: slider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

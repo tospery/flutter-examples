@@ -35,13 +35,7 @@ const double _kCloseProgressThreshold = 0.5;
 class CustomBottomSheet extends StatefulWidget {
   /// holds the informtion of customized bottom sheet
   const CustomBottomSheet(
-      // ignore: tighten_type_of_initializing_formals
-      {Key? key,
-      this.animationController,
-      // ignore: tighten_type_of_initializing_formals
-      this.onClosing,
-      // ignore: tighten_type_of_initializing_formals
-      this.builder})
+      {Key? key, this.animationController, this.onClosing, this.builder})
       : assert(onClosing != null),
         assert(builder != null),
         super(key: key);
@@ -84,7 +78,7 @@ class _CustomBottomSheetState extends State<CustomBottomSheet> {
 
   double? get _childHeight {
     final RenderBox renderBox =
-        _childKey.currentContext!.findRenderObject()! as RenderBox;
+        _childKey.currentContext!.findRenderObject() as RenderBox;
     return renderBox.size.height;
   }
 
@@ -146,6 +140,7 @@ class _RoundedModalBottomSheetLayout extends SingleChildLayoutDelegate {
     return BoxConstraints(
         minWidth: constraints.maxWidth,
         maxWidth: constraints.maxWidth,
+        minHeight: 0.0,
         maxHeight: constraints.maxHeight * 9.0 / 16.0);
   }
 
@@ -207,13 +202,15 @@ class _RoundedCornerModalRoute<T> extends PopupRoute<T> {
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation) {
-    return MediaQuery.removePadding(
-        context: context,
-        removeTop: true,
-        child: Theme(
-          data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
-          child: _RoundedModalBottomSheet<T>(route: this),
-        ));
+    return Container(
+        child: MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: Theme(
+        data: Theme.of(context).copyWith(canvasColor: Colors.transparent),
+        child: _RoundedModalBottomSheet<T>(route: this),
+      ),
+    ));
   }
 }
 
@@ -270,7 +267,7 @@ class _RoundedModalBottomSheetState<T>
             builder: (BuildContext context) => Container(
               decoration: BoxDecoration(
                 color: widget.route!.color,
-                borderRadius: const BorderRadius.only(
+                borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
                 ),

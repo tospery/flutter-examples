@@ -1,6 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../model/sample_view.dart';
 
@@ -17,95 +19,70 @@ class _PaginationState extends SampleViewState {
   late double height, width, _segmentedControlWidth;
   late double _containerWidth, _containerHeight;
   double? diff;
-  late int segmentedControlGroupValue;
-  late int degree;
-  late String day;
-  late String _imageName;
-  late double _visibleMin;
-  late double _visibleMax;
-  late List<String> _daysWithTime;
-  late List<String> _temperatue;
-  late List<String> _images;
-  late List<String> _days;
-  late List<double> _minValues;
-  late List<double> _maxValues;
-  late List<int> _degrees;
+  int segmentedControlGroupValue = 0;
+  int degree = 25;
+  String day = 'Friday, 01:00 am';
+  String _imageName = 'images/sunny_image.png';
+  double _visibleMin = 0;
+  double _visibleMax = 5;
+  final List<String> _daysWithTime = const <String>[
+    'Friday, 01:00 am',
+    'Saturday, 01:00 am',
+    'Sunday, 01:00 am',
+    'Monday, 01:00 am',
+    'Tuesday, 01:00 am'
+  ];
+  final List<String> _temperatue = const <String>[
+    '25°19°',
+    '25°20°',
+    '24°18°',
+    '19°14°',
+    '18°14°'
+  ];
+  final List<String> _images = const <String>[
+    'sunny_image.png',
+    'sunny_image.png',
+    'cloudy.png',
+    'cloudy.png',
+    'rainy.png'
+  ];
+  final List<String> _days = const <String>['Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
+  final List<double> _minValues = const <double>[0, 6, 12, 18, 24];
+  final List<double> _maxValues = const <double>[5, 11, 17, 23, 29];
+  final List<int> _degrees = const <int>[25, 25, 24, 19, 18];
 
-  late List<ChartSampleData> chartData;
-
-  @override
-  void initState() {
-    segmentedControlGroupValue = 0;
-    degree = 25;
-    day = 'Friday, 01:00 am';
-    _imageName = 'images/sunny_image.png';
-    _visibleMin = 0;
-    _visibleMax = 5;
-    _daysWithTime = const <String>[
-      'Friday, 01:00 am',
-      'Saturday, 01:00 am',
-      'Sunday, 01:00 am',
-      'Monday, 01:00 am',
-      'Tuesday, 01:00 am'
-    ];
-    _temperatue = const <String>[
-      '25°19°',
-      '25°20°',
-      '24°18°',
-      '19°14°',
-      '18°14°'
-    ];
-    _images = const <String>[
-      'sunny_image.png',
-      'sunny_image.png',
-      'cloudy.png',
-      'cloudy.png',
-      'rainy.png'
-    ];
-    _days = const <String>['Fri', 'Sat', 'Sun', 'Mon', 'Tue'];
-    _minValues = const <double>[0, 6, 12, 18, 24];
-    _maxValues = const <double>[5, 11, 17, 23, 29];
-    _degrees = const <int>[25, 25, 24, 19, 18];
-    chartData = <ChartSampleData>[
-      ChartSampleData(xValue: '0', x: '1 am', y: 20),
-      ChartSampleData(xValue: '1', x: '4 am', y: 20),
-      ChartSampleData(xValue: '2', x: '7 am', y: 20),
-      ChartSampleData(xValue: '3', x: '10 am', y: 21),
-      ChartSampleData(xValue: '4', x: '1 pm', y: 21),
-      ChartSampleData(xValue: '5', x: '4 pm', y: 24),
-      ChartSampleData(xValue: '6', x: '1 am', y: 19),
-      ChartSampleData(xValue: '7', x: '4 am', y: 20),
-      ChartSampleData(xValue: '8', x: '7 am', y: 20),
-      ChartSampleData(xValue: '9', x: '10 am', y: 21),
-      ChartSampleData(xValue: '10', x: '1 pm', y: 24),
-      ChartSampleData(xValue: '11', x: '4 pm', y: 24),
-      ChartSampleData(xValue: '12', x: '1 am', y: 21),
-      ChartSampleData(xValue: '13', x: '4 am', y: 21),
-      ChartSampleData(xValue: '14', x: '7 am', y: 21),
-      ChartSampleData(xValue: '15', x: '10 am', y: 22),
-      ChartSampleData(xValue: '16', x: '1 pm', y: 23),
-      ChartSampleData(xValue: '17', x: '4 pm', y: 24),
-      ChartSampleData(xValue: '18', x: '1 am', y: 20),
-      ChartSampleData(xValue: '19', x: '4 am', y: 19),
-      ChartSampleData(xValue: '20', x: '7 am', y: 19),
-      ChartSampleData(xValue: '21', x: '10 am', y: 18),
-      ChartSampleData(xValue: '22', x: '1 pm', y: 19),
-      ChartSampleData(xValue: '23', x: '4 pm', y: 19),
-      ChartSampleData(xValue: '24', x: '1 am', y: 16),
-      ChartSampleData(xValue: '25', x: '4 am', y: 15),
-      ChartSampleData(xValue: '26', x: '7 am', y: 14),
-      ChartSampleData(xValue: '27', x: '10 am', y: 15),
-      ChartSampleData(xValue: '28', x: '1 pm', y: 16),
-      ChartSampleData(xValue: '29', x: '4 pm', y: 18),
-    ];
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    chartData.clear();
-    super.dispose();
-  }
+  List<ChartSampleData> chartData = <ChartSampleData>[
+    ChartSampleData(xValue: '0', x: '1 am', y: 20),
+    ChartSampleData(xValue: '1', x: '4 am', y: 20),
+    ChartSampleData(xValue: '2', x: '7 am', y: 20),
+    ChartSampleData(xValue: '3', x: '10 am', y: 21),
+    ChartSampleData(xValue: '4', x: '1 pm', y: 21),
+    ChartSampleData(xValue: '5', x: '4 pm', y: 24),
+    ChartSampleData(xValue: '6', x: '1 am', y: 19),
+    ChartSampleData(xValue: '7', x: '4 am', y: 20),
+    ChartSampleData(xValue: '8', x: '7 am', y: 20),
+    ChartSampleData(xValue: '9', x: '10 am', y: 21),
+    ChartSampleData(xValue: '10', x: '1 pm', y: 24),
+    ChartSampleData(xValue: '11', x: '4 pm', y: 24),
+    ChartSampleData(xValue: '12', x: '1 am', y: 21),
+    ChartSampleData(xValue: '13', x: '4 am', y: 21),
+    ChartSampleData(xValue: '14', x: '7 am', y: 21),
+    ChartSampleData(xValue: '15', x: '10 am', y: 22),
+    ChartSampleData(xValue: '16', x: '1 pm', y: 23),
+    ChartSampleData(xValue: '17', x: '4 pm', y: 24),
+    ChartSampleData(xValue: '18', x: '1 am', y: 20),
+    ChartSampleData(xValue: '19', x: '4 am', y: 19),
+    ChartSampleData(xValue: '20', x: '7 am', y: 19),
+    ChartSampleData(xValue: '21', x: '10 am', y: 18),
+    ChartSampleData(xValue: '22', x: '1 pm', y: 19),
+    ChartSampleData(xValue: '23', x: '4 pm', y: 19),
+    ChartSampleData(xValue: '24', x: '1 am', y: 16),
+    ChartSampleData(xValue: '25', x: '4 am', y: 15),
+    ChartSampleData(xValue: '26', x: '7 am', y: 14),
+    ChartSampleData(xValue: '27', x: '10 am', y: 15),
+    ChartSampleData(xValue: '28', x: '1 pm', y: 16),
+    ChartSampleData(xValue: '29', x: '4 pm', y: 18),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -117,46 +94,44 @@ class _PaginationState extends SampleViewState {
             : width * 0.7
         : double.infinity;
     height = MediaQuery.of(context).size.height;
-    height = !model.isWebFullView ? height - 46 : height;
-    height = model.isWebFullView && !kIsWeb ? height * 0.6 : height * 0.65;
+    _calculateHeight();
     _containerHeight = 30;
     return Center(
-        child: Column(children: <Widget>[
-      SizedBox(
+        child: Column(children: [
+      Container(
         width: _segmentedControlWidth,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(children: <Widget>[
+          children: [
+            Row(children: [
               Container(
-                  margin: const EdgeInsets.only(left: 5),
+                  margin: EdgeInsets.only(left: 5),
                   height: height * 0.085,
                   width: model.isWebFullView ? 50 : width * 0.08,
                   decoration: BoxDecoration(
                       image:
                           DecorationImage(image: ExactAssetImage(_imageName)))),
-              SizedBox(
+              Container(
                   height: height * 0.1,
-                  child: Row(children: <Widget>[
-                    SizedBox(
+                  child: Row(children: [
+                    Container(
                         child: Text('$degree',
                             style: TextStyle(
                                 fontSize: orientation == Orientation.landscape
                                     ? height * 0.08
                                     : height * 0.06))),
                     Container(
-                        padding: const EdgeInsets.only(right: 30),
-                        child: const Text('°C | °F',
-                            style: TextStyle(fontSize: 16))),
+                        padding: EdgeInsets.only(right: 30),
+                        child: Text('°C | °F', style: TextStyle(fontSize: 16))),
                   ]))
             ]),
             Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                margin: EdgeInsets.fromLTRB(0, 0, 8, 0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
+                    children: [
                       Text('USA, Texas',
                           style: TextStyle(fontSize: height * 0.045)),
                       Text(day, style: TextStyle(fontSize: height * 0.025)),
@@ -173,18 +148,42 @@ class _PaginationState extends SampleViewState {
           visible: height < 350 ? false : true,
           child: Container(
               padding: model.isWebFullView
-                  ? const EdgeInsets.fromLTRB(0, 16, 0, 16)
-                  : const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                  ? EdgeInsets.fromLTRB(0, 16, 0, 16)
+                  : EdgeInsets.fromLTRB(0, 8, 0, 8),
               width: _segmentedControlWidth,
-              child: CupertinoSlidingSegmentedControl<int>(
+              child: CupertinoSlidingSegmentedControl(
                   groupValue: segmentedControlGroupValue,
                   children: _getButtons(orientation),
                   onValueChanged: (int? i) => _loadGroupValue(i!))))
     ]));
   }
 
+  /// Method to calculate widget height
+  void _calculateHeight() {
+    height = !model.isWebFullView ? height - 46 : height;
+    height = model.isWebFullView && !kIsWeb ? height * 0.6 : height;
+    if (kIsWeb &&
+        model.webOutputContainerState != null &&
+        model.webOutputContainerState.outputScaffoldKey != null &&
+        (model.webOutputContainerState.outputScaffoldKey)
+                .currentContext
+                ?.size !=
+            null) {
+      height = (model.webOutputContainerState.outputScaffoldKey)
+          .currentContext!
+          .size!
+          .height;
+
+      if (diff == null) {
+        diff = MediaQuery.of(context).size.height - height;
+      } else {
+        height = MediaQuery.of(context).size.height - diff!;
+      }
+    }
+  }
+
   /// Returns the item of segmented control
-  Map<int, Widget> _getButtons(Orientation orientation) {
+  Map<int, Widget> _getButtons(Orientation _orientation) {
     _containerWidth = _segmentedControlWidth == double.infinity
         ? width / 5
         : _segmentedControlWidth / 5;
@@ -198,7 +197,7 @@ class _PaginationState extends SampleViewState {
     for (int i = 0; i <= 4; i++) {
       buttons.putIfAbsent(
         i,
-        () => SizedBox(
+        () => Container(
             width: _containerWidth,
             child: TextButton(
                 onPressed: () => _loadGroupValue(i),
@@ -222,7 +221,7 @@ class _PaginationState extends SampleViewState {
   Container _getContainer(String imageName) {
     return Container(
       height: _containerHeight,
-      margin: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+      margin: EdgeInsets.fromLTRB(0, 4, 0, 4),
       decoration: BoxDecoration(
         image: DecorationImage(
           image: ExactAssetImage(imageName),
@@ -235,11 +234,11 @@ class _PaginationState extends SampleViewState {
   Color? getColor(Set<MaterialState> states) {
     if (states.contains(MaterialState.hovered)) {
       return model.currentThemeData?.brightness == Brightness.light
-          ? const Color.fromRGBO(235, 235, 235, 1)
-          : const Color.fromRGBO(104, 104, 104, 1);
+          ? Color.fromRGBO(235, 235, 235, 1)
+          : Color.fromRGBO(104, 104, 104, 1);
     } else if (states.contains(MaterialState.focused) ||
         states.contains(MaterialState.pressed)) {
-      return const Color.fromRGBO(224, 224, 224, 1);
+      return Color.fromRGBO(224, 224, 224, 1);
     } else {
       return null;
     }
@@ -280,38 +279,36 @@ class _PaginationState extends SampleViewState {
   /// Returns the cartesian chart
   SfCartesianChart _buildCartesianChart() {
     return SfCartesianChart(
+      axisLabelFormatter: (AxisLabelRenderDetails details) {
+        if (details.orientation == AxisOrientation.horizontal) {
+          for (final ChartSampleData sampleData in chartData) {
+            if (sampleData.xValue == details.actualText) {
+              return ChartAxisLabel(sampleData.x, details.textStyle);
+            }
+          }
+        }
+        return ChartAxisLabel(details.text, details.textStyle);
+      },
       primaryYAxis: NumericAxis(
         interval: 2,
         minimum: 0,
         maximum: 26,
         isVisible: false,
         anchorRangeToVisiblePoints: true,
-        axisLine: const AxisLine(width: 0),
-        majorTickLines: const MajorTickLines(color: Colors.transparent),
+        axisLine: AxisLine(width: 0),
+        majorTickLines: MajorTickLines(color: Colors.transparent),
       ),
       primaryXAxis: CategoryAxis(
           visibleMaximum: _visibleMax,
           visibleMinimum: _visibleMin,
           labelPlacement: LabelPlacement.onTicks,
           interval: 1,
-          name: 'primaryXAxis',
-          axisLine: const AxisLine(width: 0, color: Colors.transparent),
+          axisLine: AxisLine(width: 0, color: Colors.transparent),
           edgeLabelPlacement: EdgeLabelPlacement.shift,
-          majorGridLines: const MajorGridLines(width: 0),
-          axisLabelFormatter: (AxisLabelRenderDetails details) {
-            if (details.axis.name == 'primaryXAxis') {
-              for (final ChartSampleData sampleData in chartData) {
-                if (sampleData.xValue == details.text) {
-                  return ChartAxisLabel(sampleData.x, details.textStyle);
-                }
-              }
-            }
-            return ChartAxisLabel(details.text, details.textStyle);
-          }),
+          majorGridLines: MajorGridLines(width: 0)),
       plotAreaBorderWidth: 0,
       series: getSeries(),
-      onPlotAreaSwipe: (ChartSwipeDirection direction) =>
-          performSwipe(direction),
+      onPlotAreaSwipe: (direction) => performSwipe(direction),
     );
   }
 
@@ -320,12 +317,12 @@ class _PaginationState extends SampleViewState {
     return <ChartSeries<ChartSampleData, String>>[
       SplineAreaSeries<ChartSampleData, String>(
         dataSource: chartData,
-        borderColor: const Color.fromRGBO(255, 204, 5, 1),
+        borderColor: Color.fromRGBO(255, 204, 5, 1),
         borderWidth: 2,
-        color: const Color.fromRGBO(255, 245, 211, 1),
-        dataLabelSettings: const DataLabelSettings(
+        color: Color.fromRGBO(255, 245, 211, 1),
+        dataLabelSettings: DataLabelSettings(
             isVisible: true, labelAlignment: ChartDataLabelAlignment.outer),
-        xValueMapper: (ChartSampleData sales, _) => sales.xValue as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.xValue,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
       ),
     ];

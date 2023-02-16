@@ -28,65 +28,71 @@ class _FindTextPdfState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'This sample shows how to find a text along with bounds and page index in an existing PDF document.',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 20, width: 30),
-            Center(
-                child: SizedBox(
-              height: 60,
-              width: 300,
-              child: TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Enter the text to find',
-                      labelStyle: TextStyle(
-                          color: model.themeData.colorScheme.brightness ==
-                                  Brightness.light
-                              ? Colors.grey
-                              : Colors.lightBlue)),
-                  controller: _nameController,
-                  style: TextStyle(color: model.textColor)),
-            )),
-            const SizedBox(height: 20, width: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(model.backgroundColor),
-                    padding: model.isMobile
-                        ? null
-                        : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 15)),
-                  ),
-                  onPressed: _viewTemplate,
-                  child: const Text('View Template',
-                      style: TextStyle(color: Colors.white)),
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'This sample shows how to find a text along with bounds and page index in an existing PDF document.',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 20, width: 30),
+              Center(
+                  child: SizedBox(
+                height: 60,
+                width: 300,
+                child: TextFormField(
+                    decoration: InputDecoration(
+                        labelText: 'Enter the text to find',
+                        labelStyle: TextStyle(
+                            color:
+                                model.themeData.brightness == Brightness.light
+                                    ? Colors.grey
+                                    : Colors.lightBlue)),
+                    controller: _nameController,
+                    style: TextStyle(color: model.textColor)),
+              )),
+              const SizedBox(height: 20, width: 30),
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            model.backgroundColor),
+                        padding: model.isMobile
+                            ? null
+                            : MaterialStateProperty.all(EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15)),
+                      ),
+                      onPressed: _viewTemplate,
+                      child: Text('View Template',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    SizedBox(
+                      height: 10,
+                      width: 20,
+                    ),
+                    TextButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            model.backgroundColor),
+                        padding: model.isMobile
+                            ? null
+                            : MaterialStateProperty.all(EdgeInsets.symmetric(
+                                vertical: 15, horizontal: 15)),
+                      ),
+                      onPressed: _generatePDF,
+                      child: const Text('Find and Highlight',
+                          style: TextStyle(color: Colors.white)),
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  height: 10,
-                  width: 20,
-                ),
-                TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(model.backgroundColor),
-                    padding: model.isMobile
-                        ? null
-                        : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 15)),
-                  ),
-                  onPressed: _generatePDF,
-                  child: const Text('Find and Highlight',
-                      style: TextStyle(color: Colors.white)),
-                )
-              ],
-            ),
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -107,8 +113,7 @@ class _FindTextPdfState extends SampleViewState {
     final PdfTextExtractor extractor = PdfTextExtractor(document);
 
     //Find the text
-    final List<MatchedItem> result =
-        extractor.findText(<String>[_nameController.text]);
+    final List<MatchedItem> result = extractor.findText([_nameController.text]);
 
     if (result.isEmpty) {
       document.dispose();
@@ -132,7 +137,7 @@ class _FindTextPdfState extends SampleViewState {
       }
 
       //Save and dispose the document.
-      final List<int> bytes = await document.save();
+      final List<int> bytes = document.save();
       document.dispose();
 
       //Launch file.
@@ -146,22 +151,22 @@ class _FindTextPdfState extends SampleViewState {
   }
 
   void _showDialog(String text) {
-    showDialog<Widget>(
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text(''),
-            content: Wrap(children: <Widget>[
-              const Text('The text '),
-              Text(text, style: const TextStyle(fontWeight: FontWeight.bold)),
-              const Text(' is not found.')
+            title: Text(''),
+            content: Wrap(children: [
+              Text('The text '),
+              Text(text, style: TextStyle(fontWeight: FontWeight.bold)),
+              Text(' is not found.')
             ]),
-            actions: <Widget>[
+            actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Close'),
+                child: Text('Close'),
               )
             ],
           );

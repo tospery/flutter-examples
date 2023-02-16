@@ -23,7 +23,7 @@ class AnimationAreaDefault extends SampleView {
 /// State class of animation area chart.
 class _AnimationAreaDefaultState extends SampleViewState {
   _AnimationAreaDefaultState();
-  List<_ChartData>? _chartData;
+  late List<_ChartData> _chartData;
   Timer? _timer;
 
   @override
@@ -41,11 +41,11 @@ class _AnimationAreaDefaultState extends SampleViewState {
   SfCartesianChart _buildAnimationAreaChart() {
     return SfCartesianChart(
         plotAreaBorderWidth: 0,
-        primaryXAxis: NumericAxis(
-            interval: 1, majorGridLines: const MajorGridLines(width: 0)),
+        primaryXAxis:
+            NumericAxis(interval: 1, majorGridLines: MajorGridLines(width: 0)),
         primaryYAxis: NumericAxis(
-            majorTickLines: const MajorTickLines(color: Colors.transparent),
-            axisLine: const AxisLine(width: 0),
+            majorTickLines: MajorTickLines(color: Colors.transparent),
+            axisLine: AxisLine(width: 0),
             minimum: 0,
             maximum: 100),
         series: _getDefaultAreaSeries());
@@ -55,7 +55,7 @@ class _AnimationAreaDefaultState extends SampleViewState {
   List<AreaSeries<_ChartData, num>> _getDefaultAreaSeries() {
     return <AreaSeries<_ChartData, num>>[
       AreaSeries<_ChartData, num>(
-          dataSource: _chartData!,
+          dataSource: _chartData,
           color: const Color.fromRGBO(75, 135, 185, 0.6),
           borderColor: const Color.fromRGBO(75, 135, 185, 1),
           borderWidth: 2,
@@ -68,7 +68,6 @@ class _AnimationAreaDefaultState extends SampleViewState {
   void dispose() {
     super.dispose();
     _timer!.cancel();
-    _chartData!.clear();
   }
 
   /// Return the random value in area series.
@@ -80,7 +79,7 @@ class _AnimationAreaDefaultState extends SampleViewState {
   void _getChartData() {
     _chartData = <_ChartData>[];
     for (int i = 1; i <= 8; i++) {
-      _chartData!.add(_ChartData(i, _getRandomInt(10, 95)));
+      _chartData.add(_ChartData(i, _getRandomInt(10, 95)));
     }
     _timer?.cancel();
   }

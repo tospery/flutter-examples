@@ -55,15 +55,15 @@ class _RadialLinearAnimationState extends SampleViewState {
                   value: 12,
                   enableAnimation: true,
                   animationType: AnimationType.linear,
+                  lengthUnit: GaugeSizeUnit.factor,
                   needleLength: 0.8,
-                  needleColor:
-                      model.themeData.colorScheme.brightness == Brightness.light
-                          ? _linearNeedleColor
-                          : _linearNeedleDarkColor),
+                  needleColor: model.themeData.brightness == Brightness.light
+                      ? _linearNeedleColor
+                      : _linearNeedleDarkColor),
             ],
-            axisLineStyle: const AxisLineStyle(thickness: 3),
+            axisLineStyle: AxisLineStyle(thickness: 3),
             tickOffset: 2,
-            majorTickStyle: const MajorTickStyle(
+            majorTickStyle: MajorTickStyle(
                 thickness: 2, length: 0.02, lengthUnit: GaugeSizeUnit.factor),
             minorTicksPerInterval: 0),
       ],

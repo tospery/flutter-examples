@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -26,7 +24,34 @@ class RangeSliderIntervalSelectionPage extends SampleView {
 
 class _RangeSliderIntervalSelectionPageState extends SampleViewState {
   _RangeSliderIntervalSelectionPageState();
-  SfRangeValues _yearValues = SfRangeValues(DateTime(2012), DateTime(2018));
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _RangeSliderIntervalSelection();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 325, child: rangeSlider),
+          );
+  }
+}
+
+class _RangeSliderIntervalSelection extends SampleView {
+  @override
+  _RangeSliderIntervalSelectionState createState() =>
+      _RangeSliderIntervalSelectionState();
+}
+
+class _RangeSliderIntervalSelectionState extends SampleViewState {
+  SfRangeValues _yearValues =
+      SfRangeValues(DateTime(2012, 1, 01), DateTime(2018, 1, 1));
   SfRangeValues _values = const SfRangeValues(20.0, 80.0);
 
   SfRangeSliderTheme _yearRangeSlider() {
@@ -34,12 +59,14 @@ class _RangeSliderIntervalSelectionPageState extends SampleViewState {
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider(
-          min: DateTime(2010),
-          max: DateTime(2020),
+          min: DateTime(2010, 01, 01),
+          max: DateTime(2020, 01, 01),
+          //showDivisors: true,
           interval: 2,
           showLabels: true,
           stepDuration: const SliderStepDuration(years: 2),
           dateFormat: DateFormat.y(),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.years,
           enableIntervalSelection: true,
           showTicks: true,
@@ -64,6 +91,7 @@ class _RangeSliderIntervalSelectionPageState extends SampleViewState {
         child: SfRangeSlider(
             showLabels: true,
             interval: 20,
+            min: 0.0,
             max: 100.0,
             stepSize: 20,
             showTicks: true,
@@ -104,30 +132,24 @@ class _RangeSliderIntervalSelectionPageState extends SampleViewState {
             _yearRangeSlider(),
             columnSpacing40,
             columnSpacing40,
-            Row(children: const <Widget>[
-              Padding(
-                padding: EdgeInsets.only(left: 15),
-                child: Icon(Icons.lightbulb_outline,
-                    color: Colors.orange, size: 24.0),
-              ),
-              Padding(
-                  padding: EdgeInsets.only(left: 5),
-                  child: Text('Tap on the interval to select it.'))
-            ])
+            Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(left: 15),
+                    child: Icon(Icons.lightbulb_outline,
+                        color: Colors.orange, size: 24.0),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 5),
+                      child: Text('Tap on the interval to select it.'))
+                ])
           ],
         ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 325
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 325, child: rangeSlider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

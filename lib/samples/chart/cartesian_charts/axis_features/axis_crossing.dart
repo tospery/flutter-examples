@@ -1,7 +1,8 @@
 /// Chart import
+import 'package:syncfusion_flutter_charts/charts.dart';
+
 /// Package import
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// Local imports
 import '../../../../model/sample_view.dart';
@@ -19,19 +20,18 @@ class AxisCrossing extends SampleView {
 /// State class of the spline chart with axis crossing.
 class _AxisCrossingState extends SampleViewState {
   _AxisCrossingState();
-  List<String>? _axis;
-  late String _selectedSeriesType;
+  final List<String> _axis = <String>['x', 'y'].toList();
+  String _selectedSeriesType = 'column';
   //ignore: unused_field
   late String _selectedSeries;
-  late String _selectedAxisType;
+  String _selectedAxisType = 'x';
   late String _selectedAxis;
-  late double _crossAt = 0;
+  double? _crossAt = 0;
   bool? _isPlaceLabelsNearAxisLine = true;
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
-    _axis = <String>['x', 'y'].toList();
     _selectedAxisType = 'x';
     _selectedAxis = 'x';
     _selectedSeriesType = 'column';
@@ -62,14 +62,12 @@ class _AxisCrossingState extends SampleViewState {
               Container(
                 padding: const EdgeInsets.fromLTRB(138, 0, 0, 0),
                 child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
+                    underline: Container(color: Color(0xFFBDBDBD), height: 1),
                     value: _selectedAxis,
-                    items: _axis!.map((String value) {
+                    items: _axis.map((String value) {
                       return DropdownMenuItem<String>(
                           value: (value != null) ? value : 'X',
-                          child: Text(value,
+                          child: Text('$value',
                               style: TextStyle(color: model.textColor)));
                     }).toList(),
                     onChanged: (dynamic value) {
@@ -81,7 +79,7 @@ class _AxisCrossingState extends SampleViewState {
           ),
           Row(
             children: <Widget>[
-              Text('Cross at  ',
+              Text('Cross At  ',
                   style: TextStyle(fontSize: 16.0, color: model.textColor)),
               Container(
                 padding: const EdgeInsets.fromLTRB(85, 0, 0, 0),
@@ -101,16 +99,16 @@ class _AxisCrossingState extends SampleViewState {
           ),
           Row(
             children: <Widget>[
-              Text('Labels near axis line',
+              Text('Labels Near Axisline',
                   style: TextStyle(color: model.textColor, fontSize: 16)),
-              SizedBox(
+              Container(
                   width: 75,
                   child: CheckboxListTile(
                       activeColor: model.backgroundColor,
                       value: _isPlaceLabelsNearAxisLine,
                       onChanged: (bool? value) {
                         setState(() {
-                          _isPlaceLabelsNearAxisLine = value;
+                          _isPlaceLabelsNearAxisLine = value!;
                           stateSetter(() {});
                         });
                       })),
@@ -136,7 +134,7 @@ class _AxisCrossingState extends SampleViewState {
               : _selectedAxisType == 'x'
                   ? _isPlaceLabelsNearAxisLine ?? true
                   : true,
-          crossesAt: _selectedAxisType == 'x' ? _crossAt : 0,
+          crossesAt: _selectedAxisType == 'x' ? _crossAt ?? 0 : 0,
           minorTicksPerInterval: 3),
       primaryYAxis: NumericAxis(
           minimum: -8,
@@ -147,7 +145,7 @@ class _AxisCrossingState extends SampleViewState {
               : _selectedAxisType == 'y'
                   ? _isPlaceLabelsNearAxisLine ?? true
                   : true,
-          crossesAt: _selectedAxisType == 'y' ? _crossAt : 0,
+          crossesAt: _selectedAxisType == 'y' ? _crossAt ?? 0 : 0,
           minorTicksPerInterval: 3),
       series: _getSeries(_selectedSeriesType),
       tooltipBehavior: _tooltipBehavior,
@@ -158,25 +156,28 @@ class _AxisCrossingState extends SampleViewState {
   /// the spline chart with axis crossing.
 
   List<ChartSeries<ChartSampleData, num>> _getSeries(String seriesType) {
-    return <ChartSeries<ChartSampleData, num>>[
+    List<ChartSeries<ChartSampleData, num>> chart;
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: -7, y: -3),
+      ChartSampleData(x: -4.5, y: -2),
+      ChartSampleData(x: -3.5, y: 0),
+      ChartSampleData(x: -3, y: 2),
+      ChartSampleData(x: 0, y: 7),
+      ChartSampleData(x: 3, y: 2),
+      ChartSampleData(x: 3.5, y: 0),
+      ChartSampleData(x: 4.5, y: -2),
+      ChartSampleData(x: 7, y: -3),
+    ];
+    chart = <ChartSeries<ChartSampleData, num>>[
       SplineSeries<ChartSampleData, num>(
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: -7, y: -3),
-            ChartSampleData(x: -4.5, y: -2),
-            ChartSampleData(x: -3.5, y: 0),
-            ChartSampleData(x: -3, y: 2),
-            ChartSampleData(x: 0, y: 7),
-            ChartSampleData(x: 3, y: 2),
-            ChartSampleData(x: 3.5, y: 0),
-            ChartSampleData(x: 4.5, y: -2),
-            ChartSampleData(x: 7, y: -3),
-          ],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           color: const Color.fromRGBO(20, 122, 20, 1),
           name: 'Cubic Interpolation',
           width: 2),
     ];
+    return chart;
   }
 
   /// Method for updating the axis type on change.
@@ -190,11 +191,5 @@ class _AxisCrossingState extends SampleViewState {
     setState(() {
       /// update the axis type changes
     });
-  }
-
-  @override
-  void dispose() {
-    _axis!.clear();
-    super.dispose();
   }
 }

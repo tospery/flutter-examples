@@ -23,6 +23,10 @@ class _RadialSliderThumbState extends SampleViewState {
   double _progressValue2 = 75;
   double _progressValue3 = 75;
   double _size = 150;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,38 +38,55 @@ class _RadialSliderThumbState extends SampleViewState {
       return Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
             _buildSliderWithCircle(),
-            const Center(child: Text('Circle thumb')),
+            Center(child: Text('Circle thumb')),
             _buildSliderWithRectangle(),
-            const Center(child: Text('Rectangle thumb')),
+            Center(child: Text('Rectangle thumb')),
             _buildSliderWithImage(),
-            const Center(child: Text('Image thumb')),
+            Center(child: Text('Image thumb')),
           ]));
     } else {
       _size = MediaQuery.of(context).size.width / 4.5;
       return Center(
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          _buildSliderWithCircle(),
-          const Center(child: Text('Circle thumb')),
-        ]),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          _buildSliderWithRectangle(),
-          const Center(child: Text('Rectangle thumb')),
-        ]),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          _buildSliderWithImage(),
-          const Center(child: Text('Image thumb')),
-        ]),
-      ]));
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildSliderWithCircle(),
+                  Center(child: Text('Circle thumb')),
+                ]),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildSliderWithRectangle(),
+                  Center(child: Text('Rectangle thumb')),
+                ]),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildSliderWithImage(),
+                  Center(child: Text('Image thumb')),
+                ]),
+          ]));
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   /// Returns gradient progress style circular progress bar.
   Widget _buildSliderWithCircle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -75,7 +96,7 @@ class _RadialSliderThumbState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
@@ -85,11 +106,11 @@ class _RadialSliderThumbState extends SampleViewState {
                     width: 0.1,
                     sizeUnit: GaugeSizeUnit.factor,
                     color: model.isWebFullView
-                        ? const Color.fromRGBO(197, 91, 226, 1)
+                        ? Color.fromRGBO(197, 91, 226, 1)
                         : null,
-                    gradient: const SweepGradient(colors: <Color>[
-                      Color.fromRGBO(197, 91, 226, 1),
-                      Color.fromRGBO(115, 67, 189, 1)
+                    gradient: SweepGradient(colors: <Color>[
+                      const Color.fromRGBO(197, 91, 226, 1),
+                      const Color.fromRGBO(115, 67, 189, 1)
                     ], stops: <double>[
                       0.5,
                       1
@@ -117,7 +138,7 @@ class _RadialSliderThumbState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget _buildSliderWithRectangle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -127,7 +148,7 @@ class _RadialSliderThumbState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
@@ -137,11 +158,11 @@ class _RadialSliderThumbState extends SampleViewState {
                     width: 0.1,
                     sizeUnit: GaugeSizeUnit.factor,
                     color: model.isWebFullView
-                        ? const Color.fromRGBO(197, 91, 226, 1)
+                        ? Color.fromRGBO(197, 91, 226, 1)
                         : null,
-                    gradient: const SweepGradient(colors: <Color>[
-                      Color.fromRGBO(197, 91, 226, 1),
-                      Color.fromRGBO(115, 67, 189, 1)
+                    gradient: SweepGradient(colors: <Color>[
+                      const Color.fromRGBO(197, 91, 226, 1),
+                      const Color.fromRGBO(115, 67, 189, 1)
                     ], stops: <double>[
                       0.5,
                       1
@@ -169,7 +190,7 @@ class _RadialSliderThumbState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget _buildSliderWithImage() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -179,7 +200,7 @@ class _RadialSliderThumbState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
@@ -188,9 +209,9 @@ class _RadialSliderThumbState extends SampleViewState {
                     value: _progressValue3,
                     width: 0.1,
                     sizeUnit: GaugeSizeUnit.factor,
-                    gradient: const SweepGradient(colors: <Color>[
-                      Color.fromRGBO(197, 91, 226, 1),
-                      Color.fromRGBO(115, 67, 189, 1)
+                    gradient: SweepGradient(colors: <Color>[
+                      const Color.fromRGBO(197, 91, 226, 1),
+                      const Color.fromRGBO(115, 67, 189, 1)
                     ], stops: <double>[
                       0.5,
                       1
@@ -223,7 +244,7 @@ class _RadialSliderThumbState extends SampleViewState {
   }
 
   void handleFirstPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _progressValue1).abs() > 20) {
+    if ((args.value.round().toInt() - _progressValue1).abs() > 20) {
       args.cancel = true;
     }
   }
@@ -235,7 +256,7 @@ class _RadialSliderThumbState extends SampleViewState {
   }
 
   void handleSecondPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _progressValue2).abs() > 20) {
+    if ((args.value.round().toInt() - _progressValue2).abs() > 20) {
       args.cancel = true;
     }
   }
@@ -247,7 +268,7 @@ class _RadialSliderThumbState extends SampleViewState {
   }
 
   void handleThirdPointerValueChanging(ValueChangingArgs args) {
-    if ((args.value.round() - _progressValue3).abs() > 20) {
+    if ((args.value.round().toInt() - _progressValue3).abs() > 20) {
       args.cancel = true;
     }
   }

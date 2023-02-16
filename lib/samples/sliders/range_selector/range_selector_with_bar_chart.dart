@@ -1,7 +1,6 @@
 ///Package imports
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 ///Chart import
@@ -49,7 +48,7 @@ class _RangeSelectorBarChartPageState extends SampleViewState
     super.initState();
 
     _chartData = <_ChartSampleData>[
-      _ChartSampleData(x: DateTime(2020, 06), y: 100.0),
+      _ChartSampleData(x: DateTime(2020, 06, 01), y: 100.0),
       _ChartSampleData(x: DateTime(2020, 06, 02), y: 150.541),
       _ChartSampleData(x: DateTime(2020, 06, 03), y: -25.818),
       _ChartSampleData(x: DateTime(2020, 06, 04), y: 30.51),
@@ -99,95 +98,100 @@ class _RangeSelectorBarChartPageState extends SampleViewState
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final bool isLightTheme =
-        themeData.colorScheme.brightness == Brightness.light;
+    final bool isLightTheme = themeData.brightness == Brightness.light;
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
-    return Stack(
-      children: <Widget>[
-        Center(
-          child: Container(
-              padding: const EdgeInsets.only(bottom: 40),
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
-                      child: Text(
-                        'Sales Metrics',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    SfRangeSelectorTheme(
-                        data: SfRangeSelectorThemeData(
-                          thumbColor:
-                              isLightTheme ? Colors.white : Colors.black,
-                          thumbStrokeColor:
-                              isLightTheme ? Colors.black : Colors.white,
-                          thumbStrokeWidth: 2.0,
-                          activeTrackHeight: 2.5,
-                          inactiveTrackHeight: 1.0,
-                          activeTrackColor:
-                              isLightTheme ? Colors.black : Colors.white,
-                          inactiveTrackColor:
-                              isLightTheme ? Colors.black : Colors.white,
-                          inactiveRegionColor: isLightTheme
-                              ? Colors.white.withOpacity(0.75)
-                              : const Color.fromRGBO(33, 33, 33, 0.75),
-                          tooltipBackgroundColor:
-                              isLightTheme ? Colors.black : Colors.white,
-                          overlayColor: isLightTheme
-                              ? Colors.black.withOpacity(0.12)
-                              : Colors.white.withOpacity(0.12),
-                          tooltipTextStyle: TextStyle(
-                              color:
-                                  isLightTheme ? Colors.white : Colors.black),
+    return Container(
+      child: Stack(
+        children: <Widget>[
+          Center(
+            child: Container(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
+                        child: Text(
+                          'Sales Metrics',
+                          style: TextStyle(fontSize: 20),
                         ),
-                        child: SfRangeSelector(
-                          min: _dayMin.subtract(
-                            Duration.zero,
-                          ),
-                          max: _dayMax.add(
-                            Duration.zero,
-                          ),
-                          controller: _rangeController,
-                          dateFormat: DateFormat.yMd(),
-                          enableTooltip: true,
-                          thumbShape: ThumbShape(),
-                          trackShape: TrackShape(),
-                          overlayShape: OverlayShape(),
-                          tooltipShape: TooltipShape(),
-                          onChanged: (SfRangeValues values) {
-                            setState(() {
-                              _updateProfit(values);
-                            });
-                          },
-                          child: SizedBox(
-                            width: mediaQueryData.orientation ==
-                                    Orientation.landscape
-                                ? model.isWebFullView
-                                    ? mediaQueryData.size.width * 0.5
-                                    : mediaQueryData.size.width
-                                : mediaQueryData.size.width,
-                            height: mediaQueryData.size.height * 0.40 - 25,
-                            child: _getColumnChart(),
-                          ),
-                        )),
-                  ])),
-        ),
-        Padding(
-          padding: mediaQueryData.orientation == Orientation.landscape ||
-                  model.isWebFullView
-              ? EdgeInsets.only(bottom: mediaQueryData.size.height * 0.1)
-              : EdgeInsets.only(bottom: mediaQueryData.size.height * 0.2),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Text(
-              _profitText,
-              style: const TextStyle(fontSize: 18.0),
-            ),
+                      ),
+                      Container(
+                        child: SfRangeSelectorTheme(
+                            data: SfRangeSelectorThemeData(
+                              thumbColor:
+                                  isLightTheme ? Colors.white : Colors.black,
+                              thumbStrokeColor:
+                                  isLightTheme ? Colors.black : Colors.white,
+                              thumbStrokeWidth: 2.0,
+                              activeTrackHeight: 2.5,
+                              inactiveTrackHeight: 1.0,
+                              activeTrackColor:
+                                  isLightTheme ? Colors.black : Colors.white,
+                              inactiveTrackColor:
+                                  isLightTheme ? Colors.black : Colors.white,
+                              inactiveRegionColor: isLightTheme
+                                  ? Colors.white.withOpacity(0.75)
+                                  : Color.fromRGBO(33, 33, 33, 0.75),
+                              tooltipBackgroundColor:
+                                  isLightTheme ? Colors.black : Colors.white,
+                              overlayColor: isLightTheme
+                                  ? Colors.black.withOpacity(0.12)
+                                  : Colors.white.withOpacity(0.12),
+                              tooltipTextStyle: TextStyle(
+                                  color: isLightTheme
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
+                            child: SfRangeSelector(
+                              min: _dayMin.subtract(
+                                Duration(days: 0, hours: 0),
+                              ),
+                              max: _dayMax.add(
+                                Duration(days: 0, hours: 0),
+                              ),
+                              controller: _rangeController,
+                              dateFormat: DateFormat.yMd(),
+                              enableTooltip: true,
+                              thumbShape: ThumbShape(),
+                              trackShape: TrackShape(),
+                              overlayShape: OverlayShape(),
+                              tooltipShape: TooltipShape(),
+                              onChanged: (SfRangeValues values) {
+                                setState(() {
+                                  _updateProfit(values);
+                                });
+                              },
+                              child: Container(
+                                width: mediaQueryData.orientation ==
+                                        Orientation.landscape
+                                    ? model.isWebFullView
+                                        ? mediaQueryData.size.width * 0.5
+                                        : mediaQueryData.size.width
+                                    : mediaQueryData.size.width,
+                                height: mediaQueryData.size.height * 0.40 - 25,
+                                child: _getColumnChart(),
+                              ),
+                            )),
+                      ),
+                    ])),
           ),
-        )
-      ],
+          Padding(
+            padding: mediaQueryData.orientation == Orientation.landscape ||
+                    model.isWebFullView
+                ? EdgeInsets.only(bottom: mediaQueryData.size.height * 0.1)
+                : EdgeInsets.only(bottom: mediaQueryData.size.height * 0.2),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                _profitText,
+                style: TextStyle(fontSize: 18.0),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -195,7 +199,7 @@ class _RangeSelectorBarChartPageState extends SampleViewState
   SfCartesianChart _getColumnChart() {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
-      margin: EdgeInsets.zero,
+      margin: const EdgeInsets.all(0),
       primaryXAxis: DateTimeAxis(
         isVisible: false,
         minimum: _dayMin,
@@ -219,7 +223,7 @@ class _RangeSelectorBarChartPageState extends SampleViewState
         yValueMapper: (_ChartSampleData data, _) => data.y,
         pointColorMapper: (_ChartSampleData data, _) =>
             data.y < 0 ? Colors.red : Colors.green,
-        borderRadius: const BorderRadius.all(Radius.circular(15)),
+        borderRadius: BorderRadius.all(Radius.circular(15)),
       )
     ];
   }
@@ -254,13 +258,13 @@ class _RangeSelectorBarChartPageState extends SampleViewState
 
 //Chart sample data
 class _ChartSampleData {
-  /// Holds the data point values like x, y, etc.,
-  _ChartSampleData({required this.x, required this.y});
+  /// Holds the datapoint values like x, y, etc.,
+  _ChartSampleData({this.x, this.y});
 
-  /// Holds x value of the data point
-  final DateTime x;
+  /// Holds x value of the datapoint
+  final dynamic x;
 
-  final num y;
+  final dynamic y;
 }
 
 /// To move the thumb to center of the chart, we will override the `paint`

@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 
 /// Package import
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -30,21 +31,20 @@ bool isImageloaded = false;
 /// State class of the customized bar chart.
 class _BarCustomizationState extends SampleViewState {
   _BarCustomizationState();
+  late TooltipBehavior _tooltipBehavior;
 
-  TooltipBehavior? _tooltipBehavior;
+  Future<void> _init() async {
+    final ByteData data = await rootBundle.load('images/dashline.png');
+    image = await _loadImage(Uint8List.view(data.buffer));
+  }
 
-  void _loadImage() {
-    final Completer<ImageInfo> completer = Completer<ImageInfo>();
-    const ImageProvider imageProvider = AssetImage('images/dashline.png');
-    imageProvider
-        .resolve(ImageConfiguration.empty)
-        .addListener(ImageStreamListener((ImageInfo info, bool _) async {
+  Future<ui.Image> _loadImage(List<int> img) async {
+    final Completer<ui.Image> completer = Completer<ui.Image>();
+    ui.decodeImageFromList(img as Uint8List, (ui.Image img) {
       isImageloaded = true;
-      completer.complete(info);
-      final ImageInfo imageInfo = await completer.future;
-
-      image = imageInfo.image;
-    }));
+      return completer.complete(img);
+    });
+    return completer.future;
   }
 
   @override
@@ -52,7 +52,7 @@ class _BarCustomizationState extends SampleViewState {
     _tooltipBehavior =
         TooltipBehavior(enable: true, canShowMarker: false, header: '');
     super.initState();
-    _loadImage();
+    _init();
   }
 
   @override
@@ -68,21 +68,18 @@ class _BarCustomizationState extends SampleViewState {
               ? ''
               : 'Popular Android apps in the Google play store'),
       primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
           title: AxisTitle(text: isCardView ? '' : 'Downloads in Billion'),
-          minimum: 0,
-          maximum: model.isWebFullView ? 4.5 : 5,
-          interval: model.isWebFullView ? 0.5 : 1,
-          majorGridLines: const MajorGridLines(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorGridLines: MajorGridLines(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: <ChartSeries<ChartSampleData, String>>[
         BarSeries<ChartSampleData, String>(
           onCreateRenderer: (ChartSeries<ChartSampleData, String> series) {
             return _CustomBarSeriesRenderer();
           },
-          dataLabelSettings: const DataLabelSettings(isVisible: true),
+          dataLabelSettings: DataLabelSettings(isVisible: true),
           dataSource: <ChartSampleData>[
             ChartSampleData(
                 x: 'Facebook', y: 4.119, pointColor: Colors.redAccent),
@@ -95,7 +92,7 @@ class _BarCustomizationState extends SampleViewState {
             ChartSampleData(
                 x: 'Subway Surfers', y: 1.025, pointColor: Colors.yellow),
           ],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
         )
       ],

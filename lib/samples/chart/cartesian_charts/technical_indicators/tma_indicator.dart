@@ -1,6 +1,6 @@
 /// Package imports
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -23,8 +23,8 @@ class TMAIndicator extends SampleView {
 class _TMAIndicatorState extends SampleViewState {
   _TMAIndicatorState();
   late double _period;
-  TrackballBehavior? _trackballBehavior;
-  TooltipBehavior? _tooltipBehavior;
+  late TrackballBehavior _trackballBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     super.initState();
@@ -45,6 +45,8 @@ class _TMAIndicatorState extends SampleViewState {
   @override
   Widget buildSettings(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Text(
           'Period',
@@ -69,22 +71,23 @@ class _TMAIndicatorState extends SampleViewState {
 
   /// Returns the OHLC chart with Triangular moving average indicator.
   SfCartesianChart _buildDefaulTMAIndicator() {
+    final List<ChartSampleData> chartData = getChartData();
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       legend: Legend(isVisible: !isCardView),
       primaryXAxis: DateTimeAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         dateFormat: DateFormat.MMM(),
         interval: 3,
-        minimum: DateTime(2016),
-        maximum: DateTime(2017),
+        minimum: DateTime(2016, 01, 01),
+        maximum: DateTime(2017, 01, 01),
       ),
       primaryYAxis: NumericAxis(
           minimum: 70,
           maximum: 130,
           interval: 20,
-          labelFormat: r'${value}',
-          axisLine: const AxisLine(width: 0)),
+          labelFormat: '\${value}',
+          axisLine: AxisLine(width: 0)),
       trackballBehavior: _trackballBehavior,
       tooltipBehavior: _tooltipBehavior,
       indicators: <TechnicalIndicators<ChartSampleData, DateTime>>[
@@ -96,9 +99,9 @@ class _TMAIndicatorState extends SampleViewState {
       series: <ChartSeries<ChartSampleData, DateTime>>[
         HiloOpenCloseSeries<ChartSampleData, DateTime>(
             emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.zero),
-            dataSource: getChartData(),
+            dataSource: chartData,
             opacity: 0.7,
-            xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+            xValueMapper: (ChartSampleData sales, _) => sales.x,
             lowValueMapper: (ChartSampleData sales, _) => sales.low,
             highValueMapper: (ChartSampleData sales, _) => sales.high,
             openValueMapper: (ChartSampleData sales, _) => sales.open,

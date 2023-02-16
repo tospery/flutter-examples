@@ -2,14 +2,13 @@
 import 'package:flutter/material.dart';
 
 ///XlsIO import
-// ignore: depend_on_referenced_packages
-import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Alignment;
 import 'package:syncfusion_officechart/officechart.dart';
 
 ///Local imports
 import '../../../model/sample_view.dart';
-import '../../common/export/save_file_mobile.dart'
-    if (dart.library.html) '../../common/export/save_file_web.dart';
+import '../helper/save_file_mobile.dart'
+    if (dart.library.html) '../helper/save_file_web.dart';
 
 /// Render xlsio of expenses report
 class ExpensesReportXlsIO extends SampleView {
@@ -28,28 +27,32 @@ class _ExpensesReportXlsIOState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'The XlsIO package is a non-UI and reusable flutter library to create Excel reports programmatically with formatted text, numbers, datetime, number formats, cell styles, images, charts and more.\r\n\r\nThis sample showcases on how to create a simple Excel report for expenses with data, chart, formulas, and cell formatting using XlsIO.',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 20, width: 30),
-            Align(
-                child: TextButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(model.backgroundColor),
-                padding: model.isMobile
-                    ? null
-                    : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15)),
-              ),
-              onPressed: _generateExcel,
-              child: const Text('Generate Excel',
-                  style: TextStyle(color: Colors.white)),
-            ))
-          ],
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'The XlsIO package is a non-UI and reusable flutter library to create Excel reports programmatically with formatted text, numbers, datetime, number formats, cell styles, images, charts and more.\r\n\r\nThis sample showcases on how to create a simple Excel report for expenses with data, chart, formulas, and cell formatting using XlsIO.',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 20, width: 30),
+              Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          model.backgroundColor),
+                      padding: model.isMobile
+                          ? null
+                          : MaterialStateProperty.all(EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15)),
+                    ),
+                    onPressed: _generateExcel,
+                    child: const Text('Generate Excel',
+                        style: TextStyle(color: Colors.white)),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -65,12 +68,12 @@ class _ExpensesReportXlsIOState extends SampleViewState {
     sheet1.showGridlines = false;
 
     sheet1.enableSheetCalculations();
-    sheet1.getRangeByIndex(1, 1).columnWidth = 19.13;
-    sheet1.getRangeByIndex(1, 2).columnWidth = 13.65;
-    sheet1.getRangeByIndex(1, 3).columnWidth = 12.25;
-    sheet1.getRangeByIndex(1, 4).columnWidth = 11.35;
-    sheet1.getRangeByIndex(1, 5).columnWidth = 8.09;
-    sheet1.getRangeByName('A1:A18').rowHeight = 19.47;
+    sheet1.getRangeByIndex(1, 1).columnWidth = 19.86;
+    sheet1.getRangeByIndex(1, 2).columnWidth = 14.38;
+    sheet1.getRangeByIndex(1, 3).columnWidth = 12.98;
+    sheet1.getRangeByIndex(1, 4).columnWidth = 12.08;
+    sheet1.getRangeByIndex(1, 5).columnWidth = 8.82;
+    sheet1.getRangeByName('A1:A18').rowHeight = 20.2;
 
     //Adding cell style.
     final Style style1 = workbook.styles.add('Style1');
@@ -82,7 +85,7 @@ class _ExpensesReportXlsIOState extends SampleViewState {
     final Style style2 = workbook.styles.add('Style2');
     style2.backColor = '#8EA9DB';
     style2.vAlign = VAlignType.center;
-    style2.numberFormat = r'[Red]($#,###)';
+    style2.numberFormat = '[Red](\$#,###)';
     style2.bold = true;
 
     sheet1.getRangeByName('A10').cellStyle = style1;
@@ -101,7 +104,7 @@ class _ExpensesReportXlsIOState extends SampleViewState {
     sheet1.getRangeByName('A18:C18').cellStyle.backColor = '#8EA9DB';
     sheet1.getRangeByName('A18:C18').cellStyle.vAlign = VAlignType.center;
     sheet1.getRangeByName('A18:C18').cellStyle.bold = true;
-    sheet1.getRangeByName('A18:C18').numberFormat = r'$#,###';
+    sheet1.getRangeByName('A18:C18').numberFormat = '\$#,###';
 
     sheet1.getRangeByIndex(10, 1).text = 'Category';
     sheet1.getRangeByIndex(10, 2).text = 'Expected cost';
@@ -111,23 +114,23 @@ class _ExpensesReportXlsIOState extends SampleViewState {
     sheet1.getRangeByIndex(12, 1).text = 'Seating & Decor';
     sheet1.getRangeByIndex(13, 1).text = 'Technical team';
     sheet1.getRangeByIndex(14, 1).text = 'Performers';
-    sheet1.getRangeByIndex(15, 1).text = "Performer's transport";
-    sheet1.getRangeByIndex(16, 1).text = "Performer's stay";
+    sheet1.getRangeByIndex(15, 1).text = 'Performer\'s transport';
+    sheet1.getRangeByIndex(16, 1).text = 'Performer\'s stay';
     sheet1.getRangeByIndex(17, 1).text = 'Marketing';
     sheet1.getRangeByIndex(18, 1).text = 'Total';
 
-    sheet1.getRangeByName('B11:D17').numberFormat = r'$#,###';
-    sheet1.getRangeByName('D11').numberFormat = r'[Red]($#,###)';
-    sheet1.getRangeByName('D12').numberFormat = r'[Red]($#,###)';
-    sheet1.getRangeByName('D14').numberFormat = r'[Red]($#,###)';
+    sheet1.getRangeByName('B11:D17').numberFormat = '\$#,###';
+    sheet1.getRangeByName('D11').numberFormat = '[Red](\$#,###)';
+    sheet1.getRangeByName('D12').numberFormat = '[Red](\$#,###)';
+    sheet1.getRangeByName('D14').numberFormat = '[Red](\$#,###)';
 
-    sheet1.getRangeByName('B11').number = 6250;
-    sheet1.getRangeByName('B12').number = 4600;
-    sheet1.getRangeByName('B13').number = 7000;
-    sheet1.getRangeByName('B14').number = 8400;
-    sheet1.getRangeByName('B15').number = 3750;
+    sheet1.getRangeByName('B11').number = 16250;
+    sheet1.getRangeByName('B12').number = 1600;
+    sheet1.getRangeByName('B13').number = 1000;
+    sheet1.getRangeByName('B14').number = 12400;
+    sheet1.getRangeByName('B15').number = 3000;
     sheet1.getRangeByName('B16').number = 4500;
-    sheet1.getRangeByName('B17').number = 5600;
+    sheet1.getRangeByName('B17').number = 3000;
     sheet1.getRangeByName('B18').formula = '=SUM(B11:B17)';
 
     sheet1.getRangeByName('C11').number = 17500;
@@ -150,7 +153,7 @@ class _ExpensesReportXlsIOState extends SampleViewState {
 
     final ChartCollection charts = ChartCollection(sheet1);
     final Chart chart = charts.add();
-    chart.chartType = ExcelChartType.doughnut;
+    chart.chartType = ExcelChartType.pie;
     chart.dataRange = sheet1.getRangeByName('A11:B17');
     chart.isSeriesInRows = false;
     chart.chartTitle = 'Event Expenses';
@@ -160,14 +163,12 @@ class _ExpensesReportXlsIOState extends SampleViewState {
     chart.bottomRow = 10;
     chart.leftColumn = 1;
     chart.rightColumn = 5;
-    chart.series[0].dataLabels.isValue = true;
-    chart.series[0].serieFormat.commonSerieOptions.holeSizePercent = 40;
     sheet1.charts = charts;
 
-    final List<int> bytes = workbook.saveAsStream();
+    final List<int>? bytes = workbook.saveAsStream();
     workbook.dispose();
 
     //Launch file.
-    await FileSaveHelper.saveAndLaunchFile(bytes, 'ExpensesReport.xlsx');
+    await FileSaveHelper.saveAndLaunchFile(bytes!, 'ExpensesReport.xlsx');
   }
 }

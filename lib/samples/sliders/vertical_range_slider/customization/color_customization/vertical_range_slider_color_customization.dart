@@ -1,4 +1,5 @@
 ///Package import
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 ///Local import
@@ -17,8 +18,33 @@ class VerticalColorCustomizedRangeSliderPage extends SampleView {
 
 class _VerticalColorCustomizedRangeSliderPageState extends SampleViewState {
   _VerticalColorCustomizedRangeSliderPageState();
-  final GlobalKey gradientKey = GlobalKey();
 
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _ColorCustomizedRangeSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: rangeSlider),
+          );
+  }
+}
+
+class _ColorCustomizedRangeSlider extends SampleView {
+  @override
+  _ColorCustomizedRangeSliderState createState() =>
+      _ColorCustomizedRangeSliderState();
+}
+
+class _ColorCustomizedRangeSliderState extends SampleViewState {
   Widget _buildWebLayout() {
     return Center(
       child: Container(
@@ -30,19 +56,11 @@ class _VerticalColorCustomizedRangeSliderPageState extends SampleViewState {
   }
 
   Widget _buildMobileLayout() {
-    return VerticalGradientTrackRangeSlider(gradientKey);
+    return VerticalGradientTrackRangeSlider();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 400, child: rangeSlider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

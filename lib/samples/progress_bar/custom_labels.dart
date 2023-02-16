@@ -26,38 +26,32 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
   double _size = 150;
   late Timer _timer;
   double _value = 0;
-  late Widget _pauseImage;
-  late Widget _downloadImage;
+  Widget _image1 = Container(
+      height: 40,
+      width: 40,
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+        image: ExactAssetImage('images/pause.png'),
+        fit: BoxFit.fill,
+      )));
+  Widget _image2 = Container(
+      height: 40,
+      width: 40,
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+        image: ExactAssetImage('images/download.png'),
+        fit: BoxFit.fill,
+      )));
 
   @override
   void initState() {
     super.initState();
-    _pauseImage = Container(
-      height: 40,
-      width: 40,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: ExactAssetImage('images/pause.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
-    _downloadImage = Container(
-      height: 40,
-      width: 40,
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: ExactAssetImage('images/download.png'),
-          fit: BoxFit.fill,
-        ),
-      ),
-    );
     _startTimer();
   }
 
   void _startTimer() {
     if (mounted) {
-      _timer = Timer.periodic(const Duration(milliseconds: 20), (Timer timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 20), (Timer _timer) {
         _incrementPointerValue();
       });
     }
@@ -67,7 +61,7 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
     setState(() {
       if (_value == 100) {
         _timer.cancel();
-        _pauseImage = Container(
+        _image1 = Container(
             height: 40,
             width: 40,
             decoration: const BoxDecoration(
@@ -75,7 +69,7 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
               image: ExactAssetImage('images/play.png'),
               fit: BoxFit.fill,
             )));
-        _downloadImage = Container(
+        _image2 = Container(
             height: 40,
             width: 40,
             decoration: const BoxDecoration(
@@ -83,7 +77,7 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
               image: ExactAssetImage('images/Check.png'),
               fit: BoxFit.fill,
             )));
-        Future<dynamic>.delayed(const Duration(milliseconds: 500));
+        Future.delayed(const Duration(milliseconds: 500));
         _startTimer();
       } else {
         _value++;
@@ -101,7 +95,8 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _getFirstProgressBar(),
             _getSecondProgressBar(),
             _getThirdProgressBar(),
@@ -114,7 +109,8 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
       return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _getFirstProgressBar(),
             _getSecondProgressBar(),
             _getThirdProgressBar(),
@@ -132,18 +128,20 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
   }
 
   Widget _getFirstProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             radiusFactor: 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.2,
               cornerStyle: CornerStyle.bothCurve,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -170,19 +168,21 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
   }
 
   Widget _getSecondProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 270,
             endAngle: 270,
             radiusFactor: 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -195,26 +195,30 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(widget: Text(_value.toStringAsFixed(0) + '%'))
+              GaugeAnnotation(
+                  positionFactor: 0,
+                  widget: Text(_value.toStringAsFixed(0) + '%'))
             ])
       ]),
     );
   }
 
   Widget _getThirdProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 270,
             endAngle: 270,
             radiusFactor: 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -227,26 +231,32 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(positionFactor: 0.05, widget: _pauseImage)
+              GaugeAnnotation(
+                  positionFactor: 0.05,
+                  horizontalAlignment: GaugeAlignment.center,
+                  verticalAlignment: GaugeAlignment.center,
+                  widget: _image1)
             ])
       ]),
     );
   }
 
   Widget _getFourthProgressBar() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 270,
             endAngle: 270,
             radiusFactor: 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -259,7 +269,11 @@ class _ProgressBarCustomLabelsState extends SampleViewState {
                   animationType: AnimationType.linear)
             ],
             annotations: <GaugeAnnotation>[
-              GaugeAnnotation(positionFactor: 0.05, widget: _downloadImage)
+              GaugeAnnotation(
+                  positionFactor: 0.05,
+                  horizontalAlignment: GaugeAlignment.center,
+                  verticalAlignment: GaugeAlignment.center,
+                  widget: _image2)
             ])
       ]),
     );

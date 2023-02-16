@@ -1,17 +1,16 @@
-/// Packages import
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
-
-/// DataGrid import
-// ignore: depend_on_referenced_packages
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_examples/model/sample_view.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-
-import '../../../model/sample_view.dart';
-import '../datagridsource/orderinfo_datagridsource.dart';
 
 /// Renders sorting data grid
 class SortingDataGrid extends SampleView {
   /// Creates sorting data grid
-  const SortingDataGrid({Key? key}) : super(key: key);
+  SortingDataGrid({Key? key}) : super(key: key);
 
   @override
   _SortingDataGridState createState() => _SortingDataGridState();
@@ -19,8 +18,7 @@ class SortingDataGrid extends SampleView {
 
 class _SortingDataGridState extends SampleViewState {
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  final OrderInfoDataGridSource sortingDataGridSource =
-      OrderInfoDataGridSource(isWebOrDesktop: true, orderDataCount: 100);
+  final _SortingDataSource sortingDataGridSource = _SortingDataSource();
 
   /// Decide to perform sorting in SfDataGrid.
   bool allowSorting = true;
@@ -45,8 +43,8 @@ class _SortingDataGridState extends SampleViewState {
   @override
   void initState() {
     super.initState();
-    isWebOrDesktop = model.isWeb || model.isDesktop;
-    sortingDataGridSource.sortedColumns.add(const SortColumnDetails(
+    isWebOrDesktop = (model.isWeb || model.isDesktop);
+    sortingDataGridSource.sortedColumns.add(SortColumnDetails(
         name: 'id', sortDirection: DataGridSortDirection.descending));
   }
 
@@ -78,116 +76,81 @@ class _SortingDataGridState extends SampleViewState {
   Widget buildSettings(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
-      return Column(
+      return ListView(
+        shrinkWrap: true,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text('Allow sorting',
-                  softWrap: false,
-                  style: TextStyle(fontSize: 16, color: model.textColor)),
-              Transform.scale(
+          ListTile(
+            title:
+                Text('Allow sorting', style: TextStyle(color: model.textColor)),
+            trailing: Transform.scale(
+                scale: 0.8,
+                child: CupertinoSwitch(
+                  value: allowSorting,
+                  onChanged: (bool value) {
+                    setState(() {
+                      allowSorting = value;
+                      stateSetter(() {});
+                    });
+                  },
+                )),
+          ),
+          ListTile(
+              title: Text('Allow multiple column sorting',
+                  style: TextStyle(color: model.textColor)),
+              trailing: Transform.scale(
                   scale: 0.8,
                   child: CupertinoSwitch(
-                    activeColor: model.backgroundColor,
-                    value: allowSorting,
+                    value: allowMultiSorting,
                     onChanged: (bool value) {
                       setState(() {
-                        allowSorting = value;
+                        allowMultiSorting = value;
                         stateSetter(() {});
                       });
                     },
-                  ))
-            ],
+                  ))),
+          ListTile(
+              title: Text('Allow tri-state sorting',
+                  style: TextStyle(color: model.textColor)),
+              trailing: Transform.scale(
+                  scale: 0.8,
+                  child: CupertinoSwitch(
+                    value: allowTriStateSorting,
+                    onChanged: (bool value) {
+                      setState(() {
+                        allowTriStateSorting = value;
+                        stateSetter(() {});
+                      });
+                    },
+                  ))),
+          ListTile(
+            trailing: Transform.scale(
+                scale: 0.8,
+                child: CupertinoSwitch(
+                  value: allowColumnSorting,
+                  onChanged: (bool value) {
+                    setState(() {
+                      allowColumnSorting = value;
+                      stateSetter(() {});
+                    });
+                  },
+                )),
+            title: Text('Allow sorting for the Name column',
+                style: TextStyle(color: model.textColor)),
           ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                    model.isWebFullView
-                        ? 'Allow multiple \ncolumn sorting'
-                        : 'Allow multiple column sorting',
-                    softWrap: false,
-                    style: TextStyle(fontSize: 16.0, color: model.textColor)),
-                Transform.scale(
-                    scale: 0.8,
-                    child: CupertinoSwitch(
-                      activeColor: model.backgroundColor,
-                      value: allowMultiSorting,
-                      onChanged: (bool value) {
-                        setState(() {
-                          allowMultiSorting = value;
-                          stateSetter(() {});
-                        });
-                      },
-                    ))
-              ]),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                    model.isWebFullView
-                        ? 'Allow tri-state \nsorting'
-                        : 'Allow tri-state sorting',
-                    softWrap: false,
-                    style: TextStyle(fontSize: 16, color: model.textColor)),
-                Transform.scale(
-                    scale: 0.8,
-                    child: CupertinoSwitch(
-                      activeColor: model.backgroundColor,
-                      value: allowTriStateSorting,
-                      onChanged: (bool value) {
-                        setState(() {
-                          allowTriStateSorting = value;
-                          stateSetter(() {});
-                        });
-                      },
-                    ))
-              ]),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                    model.isWebFullView
-                        ? 'Allow sorting for the \nName column'
-                        : 'Allow sorting for the Name column',
-                    softWrap: false,
-                    style: TextStyle(fontSize: 16, color: model.textColor)),
-                Transform.scale(
-                    scale: 0.8,
-                    child: CupertinoSwitch(
-                      activeColor: model.backgroundColor,
-                      value: allowColumnSorting,
-                      onChanged: (bool value) {
-                        setState(() {
-                          allowColumnSorting = value;
-                          stateSetter(() {});
-                        });
-                      },
-                    )),
-              ]),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                    model.isWebFullView
-                        ? 'Display sort \nsequence numbers'
-                        : 'Display sort sequence numbers',
-                    softWrap: false,
-                    style: TextStyle(fontSize: 16, color: model.textColor)),
-                Transform.scale(
-                    scale: 0.8,
-                    child: CupertinoSwitch(
-                      activeColor: model.backgroundColor,
-                      value: showSortNumbers,
-                      onChanged: (bool value) {
-                        setState(() {
-                          showSortNumbers = value;
-                          stateSetter(() {});
-                        });
-                      },
-                    ))
-              ]),
+          ListTile(
+              title: Text('Display sort sequence numbers',
+                  style: TextStyle(color: model.textColor)),
+              trailing: Transform.scale(
+                  scale: 0.8,
+                  child: CupertinoSwitch(
+                    value: showSortNumbers,
+                    onChanged: (bool value) {
+                      setState(() {
+                        showSortNumbers = value;
+                        stateSetter(() {});
+                      });
+                    },
+                  ))),
         ],
       );
     });
@@ -195,7 +158,7 @@ class _SortingDataGridState extends SampleViewState {
 
   List<GridColumn> getColumns() {
     return <GridColumn>[
-      GridColumn(
+      GridTextColumn(
           columnName: 'id',
           columnWidthMode:
               !isWebOrDesktop ? ColumnWidthMode.none : ColumnWidthMode.fill,
@@ -206,13 +169,13 @@ class _SortingDataGridState extends SampleViewState {
                   : double.nan,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
               'Order ID',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'customerId',
           columnWidthMode:
               !isWebOrDesktop ? ColumnWidthMode.none : ColumnWidthMode.fill,
@@ -223,13 +186,13 @@ class _SortingDataGridState extends SampleViewState {
                   : double.nan,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
               'Customer ID',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'name',
           width: !isWebOrDesktop
               ? 80
@@ -238,14 +201,14 @@ class _SortingDataGridState extends SampleViewState {
                   : double.nan,
           label: Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
               'Name',
               overflow: TextOverflow.ellipsis,
             ),
           ),
           allowSorting: allowColumnSorting),
-      GridColumn(
+      GridTextColumn(
         columnName: 'freight',
         width: !isWebOrDesktop
             ? 120
@@ -254,14 +217,14 @@ class _SortingDataGridState extends SampleViewState {
                 : double.nan,
         label: Container(
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.all(8.0),
-          child: const Text(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
             'Freight',
             overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
-      GridColumn(
+      GridTextColumn(
         columnName: 'city',
         width: !isWebOrDesktop
             ? 90
@@ -272,27 +235,166 @@ class _SortingDataGridState extends SampleViewState {
             !isWebOrDesktop ? ColumnWidthMode.none : ColumnWidthMode.fill,
         label: Container(
           alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.all(8.0),
-          child: const Text(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
             'City',
             overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
-      GridColumn(
+      GridTextColumn(
         columnName: 'price',
         width:
             (isWebOrDesktop && model.isMobileResolution) ? 120.0 : double.nan,
         columnWidthMode: ColumnWidthMode.lastColumnFill,
         label: Container(
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.all(8.0),
-          child: const Text(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
             'Price',
             overflow: TextOverflow.ellipsis,
           ),
         ),
       )
     ];
+  }
+}
+
+class _Employee {
+  _Employee(
+      this.id, this.customerId, this.name, this.freight, this.city, this.price);
+  final int id;
+  final int customerId;
+  final String name;
+  final String city;
+  final double freight;
+  final double price;
+}
+
+class _SortingDataSource extends DataGridSource {
+  _SortingDataSource() {
+    employees = getEmployees();
+    buildDataGridRows();
+  }
+
+  List<_Employee> employees = [];
+
+  List<DataGridRow> dataGridRows = [];
+
+  void buildDataGridRows() {
+    dataGridRows = employees.map<DataGridRow>((dataGridRow) {
+      return DataGridRow(cells: [
+        DataGridCell(columnName: 'id', value: dataGridRow.id),
+        DataGridCell(columnName: 'customerId', value: dataGridRow.customerId),
+        DataGridCell(columnName: 'name', value: dataGridRow.name),
+        DataGridCell(columnName: 'freight', value: dataGridRow.freight),
+        DataGridCell(columnName: 'city', value: dataGridRow.city),
+        DataGridCell(columnName: 'price', value: dataGridRow.price),
+      ]);
+    }).toList(growable: false);
+  }
+
+  @override
+  List<DataGridRow> get rows => dataGridRows;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(cells: [
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[0].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[1].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            row.getCells()[2].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          )),
+      Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                .format(row.getCells()[3].value)
+                .toString(),
+            overflow: TextOverflow.ellipsis,
+          )),
+      Container(
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            row.getCells()[4].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          )),
+      Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            NumberFormat.currency(
+                    locale: 'en_US', symbol: '\$', decimalDigits: 0)
+                .format(row.getCells()[5].value)
+                .toString(),
+            overflow: TextOverflow.ellipsis,
+          )),
+    ]);
+  }
+
+  Random random = Random();
+
+  final List<String> names = <String>[
+    'Welli',
+    'Blonp',
+    'Folko',
+    'Furip',
+    'Folig',
+    'Picco',
+    'Frans',
+    'Warth',
+    'Linod',
+    'Simop',
+    'Merep',
+    'Riscu',
+    'Seves',
+    'Vaffe',
+    'Alfki',
+  ];
+
+  final List<String> cities = <String>[
+    'Bruxelles',
+    'Rosario',
+    'Recife',
+    'Graz',
+    'Montreal',
+    'Tsawassen',
+    'Campinas',
+    'Resende',
+  ];
+
+  List<_Employee> getEmployees() {
+    final List<_Employee> employeeData = <_Employee>[];
+    for (int i = 0; i < 30; i++) {
+      employeeData.add(_Employee(
+        1000 + i,
+        1700 + i,
+        names[i < names.length ? i : random.nextInt(names.length - 1)],
+        random.nextInt(1000) + random.nextDouble(),
+        cities[random.nextInt(cities.length - 1)],
+        1500.0 + random.nextInt(100),
+      ));
+    }
+    return employeeData;
   }
 }

@@ -19,25 +19,19 @@ class CategoryTicks extends SampleView {
 /// State class of the line chart with category label placement.
 class _CategoryTicksState extends SampleViewState {
   _CategoryTicksState();
-  List<String>? _labelPosition;
+  final List<String> _labelPosition =
+      <String>['betweenTicks', 'onTicks'].toList();
   late String _selectedType;
   late LabelPlacement _labelPlacement;
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
-    _labelPosition = <String>['betweenTicks', 'onTicks'].toList();
     _selectedType = 'betweenTicks';
     _labelPlacement = LabelPlacement.betweenTicks;
     _tooltipBehavior =
         TooltipBehavior(enable: true, header: '', canShowMarker: false);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _labelPosition!.clear();
-    super.dispose();
   }
 
   @override
@@ -60,19 +54,16 @@ class _CategoryTicksState extends SampleViewState {
                     fontSize: 16,
                   )),
               Container(
-                padding:
-                    EdgeInsets.fromLTRB(model.isWebFullView ? 4 : 20, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                 height: 50,
                 alignment: Alignment.bottomCenter,
                 child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
+                    underline: Container(color: Color(0xFFBDBDBD), height: 1),
                     value: _selectedType,
-                    items: _labelPosition!.map((String value) {
+                    items: _labelPosition.map((String value) {
                       return DropdownMenuItem<String>(
                           value: (value != null) ? value : 'betweenTicks',
-                          child: Text(value,
+                          child: Text('$value',
                               style: TextStyle(color: model.textColor)));
                     }).toList(),
                     onChanged: (dynamic value) {
@@ -93,11 +84,11 @@ class _CategoryTicksState extends SampleViewState {
       title: ChartTitle(text: isCardView ? '' : 'Employees task count'),
       plotAreaBorderWidth: 0,
       primaryXAxis: CategoryAxis(
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           labelPlacement: _labelPlacement),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(width: 0),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(width: 0),
           minimum: 7,
           maximum: 12,
           interval: 1),
@@ -108,19 +99,20 @@ class _CategoryTicksState extends SampleViewState {
 
   /// Returns the list of chart series which need to render on the line chart.
   List<LineSeries<ChartSampleData, String>> _getTicksCategoryAxisSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'John', yValue: 10),
+      ChartSampleData(x: 'Parker', yValue: 11),
+      ChartSampleData(x: 'David', yValue: 9),
+      ChartSampleData(x: 'Peter', yValue: 10),
+      ChartSampleData(x: 'Antony', yValue: 11),
+      ChartSampleData(x: 'Brit', yValue: 10)
+    ];
     return <LineSeries<ChartSampleData, String>>[
       LineSeries<ChartSampleData, String>(
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: 'John', yValue: 10),
-            ChartSampleData(x: 'Parker', yValue: 11),
-            ChartSampleData(x: 'David', yValue: 9),
-            ChartSampleData(x: 'Peter', yValue: 10),
-            ChartSampleData(x: 'Antony', yValue: 11),
-            ChartSampleData(x: 'Brit', yValue: 10)
-          ],
-          xValueMapper: (ChartSampleData data, _) => data.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData data, _) => data.x,
           yValueMapper: (ChartSampleData data, _) => data.yValue,
-          markerSettings: const MarkerSettings(isVisible: true))
+          markerSettings: MarkerSettings(isVisible: true))
     ];
   }
 

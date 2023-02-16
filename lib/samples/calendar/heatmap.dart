@@ -20,15 +20,13 @@ class HeatMapCalendar extends SampleView {
   const HeatMapCalendar(Key key) : super(key: key);
 
   @override
-  HeatMapCalendarCalendarState createState() => HeatMapCalendarCalendarState();
+  _HeatMapCalendarCalendarState createState() =>
+      _HeatMapCalendarCalendarState();
 }
 
-//// Represents the state class of HeatMapCalendar
-class HeatMapCalendarCalendarState extends SampleViewState {
-  /// Creates an instance of state class of HeatMapCalendar
-  HeatMapCalendarCalendarState();
+class _HeatMapCalendarCalendarState extends SampleViewState {
+  _HeatMapCalendarCalendarState();
 
-  /// Represents the controller
   final ScrollController controller = ScrollController();
 
   /// Global key used to maintain the state, when we change the parent of the
@@ -38,51 +36,55 @@ class HeatMapCalendarCalendarState extends SampleViewState {
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final Widget calendar = Theme(
+    final Widget _calendar = Theme(
 
         /// The key set here to maintain the state,
         ///  when we change the parent of the widget
         key: _globalKey,
-        data: model.themeData.copyWith(
-            colorScheme: model.themeData.colorScheme
-                .copyWith(secondary: model.backgroundColor)),
+        data: model.themeData.copyWith(accentColor: model.backgroundColor),
         child: _getHeatMapCalendar());
 
     return Scaffold(
       backgroundColor: model.cardThemeColor,
       body: Column(
+        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
+        children: [
           Expanded(
               child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                 Expanded(
                   child:
-                      Container(color: model.cardThemeColor, child: calendar),
+                      Container(color: model.cardThemeColor, child: _calendar),
                 )
               ])),
           Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
             height: 70,
             width: model.isMobileResolution ? screenWidth : screenWidth / 2,
             color: model.cardThemeColor,
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
+                mainAxisSize: MainAxisSize.max,
+                children: [
                   Row(
+                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const <Widget>[
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
                       Text('Less'),
                       Text('More'),
                     ],
                   ),
                   Container(
                     height: 20,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: <Color>[
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [
                           _kLightGrey,
                           _kLightGreen,
                           _kMidGreen,
@@ -108,7 +110,7 @@ class HeatMapCalendarCalendarState extends SampleViewState {
         view: CalendarView.month,
         monthCellBuilder: _monthCellBuilder,
         showDatePickerButton: true,
-        monthViewSettings: const MonthViewSettings(
+        monthViewSettings: MonthViewSettings(
           showTrailingAndLeadingDates: false,
         ));
   }
@@ -126,10 +128,10 @@ class HeatMapCalendarCalendarState extends SampleViewState {
   Widget _monthCellBuilder(
       BuildContext buildContext, MonthCellDetails details) {
     final Color backgroundColor = _getMonthCellBackgroundColor(details.date);
-    final Color defaultColor = model.themeData != null &&
-            model.themeData.colorScheme.brightness == Brightness.dark
-        ? Colors.black54
-        : Colors.white;
+    final Color defaultColor =
+        model.themeData != null && model.themeData.brightness == Brightness.dark
+            ? Colors.black54
+            : Colors.white;
     return Container(
       decoration: BoxDecoration(
           color: backgroundColor,
@@ -144,7 +146,7 @@ class HeatMapCalendarCalendarState extends SampleViewState {
   }
 
   Color _getMonthCellBackgroundColor(DateTime date) {
-    if (date.month.isEven) {
+    if (date.month % 2 == 0) {
       if (date.day % 6 == 0) {
         // 6, 12, 18, 24, 30
         return _kDarkerGreen;

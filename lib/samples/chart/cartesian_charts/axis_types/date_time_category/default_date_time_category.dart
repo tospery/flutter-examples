@@ -21,8 +21,8 @@ class DateTimeCategoryDefault extends SampleView {
 class _DateTimeCategoryDefaultState extends SampleViewState {
   _DateTimeCategoryDefaultState();
 
-  List<_OrdinalSales>? data;
-  TooltipBehavior? _tooltipBehavior;
+  late List<_OrdinalSales> data;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior = TooltipBehavior(enable: true);
@@ -45,14 +45,13 @@ class _DateTimeCategoryDefaultState extends SampleViewState {
 
   /// Returns the line chart with default datetime axis.
   SfCartesianChart _buildDefaultDateTimeAxisChart(BuildContext context) {
-    final Color labelColor =
-        model.themeData.colorScheme.brightness == Brightness.dark
-            ? Colors.white
-            : Colors.black;
+    final Color labelColor = model.themeData.brightness == Brightness.dark
+        ? Colors.white
+        : Colors.black;
     return SfCartesianChart(
         plotAreaBorderWidth: 0,
         primaryXAxis: DateTimeCategoryAxis(
-            majorGridLines: const MajorGridLines(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
             labelIntersectAction: isCardView
                 ? AxisLabelIntersectAction.multipleRows
                 : AxisLabelIntersectAction.rotate45,
@@ -61,6 +60,7 @@ class _DateTimeCategoryDefaultState extends SampleViewState {
             ),
             plotBands: <PlotBand>[
               PlotBand(
+                  isVisible: true,
                   start: DateTime(2017, 12, 22),
                   end: DateTime(2017, 12, 27),
                   textAngle: 0,
@@ -71,6 +71,7 @@ class _DateTimeCategoryDefaultState extends SampleViewState {
                   color: const Color.fromRGBO(50, 198, 255, 1),
                   opacity: 0.3),
               PlotBand(
+                  isVisible: true,
                   textAngle: 0,
                   start: DateTime(2018, 1, 2),
                   end: DateTime(2018, 1, 4),
@@ -87,22 +88,16 @@ class _DateTimeCategoryDefaultState extends SampleViewState {
         primaryYAxis: NumericAxis(
             labelFormat: '{value}M',
             interval: 20,
-            majorTickLines: const MajorTickLines(size: 0),
-            axisLine: const AxisLine(width: 0)),
+            majorTickLines: MajorTickLines(size: 0),
+            axisLine: AxisLine(width: 0)),
         series: <ColumnSeries<_OrdinalSales, DateTime>>[
           ColumnSeries<_OrdinalSales, DateTime>(
-            dataSource: data!,
+            dataSource: data,
             name: 'Sales',
             xValueMapper: (_OrdinalSales x, int xx) => x.year,
             yValueMapper: (_OrdinalSales sales, _) => sales.sales,
           ),
         ]);
-  }
-
-  @override
-  void dispose() {
-    data!.clear();
-    super.dispose();
   }
 }
 

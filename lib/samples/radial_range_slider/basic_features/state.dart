@@ -1,4 +1,5 @@
 ///Package imports
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 ///calendar import
@@ -27,6 +28,10 @@ class _RadialRangeSliderStateTypesState extends SampleViewState {
   final double _annotationFontSize = 25;
   String _annotationValue1 = '0';
   String _annotationValue2 = '30%';
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +47,9 @@ class _RadialRangeSliderStateTypesState extends SampleViewState {
           RadialAxis(
               radiusFactor: 0.8,
               axisLineStyle: AxisLineStyle(
-                  color:
-                      model.themeData.colorScheme.brightness == Brightness.light
-                          ? const Color.fromRGBO(191, 214, 245, 1)
-                          : const Color.fromRGBO(36, 58, 89, 1),
+                  color: model.themeData.brightness == Brightness.light
+                      ? Color.fromRGBO(191, 214, 245, 1)
+                      : Color.fromRGBO(36, 58, 89, 1),
                   thickness: 0.05,
                   thicknessUnit: GaugeSizeUnit.factor),
               showLabels: false,
@@ -120,7 +124,7 @@ class _RadialRangeSliderStateTypesState extends SampleViewState {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
       return Row(children: <Widget>[
-        Text('Enable drag', style: TextStyle(color: model.textColor)),
+        Text('Enable Drag', style: TextStyle(color: model.textColor)),
         Padding(
           padding: const EdgeInsets.fromLTRB(35, 0, 0, 0), //as you need
           child: Transform.scale(
@@ -142,11 +146,11 @@ class _RadialRangeSliderStateTypesState extends SampleViewState {
 
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
-  void handleSecondPointerValueChanged(double markerValue) {
+  void handleSecondPointerValueChanged(double value) {
     setState(() {
-      _secondMarkerValue = markerValue;
-      final int value = _secondMarkerValue.abs().toInt();
-      _annotationValue2 = '$value%';
+      _secondMarkerValue = value;
+      final int _value = _secondMarkerValue.abs().toInt();
+      _annotationValue2 = '$_value%';
     });
   }
 
@@ -159,11 +163,11 @@ class _RadialRangeSliderStateTypesState extends SampleViewState {
   }
 
   /// Value changed call back for first pointer
-  void handleFirstPointerValueChanged(double markerValue) {
+  void handleFirstPointerValueChanged(double value) {
     setState(() {
-      _firstMarkerValue = markerValue;
-      final int value = _firstMarkerValue.abs().toInt();
-      _annotationValue1 = '$value';
+      _firstMarkerValue = value;
+      final int _value = _firstMarkerValue.abs().toInt();
+      _annotationValue1 = '$_value';
     });
   }
 
@@ -173,5 +177,10 @@ class _RadialRangeSliderStateTypesState extends SampleViewState {
         (args.value - _firstMarkerValue).abs() > 10) {
       args.cancel = true;
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

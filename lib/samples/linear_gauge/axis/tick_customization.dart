@@ -1,6 +1,6 @@
 /// Flutter package imports
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 /// Gauge imports
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -25,16 +25,15 @@ class _TickCustomizationState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Container(
-          margin: const EdgeInsets.all(32.0), child: _buildSegmentedView()),
+    return Column(children: [
+      Container(margin: EdgeInsets.all(32.0), child: _buildSegmentedView()),
       Expanded(
           child: Center(
               child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-            SizedBox(
+                      children: [
+            Container(
               width: getScreenWidth(context, _isHorizontalOrientation),
               child: _buildLinearTickCustomization(context),
             )
@@ -45,12 +44,12 @@ class _TickCustomizationState extends SampleViewState {
   /// Returns the linear gauge tick customization.
   Widget _buildLinearTickCustomization(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 32.0),
+      padding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 32.0),
       child: _isHorizontalOrientation
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+              children: [
                 _buildHorizontalGauges('Outside ticks', _buildOutsideTicks()),
                 _buildHorizontalGauges('Cross ticks', _buildCrossTicks()),
                 _buildHorizontalGauges('Inside ticks', _buildInsideTicks()),
@@ -59,12 +58,13 @@ class _TickCustomizationState extends SampleViewState {
               ],
             )
           : Column(
-              children: <Widget>[
+              children: [
                 Wrap(
+                  direction: Axis.horizontal,
                   runSpacing: 30,
                   spacing: 16,
                   alignment: WrapAlignment.center,
-                  children: <Widget>[
+                  children: [
                     _buildVerticalGauges('Outside ticks', _buildOutsideTicks()),
                     _buildVerticalGauges('Cross ticks', _buildCrossTicks()),
                     _buildVerticalGauges('Inside ticks', _buildInsideTicks()),
@@ -82,31 +82,27 @@ class _TickCustomizationState extends SampleViewState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: [
         Text(axisTrackName),
         linearGauge,
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
       ],
     );
   }
 
   /// Returns the vertical axis track.
   Widget _buildVerticalGauges(String axisTrackName, Widget linearGauge) {
-    return SizedBox(
+    return Container(
       width: 150,
       child: Column(
-        children: <Widget>[
-          Text(axisTrackName),
-          const SizedBox(height: 16),
-          linearGauge
-        ],
+        children: [Text(axisTrackName), SizedBox(height: 16), linearGauge],
       ),
     );
   }
 
   /// Returns the outside ticks sample.
   Widget _buildOutsideTicks() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
           animateAxis: true,
@@ -120,7 +116,7 @@ class _TickCustomizationState extends SampleViewState {
 
   /// Returns the cross ticks sample.
   Widget _buildCrossTicks() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
           tickPosition: LinearElementPosition.cross,
@@ -134,7 +130,7 @@ class _TickCustomizationState extends SampleViewState {
 
   /// Returns the inside ticks sample.
   Widget _buildInsideTicks() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
           animateAxis: true,
@@ -146,7 +142,7 @@ class _TickCustomizationState extends SampleViewState {
 
   /// Returns the ticks with offset sample.
   Widget _buildTicksWithOffset() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
           animateAxis: true,
@@ -161,12 +157,12 @@ class _TickCustomizationState extends SampleViewState {
   /// Returns the segmented view for linear gauge orientation.
   Widget _buildSegmentedView() {
     return Center(
-        child: CupertinoSegmentedControl<bool>(
+        child: CupertinoSegmentedControl(
             selectedColor: model.backgroundColor,
             borderColor: model.backgroundColor,
-            children: <bool, Widget>{
+            children: {
               true: Container(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Text(
                     'Horizontal',
                     style: TextStyle(
@@ -175,7 +171,7 @@ class _TickCustomizationState extends SampleViewState {
                             : Colors.black),
                   )),
               false: Container(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Text(
                     'Vertical',
                     style: TextStyle(
@@ -184,9 +180,8 @@ class _TickCustomizationState extends SampleViewState {
                             : Colors.white),
                   )),
             },
-            onValueChanged: (bool value) => setState(() {
-                  _isHorizontalOrientation = value;
-                }),
+            onValueChanged: (bool value) =>
+                setState(() => {_isHorizontalOrientation = value}),
             groupValue: _isHorizontalOrientation));
   }
 }

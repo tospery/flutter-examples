@@ -1,8 +1,8 @@
 ///Package imports
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -14,9 +14,6 @@ import '../../../slider_utils.dart';
 
 /// Renders range slider with gradient track
 class GradientTrackRangeSlider extends SampleView {
-  ///Creates range slider with gradient track.
-  const GradientTrackRangeSlider(Key key) : super(key: key);
-
   @override
   _GradientTrackRangeSliderState createState() =>
       _GradientTrackRangeSliderState();
@@ -46,6 +43,7 @@ class _GradientTrackRangeSliderState extends SampleViewState {
         trackCornerRadius: 4.0,
       ),
       child: SfRangeSlider(
+        min: 0.0,
         max: 6.0,
         values: _blueGradientSliderValues,
         onChanged: (SfRangeValues values) {
@@ -65,14 +63,14 @@ class _GradientTrackRangeSliderState extends SampleViewState {
   SfRangeSliderTheme _rangeSliderWithThumbCustomization() {
     return SfRangeSliderTheme(
       data: SfRangeSliderThemeData(
-          inactiveDividerColor: Colors.white,
-          activeDividerColor: Colors.white,
-          activeDividerStrokeWidth: 2,
-          activeDividerStrokeColor: _inactiveColor,
-          inactiveDividerStrokeWidth: 2,
-          inactiveDividerStrokeColor: Colors.tealAccent,
-          activeDividerRadius: 5.0,
-          inactiveDividerRadius: 5.0,
+          inactiveDivisorColor: Colors.white,
+          activeDivisorColor: Colors.white,
+          activeDivisorStrokeWidth: 2,
+          activeDivisorStrokeColor: _inactiveColor,
+          inactiveDivisorStrokeWidth: 2,
+          inactiveDivisorStrokeColor: Colors.tealAccent,
+          activeDivisorRadius: 5.0,
+          inactiveDivisorRadius: 5.0,
           activeTrackColor: Colors.tealAccent,
           inactiveTrackColor: _inactiveColor,
           overlayColor: Colors.tealAccent.withOpacity(0.12),
@@ -80,10 +78,11 @@ class _GradientTrackRangeSliderState extends SampleViewState {
           thumbStrokeWidth: 2.0,
           thumbStrokeColor: Colors.tealAccent),
       child: SfRangeSlider(
+        min: 0.0,
         max: 100.0,
         interval: 20.0,
         showLabels: true,
-        showDividers: true,
+        showDivisors: true,
         values: _sliderValues,
         onChanged: (SfRangeValues values) {
           setState(() {
@@ -100,7 +99,7 @@ class _GradientTrackRangeSliderState extends SampleViewState {
       children: <Widget>[
         _TrackColorCustomizedRangeSlider(),
         const SizedBox(height: 25),
-        title('Thumb and divider stroke color'),
+        title('Thumb and divisor stroke color'),
         columnSpacing10,
         _rangeSliderWithThumbCustomization(),
         const SizedBox(height: 25),
@@ -234,7 +233,11 @@ class _TrackShape extends SfTrackShape {
       trackRect = Rect.fromLTRB(startThumbCenter.dx, actualTrackRect.top,
           endThumbCenter.dx, actualTrackRect.bottom);
       paint.shader = gradient.createShader(trackRect);
-      final RRect centerRRect = RRect.fromRectAndCorners(trackRect);
+      final RRect centerRRect = RRect.fromRectAndCorners(trackRect,
+          topLeft: Radius.zero,
+          topRight: Radius.zero,
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero);
       context.canvas.drawRRect(centerRRect, paint);
 
       // Drawing inactive track.
@@ -243,7 +246,10 @@ class _TrackShape extends SfTrackShape {
       trackRect = Rect.fromLTRB(endThumbCenter.dx, actualTrackRect.top,
           actualTrackRect.width + actualTrackRect.left, actualTrackRect.bottom);
       final RRect rightRRect = RRect.fromRectAndCorners(trackRect,
-          topRight: radius, bottomRight: radius);
+          topLeft: Radius.zero,
+          topRight: radius,
+          bottomLeft: Radius.zero,
+          bottomRight: radius);
       context.canvas.drawRRect(rightRRect, paint);
     }
   }

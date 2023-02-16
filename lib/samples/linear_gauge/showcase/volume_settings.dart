@@ -29,7 +29,7 @@ class _VolumeSettingsState extends SampleViewState {
     return isCardView
         ? _buildVolumeControl()
         : Center(
-            child: SizedBox(
+            child: Container(
             height: orientation == Orientation.landscape
                 ? MediaQuery.of(context).size.height / 2
                 : MediaQuery.of(context).size.height / 3,
@@ -39,13 +39,13 @@ class _VolumeSettingsState extends SampleViewState {
 
   /// Returns the volume settings.
   Widget _buildVolumeControl() {
-    final Brightness brightness = Theme.of(context).brightness;
+    final Brightness _brightness = Theme.of(context).brightness;
 
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-      SizedBox(
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Container(
         height: isCardView ? 205 : 240,
         child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
             child: SfLinearGauge(
               orientation: LinearGaugeOrientation.vertical,
               interval: 20.0,
@@ -56,10 +56,10 @@ class _VolumeSettingsState extends SampleViewState {
                 thickness: 40,
                 edgeStyle: LinearEdgeStyle.bothCurve,
                 borderWidth: 1,
-                borderColor: brightness == Brightness.dark
-                    ? const Color(0xff898989)
+                borderColor: _brightness == Brightness.dark
+                    ? Color(0xff898989)
                     : Colors.grey[350],
-                color: brightness == Brightness.dark
+                color: _brightness == Brightness.dark
                     ? Colors.transparent
                     : Colors.grey[350],
               ),
@@ -71,12 +71,12 @@ class _VolumeSettingsState extends SampleViewState {
                     edgeStyle: LinearEdgeStyle.bothCurve,
                     color: Colors.blueAccent)
               ],
-              markerPointers: <LinearMarkerPointer>[
+              markerPointers: [
                 LinearWidgetPointer(
                     enableAnimation: false,
                     markerAlignment: LinearMarkerAlignment.end,
                     value: 100,
-                    child: SizedBox(
+                    child: Container(
                       height: 25,
                       child: Text(_musicValue.toStringAsFixed(0) + '%'),
                     )),
@@ -90,7 +90,7 @@ class _VolumeSettingsState extends SampleViewState {
                           _musicValue = 0;
                         });
                       },
-                      child: SizedBox(
+                      child: Container(
                           height: 30,
                           width: 30,
                           child: Center(
@@ -98,17 +98,17 @@ class _VolumeSettingsState extends SampleViewState {
                             _musicValue > 0
                                 ? Icons.music_note
                                 : Icons.music_off,
-                            color: const Color(0xffFFFFFF),
+                            color: Color(0xffFFFFFF),
                           )))),
                 ),
                 LinearShapePointer(
                     enableAnimation: false,
                     value: _musicValue - 20,
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        _musicValue = value as double;
-                      });
-                    },
+                    onValueChanged: (value) => {
+                          setState(() {
+                            _musicValue = value;
+                          })
+                        },
                     color: Colors.transparent,
                     width: 40,
                     markerAlignment: LinearMarkerAlignment.end,
@@ -118,13 +118,13 @@ class _VolumeSettingsState extends SampleViewState {
               ],
             )),
       ),
-      const SizedBox(
+      SizedBox(
         width: 25,
       ),
-      SizedBox(
+      Container(
           height: isCardView ? 205 : 240,
           child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
               child: SfLinearGauge(
                   orientation: LinearGaugeOrientation.vertical,
                   interval: 20.0,
@@ -135,10 +135,10 @@ class _VolumeSettingsState extends SampleViewState {
                     thickness: 40,
                     edgeStyle: LinearEdgeStyle.bothCurve,
                     borderWidth: 1,
-                    borderColor: brightness == Brightness.dark
-                        ? const Color(0xff898989)
+                    borderColor: _brightness == Brightness.dark
+                        ? Color(0xff898989)
                         : Colors.grey[350],
-                    color: brightness == Brightness.dark
+                    color: _brightness == Brightness.dark
                         ? Colors.transparent
                         : Colors.grey[350],
                   ),
@@ -150,12 +150,12 @@ class _VolumeSettingsState extends SampleViewState {
                         edgeStyle: LinearEdgeStyle.bothCurve,
                         color: Colors.blueAccent)
                   ],
-                  markerPointers: <LinearMarkerPointer>[
+                  markerPointers: [
                     LinearWidgetPointer(
                       value: 5,
                       enableAnimation: false,
                       markerAlignment: LinearMarkerAlignment.end,
-                      child: SizedBox(
+                      child: Container(
                           height: 30,
                           width: 30,
                           child: GestureDetector(
@@ -169,25 +169,25 @@ class _VolumeSettingsState extends SampleViewState {
                                 _ringValue > 0
                                     ? Icons.notifications
                                     : Icons.notifications_off,
-                                color: const Color(0xffFFFFFF),
+                                color: Color(0xffFFFFFF),
                               )))),
                     ),
                     LinearWidgetPointer(
                         markerAlignment: LinearMarkerAlignment.end,
                         value: 100,
                         enableAnimation: false,
-                        child: SizedBox(
+                        child: Container(
                           height: 25,
                           child: Text(_ringValue.toStringAsFixed(0) + '%'),
                         )),
                     LinearShapePointer(
                         value: _ringValue - 20,
                         enableAnimation: false,
-                        onChanged: (dynamic value) {
-                          setState(() {
-                            _ringValue = value as double;
-                          });
-                        },
+                        onValueChanged: (value) => {
+                              setState(() {
+                                _ringValue = value;
+                              })
+                            },
                         color: Colors.transparent,
                         width: 40,
                         position: LinearElementPosition.cross,
@@ -195,10 +195,10 @@ class _VolumeSettingsState extends SampleViewState {
                         markerAlignment: LinearMarkerAlignment.end,
                         height: 40),
                   ]))),
-      const SizedBox(
+      SizedBox(
         width: 25,
       ),
-      SizedBox(
+      Container(
           height: isCardView ? 205 : 240,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20.0),
@@ -212,10 +212,10 @@ class _VolumeSettingsState extends SampleViewState {
                   thickness: 40,
                   edgeStyle: LinearEdgeStyle.bothCurve,
                   borderWidth: 1,
-                  borderColor: brightness == Brightness.dark
-                      ? const Color(0xff898989)
+                  borderColor: _brightness == Brightness.dark
+                      ? Color(0xff898989)
                       : Colors.grey[350],
-                  color: brightness == Brightness.dark
+                  color: _brightness == Brightness.dark
                       ? Colors.transparent
                       : Colors.grey[350],
                 ),
@@ -227,12 +227,12 @@ class _VolumeSettingsState extends SampleViewState {
                       edgeStyle: LinearEdgeStyle.bothCurve,
                       color: Colors.blueAccent)
                 ],
-                markerPointers: <LinearMarkerPointer>[
+                markerPointers: [
                   LinearWidgetPointer(
                       enableAnimation: false,
                       markerAlignment: LinearMarkerAlignment.end,
                       value: 100,
-                      child: SizedBox(
+                      child: Container(
                         height: 25,
                         child: Text(_alarmValue.toStringAsFixed(0) + '%'),
                       )),
@@ -246,7 +246,7 @@ class _VolumeSettingsState extends SampleViewState {
                             _alarmValue = 0;
                           });
                         },
-                        child: SizedBox(
+                        child: Container(
                             height: 30,
                             width: 30,
                             child: Center(
@@ -254,17 +254,17 @@ class _VolumeSettingsState extends SampleViewState {
                               _alarmValue > 0
                                   ? Icons.access_alarm
                                   : Icons.alarm_off,
-                              color: const Color(0xffFFFFFF),
+                              color: Color(0xffFFFFFF),
                             )))),
                   ),
                   LinearShapePointer(
                       value: _alarmValue - 20,
                       enableAnimation: false,
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          _alarmValue = value as double;
-                        });
-                      },
+                      onValueChanged: (value) => {
+                            setState(() {
+                              _alarmValue = value;
+                            })
+                          },
                       color: Colors.transparent,
                       width: 40,
                       position: LinearElementPosition.cross,

@@ -37,7 +37,7 @@ class _GaugeCompassExampleState extends SampleViewState {
       _markerWidth = model.isWebFullView ? 15 : 10;
       _labelFontSize = model.isWebFullView ? 11 : 10;
     }
-    final Widget widget = SfRadialGauge(
+    final Widget _widget = SfRadialGauge(
       axes: <RadialAxis>[
         RadialAxis(
             showAxisLine: false,
@@ -50,18 +50,19 @@ class _GaugeCompassExampleState extends SampleViewState {
             endAngle: 270,
             labelOffset: 0.05,
             maximum: 360,
+            minimum: 0,
             interval: 30,
             minorTicksPerInterval: 4,
             axisLabelStyle: GaugeTextStyle(
                 color: const Color(0xFF949494),
                 fontSize: isCardView ? 10 : _labelFontSize),
-            minorTickStyle: const MinorTickStyle(
-                color: Color(0xFF616161),
+            minorTickStyle: MinorTickStyle(
+                color: const Color(0xFF616161),
                 thickness: 1.6,
                 length: 0.058,
                 lengthUnit: GaugeSizeUnit.factor),
-            majorTickStyle: const MajorTickStyle(
-                color: Color(0xFF949494),
+            majorTickStyle: MajorTickStyle(
+                color: const Color(0xFF949494),
                 thickness: 2.3,
                 length: 0.087,
                 lengthUnit: GaugeSizeUnit.factor),
@@ -95,10 +96,10 @@ class _GaugeCompassExampleState extends SampleViewState {
     if (model.isWebFullView) {
       return Padding(
         padding: const EdgeInsets.all(35),
-        child: widget,
+        child: _widget,
       );
     } else {
-      return widget;
+      return _widget;
     }
   }
 

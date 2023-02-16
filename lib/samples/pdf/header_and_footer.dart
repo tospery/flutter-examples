@@ -27,28 +27,32 @@ class _HeaderAndFooterPdfState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'This sample shows how to create a PDF document with a header and footer. Also, the generated PDF document contains hyperlinks, bookmarks, and table of contents.',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 20, width: 30),
-            Align(
-                child: TextButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(model.backgroundColor),
-                padding: model.isMobile
-                    ? null
-                    : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15)),
-              ),
-              onPressed: _generatePDF,
-              child: const Text('Generate PDF',
-                  style: TextStyle(color: Colors.white)),
-            ))
-          ],
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'This sample shows how to create a PDF document with a header and footer. Also, the generated PDF document contains hyperlinks, bookmarks, and table of contents.',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 20, width: 30),
+              Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          model.backgroundColor),
+                      padding: model.isMobile
+                          ? null
+                          : MaterialStateProperty.all(EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15)),
+                    ),
+                    onPressed: _generatePDF,
+                    child: const Text('Generate PDF',
+                        style: TextStyle(color: Colors.white)),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -133,7 +137,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
     _addBookmark(page, 'Introduction', result.bounds.topLeft, doc: document);
     result = _addParagraph(
         result.page,
-        "Adobe Systems Incorporated's Portable Document Format (PDF) is the de facto standard for the accurate, reliable, and platform-independent representation of a paged document. It's the only universally accepted file format that allows pixel-perfect layouts. In addition, PDF supports user interaction and collaborative workflows that are not possible with printed documents.\n\nPDF documents have been in widespread use for years, and dozens of free and commercial PDF readers, editors, and libraries are readily available. However, despite this popularity, it's still difficult to find a succinct guide to the native PDF format. Understanding the internal workings of a PDF makes it possible to dynamically generate PDF documents. For example, a web server can extract information from a database, use it to customize an invoice, and serve it to the customer on the fly.",
+        'Adobe Systems Incorporated\'s Portable Document Format (PDF) is the de facto standard for the accurate, reliable, and platform-independent representation of a paged document. It\'s the only universally accepted file format that allows pixel-perfect layouts. In addition, PDF supports user interaction and collaborative workflows that are not possible with printed documents.\n\nPDF documents have been in widespread use for years, and dozens of free and commercial PDF readers, editors, and libraries are readily available. However, despite this popularity, it\'s still difficult to find a succinct guide to the native PDF format. Understanding the internal workings of a PDF makes it possible to dynamically generate PDF documents. For example, a web server can extract information from a database, use it to customize an invoice, and serve it to the customer on the fly.',
         Rect.fromLTWH(20, result.bounds.bottom + 20, 495, pageSize.height),
         false);
     result = _addParagraph(
@@ -174,12 +178,12 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         20,
         result.bounds.top,
         result.page);
-    final PdfBookmark standardBookmark = _addBookmark(
+    final PdfBookmark _standardBookmark = _addBookmark(
         result.page, 'Chapter 1 Conceptual Overview', result.bounds.topLeft,
         doc: document);
     result = _addParagraph(
         result.page,
-        "We'll begin with a conceptual overview of a simple PDF document. This chapter is designed to be a brief orientation before diving in and creating a real document from scratch.\nA PDF file can be divided into four parts: a header, body, cross-reference table, and trailer. The header marks the file as a PDF, the body defines the visible document, the cross-reference table lists the location of everything in the file, and the trailer provides instructions for how to start reading the file.",
+        'We\'ll begin with a conceptual overview of a simple PDF document. This chapter is designed to be a brief orientation before diving in and creating a real document from scratch.\nA PDF file can be divided into four parts: a header, body, cross-reference table, and trailer. The header marks the file as a PDF, the body defines the visible document, the cross-reference table lists the location of everything in the file, and the trailer provides instructions for how to start reading the file.',
         Rect.fromLTWH(20, result.bounds.bottom + 20, 495, pageSize.height),
         false);
     final PdfPage page2 = document.pages.add();
@@ -204,7 +208,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         result.bounds.top,
         result.page);
     _addBookmark(result.page, 'Header', result.bounds.topLeft,
-        bookmark: standardBookmark);
+        bookmark: _standardBookmark);
     result = _addParagraph(
         result.page,
         'The header is simply a PDF version number and an arbitrary sequence of binary data. The binary data prevents naïve applications from processing the PDF as a text file. This would result in a corrupted file, since a PDF typically consists of both plain text and binary data (e.g., a binary font file can be directly embedded in a PDF).',
@@ -226,7 +230,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         result.bounds.top,
         result.page);
     _addBookmark(result.page, 'Body', result.bounds.topLeft,
-        bookmark: standardBookmark);
+        bookmark: _standardBookmark);
     result = _addParagraph(
         result.page,
         'The body of a PDF contains the entire visible document. The minimum elements required in a valid PDF body are:\n\n1. A page tree \n2. Pages \n3. Resources \n4. Content \n5. The catalog \n\nThe page tree serves as the root of the document. In the simplest case, it is just a list of the pages in the document. Each page is defined as an independent entity with metadata (e.g., page dimensions) and a reference to its resources and content, which are defined separately. Together, the page tree and page objects create the "paper" that composes the document.\n\nResources are objects that are required to render a page. For example, a single font is typically used across several pages, so storing the font information in an external resource is much more efficient. A content object defines the text and graphics that actually show up on the page. Together, content objects and resources define the appearance of an individual page.\nFinally, the document\'s catalog tells applications where to start reading the document. Often, this is just a pointer to the root page tree.',
@@ -249,7 +253,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         result.bounds.top,
         result.page);
     _addBookmark(result.page, 'Cross-Reference Table', result.bounds.topLeft,
-        bookmark: standardBookmark);
+        bookmark: _standardBookmark);
     result = _addParagraph(
         result.page,
         'After the header and the body comes the cross-reference table. It records the byte location of each object in the body of the file. This enables random-access of the document, so when rendering a page, only the objects required for that page are read from the file. This makes PDFs much faster than their PostScript predecessors, which had to read in the entire file before processing it.',
@@ -271,7 +275,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         result.bounds.top,
         result.page);
     _addBookmark(result.page, 'Trailer', result.bounds.topLeft,
-        bookmark: standardBookmark);
+        bookmark: _standardBookmark);
     result = _addParagraph(
         result.page,
         'Finally, we come to the last component of a PDF document. The trailer tells applications how to start reading the file. At minimum, it contains three things:\n\n\n1. A reference to the catalog which links to the root of the document.\n2. The location of the cross-reference table.\n3. The size of the cross-reference table.\n\nSince a trailer is all you need to begin processing a document, PDFs are typically read back-to-front: first, the end of the file is found, and then you read backwards until you arrive at the beginning of the trailer. After that, you should have all the information you need to load any page in the PDF.',
@@ -293,7 +297,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         result.bounds.top,
         result.page);
     _addBookmark(result.page, 'Summary', result.bounds.topLeft,
-        bookmark: standardBookmark);
+        bookmark: _standardBookmark);
     result = _addParagraph(
         result.page,
         'To conclude our overview, a PDF document has a header, a body, a cross-reference table, and a trailer. The trailer serves as the entryway to the entire document, giving you access to any object via the cross-reference table, and pointing you toward the root of the document. The relationship between these elements is shown in the following figure.',
@@ -304,7 +308,7 @@ class _HeaderAndFooterPdfState extends SampleViewState {
         Rect.fromLTWH(20, result.bounds.bottom + 20, 495, 400));
 
     //Save and dispose the document.
-    final List<int> bytes = await document.save();
+    final List<int> bytes = document.save();
     document.dispose();
     //Launch file.
     await FileSaveHelper.saveAndLaunchFile(bytes, 'HeaderAndFooter.pdf');

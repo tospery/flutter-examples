@@ -28,27 +28,27 @@ class _AnnotationWatermarkState extends SampleViewState {
   /// Returns the Cartesian chart with annotation.
   SfCartesianChart _buildWatermarkAnnotationChart() {
     final bool needSmallAnnotation =
-        model.isWebFullView && MediaQuery.of(context).size.height < 530;
+        (model.isWebFullView && MediaQuery.of(context).size.height < 530);
     return SfCartesianChart(
         title: ChartTitle(
             text: isCardView ? '' : 'UK social media reach, by platform'),
         plotAreaBorderWidth: 0,
         primaryXAxis: CategoryAxis(
-            majorGridLines: const MajorGridLines(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
             edgeLabelPlacement: EdgeLabelPlacement.shift),
         primaryYAxis: NumericAxis(
             isVisible: false,
             labelFormat: '{value}%',
             minimum: 0,
             maximum: 120,
-            axisLine: const AxisLine(width: 0),
-            majorTickLines: const MajorTickLines(width: 0)),
+            axisLine: AxisLine(width: 0),
+            majorTickLines: MajorTickLines(width: 0)),
         series: _getWatermarkAnnotationSeries(),
 
         /// To set the annotation content for chart.
         annotations: <CartesianChartAnnotation>[
           CartesianChartAnnotation(
-              widget: SizedBox(
+              widget: Container(
                   height: isCardView
                       ? 100
                       : needSmallAnnotation
@@ -63,6 +63,7 @@ class _AnnotationWatermarkState extends SampleViewState {
                     series: <PieSeries<ChartSampleData, String>>[
                       PieSeries<ChartSampleData, String>(
                           radius: '90%',
+                          enableSmartLabels: false,
                           dataSource: <ChartSampleData>[
                             ChartSampleData(
                                 x: 'Facebook',
@@ -89,9 +90,8 @@ class _AnnotationWatermarkState extends SampleViewState {
                                     const Color.fromRGBO(217, 67, 80, 1)),
                           ],
                           dataLabelMapper: (ChartSampleData data, _) =>
-                              data.xValue as String,
-                          xValueMapper: (ChartSampleData data, _) =>
-                              data.x as String,
+                              data.xValue,
+                          xValueMapper: (ChartSampleData data, _) => data.x,
                           yValueMapper: (ChartSampleData data, _) => data.y,
                           dataLabelSettings: DataLabelSettings(
                               isVisible: true,
@@ -108,6 +108,7 @@ class _AnnotationWatermarkState extends SampleViewState {
                     ],
                   )),
               coordinateUnit: CoordinateUnit.point,
+              region: AnnotationRegion.chart,
               x: 'Instagram',
               y: isCardView ? 85 : 80)
         ]);
@@ -116,31 +117,32 @@ class _AnnotationWatermarkState extends SampleViewState {
   /// Returns the list of series which need to
   /// render on the chart with annotation.
   List<ColumnSeries<ChartSampleData, String>> _getWatermarkAnnotationSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(
+          x: 'Facebook',
+          y: 90,
+          xValue: '90',
+          pointColor: const Color.fromRGBO(0, 63, 92, 1)),
+      ChartSampleData(
+          x: 'Twitter',
+          y: 60,
+          xValue: '60',
+          pointColor: const Color.fromRGBO(242, 117, 7, 1)),
+      ChartSampleData(
+          x: 'Instagram',
+          y: 51,
+          xValue: '51',
+          pointColor: const Color.fromRGBO(89, 59, 84, 1)),
+      ChartSampleData(
+          x: 'Snapchat',
+          y: 50,
+          xValue: '50',
+          pointColor: const Color.fromRGBO(217, 67, 80, 1)),
+    ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
-          dataSource: <ChartSampleData>[
-            ChartSampleData(
-                x: 'Facebook',
-                y: 90,
-                xValue: '90',
-                pointColor: const Color.fromRGBO(0, 63, 92, 1)),
-            ChartSampleData(
-                x: 'Twitter',
-                y: 60,
-                xValue: '60',
-                pointColor: const Color.fromRGBO(242, 117, 7, 1)),
-            ChartSampleData(
-                x: 'Instagram',
-                y: 51,
-                xValue: '51',
-                pointColor: const Color.fromRGBO(89, 59, 84, 1)),
-            ChartSampleData(
-                x: 'Snapchat',
-                y: 50,
-                xValue: '50',
-                pointColor: const Color.fromRGBO(217, 67, 80, 1)),
-          ],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           pointColorMapper: (ChartSampleData sales, _) => sales.pointColor,
           width: 0.8,

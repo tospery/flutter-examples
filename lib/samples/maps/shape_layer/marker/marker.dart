@@ -3,15 +3,14 @@ import 'dart:async';
 
 ///Flutter package imports
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show DateFormat;
 
-///Core theme import
-// ignore: depend_on_referenced_packages
-import 'package:syncfusion_flutter_core/theme.dart';
-
 ///Map import
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:syncfusion_flutter_maps/maps.dart';
+
+///Core theme import
+import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Local import
 import '../../../../model/sample_view.dart';
@@ -33,27 +32,27 @@ class _MapMarkerPageState extends SampleViewState {
   void initState() {
     super.initState();
 
-    final DateTime currentTime = DateTime.now().toUtc();
+    final DateTime _currentTime = DateTime.now().toUtc();
 
     // Data source to the map markers.
     _worldClockData = <_TimeDetails>[
       _TimeDetails('Seattle', 47.60621, -122.332071,
-          currentTime.subtract(const Duration(hours: 7))),
+          _currentTime.subtract(const Duration(hours: 7))),
       _TimeDetails('Belem', -1.455833, -48.503887,
-          currentTime.subtract(const Duration(hours: 3))),
+          _currentTime.subtract(const Duration(hours: 3))),
       _TimeDetails('Greenland', 71.706936, -42.604303,
-          currentTime.subtract(const Duration(hours: 2))),
+          _currentTime.subtract(const Duration(hours: 2))),
       _TimeDetails('Yakutsk', 62.035452, 129.675475,
-          currentTime.add(const Duration(hours: 9))),
+          _currentTime.add(const Duration(hours: 9))),
       _TimeDetails('Delhi', 28.704059, 77.10249,
-          currentTime.add(const Duration(hours: 5, minutes: 30))),
+          _currentTime.add(const Duration(hours: 5, minutes: 30))),
       _TimeDetails('Brisbane', -27.469771, 153.025124,
-          currentTime.add(const Duration(hours: 10))),
+          _currentTime.add(const Duration(hours: 10))),
       _TimeDetails('Harare', -17.825166, 31.03351,
-          currentTime.add(const Duration(hours: 2))),
+          _currentTime.add(const Duration(hours: 2))),
     ];
 
-    _mapSource = const MapShapeSource.asset(
+    _mapSource = MapShapeSource.asset(
       // Path of the GeoJSON file.
       'assets/world_map.json',
       // Field or group name in the .json file to identify
@@ -73,32 +72,17 @@ class _MapMarkerPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final bool scrollEnabled = constraints.maxHeight > 400;
-      double height = scrollEnabled ? constraints.maxHeight : 400;
-      if (model.isWebFullView ||
-          (model.isMobile &&
-              MediaQuery.of(context).orientation == Orientation.landscape)) {
-        final double refHeight = height * 0.6;
-        height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
-      }
-      return Center(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: constraints.maxWidth,
-            height: height,
-            child: _buildMapsWidget(scrollEnabled),
-          ),
-        ),
-      );
-    });
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? _buildMapsWidget()
+        : SingleChildScrollView(child: _buildMapsWidget());
   }
 
-  Widget _buildMapsWidget(bool scrollEnabled) {
+  Widget _buildMapsWidget() {
     return Center(
         child: Padding(
-      padding: scrollEnabled
+      padding: MediaQuery.of(context).orientation == Orientation.portrait ||
+              model.isWebFullView
           ? EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.05,
               bottom: MediaQuery.of(context).size.height * 0.1,
@@ -111,21 +95,22 @@ class _MapMarkerPageState extends SampleViewState {
           shapeHoverStrokeColor: Colors.transparent,
           shapeHoverStrokeWidth: 0,
         ),
-        child: Column(children: <Widget>[
+        child: Column(children: [
           Padding(
-              padding: const EdgeInsets.only(top: 15, bottom: 30),
+              padding: EdgeInsets.only(top: 15, bottom: 30),
               child: Align(
+                  alignment: Alignment.center,
                   child: Text('World Clock',
-                      style: Theme.of(context).textTheme.titleMedium))),
+                      style: Theme.of(context).textTheme.subtitle1))),
           Expanded(
               child: SfMaps(
             layers: <MapLayer>[
               MapShapeLayer(
                 loadingBuilder: (BuildContext context) {
-                  return const SizedBox(
+                  return Container(
                     height: 25,
                     width: 25,
-                    child: CircularProgressIndicator(
+                    child: const CircularProgressIndicator(
                       strokeWidth: 3,
                     ),
                   );
@@ -140,8 +125,6 @@ class _MapMarkerPageState extends SampleViewState {
                   return MapMarker(
                     longitude: _worldClockData[index].longitude,
                     latitude: _worldClockData[index].latitude,
-                    alignment: Alignment.topCenter,
-                    offset: const Offset(0, -4),
                     size: const Size(150, 150),
                     child: _ClockWidget(
                         countryName: _worldClockData[index].countryName,
@@ -149,10 +132,9 @@ class _MapMarkerPageState extends SampleViewState {
                   );
                 },
                 strokeWidth: 0,
-                color:
-                    model.themeData.colorScheme.brightness == Brightness.light
-                        ? const Color.fromRGBO(71, 70, 75, 0.2)
-                        : const Color.fromRGBO(71, 70, 75, 1),
+                color: model.themeData.brightness == Brightness.light
+                    ? const Color.fromRGBO(71, 70, 75, 0.2)
+                    : const Color.fromRGBO(71, 70, 75, 1),
               ),
             ],
           )),
@@ -189,13 +171,14 @@ class _ClockWidgetState extends State<_ClockWidget> {
 
   @override
   void dispose() {
-    _timer!.cancel();
+    _timer?.cancel();
+    _timer = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: <Widget>[
         Center(
           child: Container(
@@ -205,20 +188,26 @@ class _ClockWidgetState extends State<_ClockWidget> {
                 const BoxDecoration(shape: BoxShape.circle, color: Colors.red),
           ),
         ),
-        Text(
-          widget.countryName,
-          style: Theme.of(context)
-              .textTheme
-              .bodyMedium!
-              .copyWith(fontWeight: FontWeight.bold),
-        ),
-        Center(
-          child: Text(_currentTime,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall!
-                  .copyWith(letterSpacing: 0.5, fontWeight: FontWeight.w500)),
-        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 35),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                widget.countryName,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              Center(
+                child: Text(_currentTime,
+                    style: Theme.of(context).textTheme.overline!.copyWith(
+                        letterSpacing: 0.5, fontWeight: FontWeight.w500)),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

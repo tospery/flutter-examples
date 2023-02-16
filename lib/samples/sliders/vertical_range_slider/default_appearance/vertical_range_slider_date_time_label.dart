@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -25,22 +23,46 @@ class VerticalDateRangeSliderPage extends SampleView {
 
 class _VerticalDateRangeSliderPageState extends SampleViewState {
   _VerticalDateRangeSliderPageState();
+
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _DateRangeSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: rangeSlider),
+          );
+  }
+}
+
+class _DateRangeSlider extends SampleView {
+  @override
+  _DateRangeSliderState createState() => _DateRangeSliderState();
+}
+
+class _DateRangeSliderState extends SampleViewState {
   SfRangeValues _yearValues =
-      SfRangeValues(DateTime(2002, 4), DateTime(2003, 10));
-  SfRangeValues _hourValues =
-      SfRangeValues(DateTime(2010, 01, 01, 13), DateTime(2010, 01, 01, 17));
-  bool _isInversed = false;
+      SfRangeValues(DateTime(2002, 4, 01), DateTime(2003, 10, 01));
+  SfRangeValues _hourValues = SfRangeValues(
+      DateTime(2010, 01, 01, 13, 00, 00), DateTime(2010, 01, 01, 17, 00, 00));
 
   SfRangeSliderTheme _yearRangeSlider() {
     return SfRangeSliderTheme(
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider.vertical(
-          min: DateTime(2001),
-          max: DateTime(2005),
+          min: DateTime(2001, 01, 01),
+          max: DateTime(2005, 01, 01),
           showLabels: true,
           interval: 1,
-          isInversed: _isInversed,
           dateFormat: DateFormat.y(),
           dateIntervalType: DateIntervalType.years,
           labelPlacement: LabelPlacement.betweenTicks,
@@ -64,12 +86,11 @@ class _VerticalDateRangeSliderPageState extends SampleViewState {
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider.vertical(
-          min: DateTime(2010, 01, 01, 9),
-          max: DateTime(2010, 01, 01, 21),
+          min: DateTime(2010, 01, 01, 9, 00, 00),
+          max: DateTime(2010, 01, 01, 21, 05, 00),
           showLabels: true,
           interval: 4,
           showTicks: true,
-          isInversed: _isInversed,
           minorTicksPerInterval: 3,
           dateFormat: DateFormat('h a'),
           dateIntervalType: DateIntervalType.hours,
@@ -104,13 +125,13 @@ class _VerticalDateRangeSliderPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _yearRangeSlider()),
-              const Text('Interval as year')
+              Text('Interval as year')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _hourRangeSlider()),
-              const Text('Interval as hour')
+              Text('Interval as hour')
             ]),
           ],
         ));
@@ -118,34 +139,6 @@ class _VerticalDateRangeSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 400, child: rangeSlider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: _isInversed,
-          title: const Text('Inversed', softWrap: false),
-          activeColor: model.backgroundColor,
-          contentPadding: EdgeInsets.zero,
-          onChanged: (bool? value) {
-            setState(() {
-              _isInversed = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

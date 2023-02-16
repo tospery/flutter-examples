@@ -33,19 +33,19 @@ class _RadialRangeSliderGradientState extends SampleViewState {
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
             radiusFactor: 0.85,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 thickness: 0, thicknessUnit: GaugeSizeUnit.factor),
             tickOffset: 0.20,
             labelOffset: 0.10,
             offsetUnit: GaugeSizeUnit.factor,
             minorTicksPerInterval: 5,
-            onLabelCreated: (AxisLabelCreatedArgs args) {
+            onLabelCreated: (args) {
               final double axisValue = double.parse(args.text);
               final double celsiusValue = (axisValue - 32) / 1.8;
               args.text = celsiusValue.toStringAsFixed(1);
             },
-            majorTickStyle: const MajorTickStyle(
-                length: 0.1, lengthUnit: GaugeSizeUnit.factor),
+            majorTickStyle:
+                MajorTickStyle(length: 0.1, lengthUnit: GaugeSizeUnit.factor),
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
                   widget: Row(
@@ -54,16 +54,16 @@ class _RadialRangeSliderGradientState extends SampleViewState {
                       Text(
                         '$_firstCelsiusAnnotationValue°C'
                         ' to $_secondCelsiusAnnotationValue',
-                        style: const TextStyle(
-                          fontSize: 18,
+                        style: TextStyle(
+                          fontSize: _celsiusAnnotationFontSize,
                           fontFamily: 'Times',
                           // fontWeight: FontWeight.bold
                         ),
                       ),
-                      const Text(
+                      Text(
                         '°C',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: _celsiusAnnotationFontSize,
                           fontFamily: 'Times',
                           // fontWeight: FontWeight.bold,
                         ),
@@ -74,9 +74,10 @@ class _RadialRangeSliderGradientState extends SampleViewState {
                   angle: 90)
             ]),
         RadialAxis(
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 thickness: 0.05, thicknessUnit: GaugeSizeUnit.factor),
             showTicks: false,
+            showLabels: true,
             labelOffset: 20,
             ranges: <GaugeRange>[
               GaugeRange(
@@ -97,7 +98,7 @@ class _RadialRangeSliderGradientState extends SampleViewState {
               MarkerPointer(
                 value: _firstMarkerValue,
                 elevation: 5,
-                overlayColor: const Color.fromRGBO(202, 94, 230, 0.125),
+                overlayColor: Color.fromRGBO(202, 94, 230, 0.125),
                 color: model.currentThemeData!.brightness == Brightness.light
                     ? Colors.white
                     : Colors.black,
@@ -125,7 +126,7 @@ class _RadialRangeSliderGradientState extends SampleViewState {
                         ? Colors.black
                         : Colors.white,
                 markerHeight: _firstMarkerSize,
-                overlayColor: const Color.fromRGBO(202, 94, 230, 0.125),
+                overlayColor: Color.fromRGBO(202, 94, 230, 0.125),
                 markerWidth: _firstMarkerSize,
                 markerType: MarkerType.circle,
                 enableDragging: true,
@@ -162,17 +163,22 @@ class _RadialRangeSliderGradientState extends SampleViewState {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
-  void handleSecondPointerValueChanged(double markerValue) {
+  void handleSecondPointerValueChanged(double value) {
     setState(() {
-      _secondMarkerValue = markerValue;
+      _secondMarkerValue = value;
       // final int _value =
       //     (_firstMarkerValue - _secondMarkerValue).abs().round().toInt();
-      final int value = _secondMarkerValue.abs().round();
-      _secondAnnotationValue = '$value';
-      final double celsiusValue = (value - 32) / 1.8;
-      _secondCelsiusAnnotationValue = celsiusValue.toStringAsFixed(1);
+      final int _value = _secondMarkerValue.abs().round().toInt();
+      _secondAnnotationValue = '$_value';
+      final double _celsiusValue = (_value - 32) / 1.8;
+      _secondCelsiusAnnotationValue = '${_celsiusValue.toStringAsFixed(1)}';
     });
   }
 
@@ -185,15 +191,15 @@ class _RadialRangeSliderGradientState extends SampleViewState {
   }
 
   /// Value changed call back for first pointer
-  void handleFirstPointerValueChanged(double markerValue) {
+  void handleFirstPointerValueChanged(double value) {
     setState(() {
-      _firstMarkerValue = markerValue;
+      _firstMarkerValue = value;
       // final int _value =
       // (_firstMarkerValue - _secondMarkerValue).abs().round().toInt();
-      final int value = _firstMarkerValue.abs().round();
-      _firstAnnotationValue = '$value';
-      final double celsiusValue = (value - 32) / 1.8;
-      _firstCelsiusAnnotationValue = celsiusValue.toStringAsFixed(1);
+      final int _value = _firstMarkerValue.abs().round().toInt();
+      _firstAnnotationValue = '$_value';
+      final double _celsiusValue = (_value - 32) / 1.8;
+      _firstCelsiusAnnotationValue = '${_celsiusValue.toStringAsFixed(1)}';
     });
   }
 
@@ -209,8 +215,9 @@ class _RadialRangeSliderGradientState extends SampleViewState {
   double _firstMarkerValue = 0;
   double _firstMarkerSize = 30;
   double _annotationFontSize = 25;
+  final double _celsiusAnnotationFontSize = 18;
   String _firstAnnotationValue = '0';
   String _secondAnnotationValue = '60';
   String _firstCelsiusAnnotationValue = '-${17.7778.toStringAsFixed(1)}';
-  String _secondCelsiusAnnotationValue = 15.5556.toStringAsFixed(1);
+  String _secondCelsiusAnnotationValue = '${15.5556.toStringAsFixed(1)}';
 }

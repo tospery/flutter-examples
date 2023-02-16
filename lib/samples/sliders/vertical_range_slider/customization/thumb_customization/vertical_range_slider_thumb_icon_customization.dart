@@ -1,8 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -23,6 +23,33 @@ class VerticalThumbCustomizationRangeSliderPage extends SampleView {
 
 class _VerticalThumbCustomizationRangeSliderPageState extends SampleViewState {
   _VerticalThumbCustomizationRangeSliderPageState();
+
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _ThumbCustomizationRangeSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: rangeSlider),
+          );
+  }
+}
+
+class _ThumbCustomizationRangeSlider extends SampleView {
+  @override
+  _ThumbCustomizationRangeSliderState createState() =>
+      _ThumbCustomizationRangeSliderState();
+}
+
+class _ThumbCustomizationRangeSliderState extends SampleViewState {
   SfRangeValues _thumbValues = const SfRangeValues(4.0, 6.0);
   final double _thumbMin = 0.0;
   final double _thumbMax = 10.0;
@@ -38,9 +65,9 @@ class _VerticalThumbCustomizationRangeSliderPageState extends SampleViewState {
           interval: 2.0,
           min: _thumbMin,
           max: _thumbMax,
-          startThumbIcon: const Icon(Icons.keyboard_arrow_down_outlined,
+          startThumbIcon: Icon(Icons.keyboard_arrow_down_outlined,
               color: Colors.white, size: 16.0),
-          endThumbIcon: const Icon(Icons.keyboard_arrow_up_outlined,
+          endThumbIcon: Icon(Icons.keyboard_arrow_up_outlined,
               color: Colors.white, size: 16.0),
           minorTicksPerInterval: 1,
           showTicks: true,
@@ -67,8 +94,9 @@ class _VerticalThumbCustomizationRangeSliderPageState extends SampleViewState {
     return SfRangeSliderTheme(
         data: SfRangeSliderThemeData(thumbRadius: 14),
         child: SfRangeSlider.vertical(
+          interval: 2.0,
+          min: 0.0,
           max: 10.0,
-          stepSize: 1,
           startThumbIcon: _thumbView(_values.start),
           endThumbIcon: _thumbView(_values.end),
           values: _values,
@@ -97,13 +125,13 @@ class _VerticalThumbCustomizationRangeSliderPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _thumbCustomizationSlider()),
-              const Text('Text view')
+              Text('Text view')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _thumbIconSlider()),
-              const Text('Icon view'),
+              Text('Icon view'),
             ]),
           ],
         ));
@@ -111,14 +139,6 @@ class _VerticalThumbCustomizationRangeSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 400, child: rangeSlider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

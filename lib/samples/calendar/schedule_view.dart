@@ -68,25 +68,27 @@ class _ScheduleViewCalendarState extends SampleViewState {
       final DateTime date = i;
       final int count = 1 + random.nextInt(3);
       for (int j = 0; j < count; j++) {
-        final DateTime startDate =
-            DateTime(date.year, date.month, date.day, 8 + random.nextInt(8));
+        final DateTime startDate = DateTime(
+            date.year, date.month, date.day, 8 + random.nextInt(8), 0, 0);
         appointments.add(Appointment(
           subject: subjectCollection[random.nextInt(7)],
           startTime: startDate,
           endTime: startDate.add(Duration(hours: random.nextInt(3))),
           color: colorCollection[random.nextInt(9)],
+          isAllDay: false,
         ));
       }
     }
 
     DateTime date = DateTime.now();
-    date = DateTime(date.year, date.month, date.day, 11);
+    date = DateTime(date.year, date.month, date.day, 11, 0, 0);
     // added recurrence appointment
     appointments.add(Appointment(
         subject: 'Scrum',
         startTime: date,
         endTime: date.add(const Duration(hours: 1)),
         color: colorCollection[random.nextInt(9)],
+        isAllDay: false,
         recurrenceRule: 'FREQ=DAILY;INTERVAL=10'));
     return appointments;
   }
@@ -94,9 +96,7 @@ class _ScheduleViewCalendarState extends SampleViewState {
   @override
   Widget build(BuildContext context) {
     return Theme(
-        data: model.themeData.copyWith(
-            colorScheme: model.themeData.colorScheme
-                .copyWith(secondary: model.backgroundColor)),
+        data: model.themeData.copyWith(accentColor: model.backgroundColor),
         child: Container(
             color: model.cardThemeColor,
             child: getScheduleViewCalendar(

@@ -20,7 +20,6 @@ class ScatterDefault extends SampleView {
 class _ScatterDefaultState extends SampleViewState {
   _ScatterDefaultState();
 
-  List<ChartSampleData>? chartData;
   @override
   Widget build(BuildContext context) {
     return _buildDefaultScatterChart();
@@ -34,81 +33,97 @@ class _ScatterDefaultState extends SampleViewState {
       legend: Legend(isVisible: !isCardView),
       primaryXAxis: DateTimeAxis(
         labelIntersectAction: AxisLabelIntersectAction.multipleRows,
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
           labelFormat: '{value}%',
-          axisLine: const AxisLine(width: 0),
-          minorTickLines: const MinorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          minorTickLines: MinorTickLines(size: 0)),
       tooltipBehavior: TooltipBehavior(enable: true),
       series: _getDefaultScatterSeries(),
     );
   }
 
-  @override
-  void initState() {
-    chartData = <ChartSampleData>[
+  /// Returns the list of chart series
+  /// which need to render on the scatter chart.
+  List<ScatterSeries<ChartSampleData, DateTime>> _getDefaultScatterSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
-          x: DateTime(2006), y: 0.01, yValue: -0.03, secondSeriesYValue: 0.10),
+          x: DateTime(2006, 1, 1),
+          y: 0.01,
+          yValue: -0.03,
+          secondSeriesYValue: 0.10),
       ChartSampleData(
-          x: DateTime(2007), y: 0.03, yValue: -0.02, secondSeriesYValue: 0.08),
+          x: DateTime(2007, 1, 1),
+          y: 0.03,
+          yValue: -0.02,
+          secondSeriesYValue: 0.08),
       ChartSampleData(
-          x: DateTime(2008),
+          x: DateTime(2008, 1, 1),
           y: -0.06,
           yValue: -0.13,
           secondSeriesYValue: -0.03),
       ChartSampleData(
-          x: DateTime(2009), y: -0.03, yValue: -0.04, secondSeriesYValue: 0.04),
+          x: DateTime(2009, 1, 1),
+          y: -0.03,
+          yValue: -0.04,
+          secondSeriesYValue: 0.04),
       ChartSampleData(
-          x: DateTime(2010), y: 0.09, yValue: 0.07, secondSeriesYValue: 0.19),
+          x: DateTime(2010, 1, 1),
+          y: 0.09,
+          yValue: 0.07,
+          secondSeriesYValue: 0.19),
       ChartSampleData(
-          x: DateTime(2011), y: 0, yValue: 0.04, secondSeriesYValue: 0),
+          x: DateTime(2011, 1, 1), y: 0, yValue: 0.04, secondSeriesYValue: 0),
       ChartSampleData(
-          x: DateTime(2012), y: 0.01, yValue: -0.01, secondSeriesYValue: -0.09),
+          x: DateTime(2012, 1, 1),
+          y: 0.01,
+          yValue: -0.01,
+          secondSeriesYValue: -0.09),
       ChartSampleData(
-          x: DateTime(2013), y: 0.05, yValue: 0.05, secondSeriesYValue: 0.10),
+          x: DateTime(2013, 1, 1),
+          y: 0.05,
+          yValue: 0.05,
+          secondSeriesYValue: 0.10),
       ChartSampleData(
-          x: DateTime(2014), y: 0, yValue: 0.08, secondSeriesYValue: 0.05),
+          x: DateTime(2014, 1, 1),
+          y: 0,
+          yValue: 0.08,
+          secondSeriesYValue: 0.05),
       ChartSampleData(
-          x: DateTime(2015), y: 0.1, yValue: 0.01, secondSeriesYValue: -0.04),
+          x: DateTime(2015, 1, 1),
+          y: 0.1,
+          yValue: 0.01,
+          secondSeriesYValue: -0.04),
       ChartSampleData(
-          x: DateTime(2016), y: 0.08, yValue: 0, secondSeriesYValue: 0.02),
+          x: DateTime(2016, 1, 1),
+          y: 0.08,
+          yValue: 0,
+          secondSeriesYValue: 0.02),
     ];
-    super.initState();
-  }
-
-  /// Returns the list of chart series
-  /// which need to render on the scatter chart.
-  List<ScatterSeries<ChartSampleData, DateTime>> _getDefaultScatterSeries() {
     return <ScatterSeries<ChartSampleData, DateTime>>[
       ScatterSeries<ChartSampleData, DateTime>(
-          dataSource: chartData!,
+          dataSource: chartData,
           opacity: 0.7,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
-          markerSettings: const MarkerSettings(height: 15, width: 15),
+          markerSettings: MarkerSettings(height: 15, width: 15),
           name: 'Brazil'),
       ScatterSeries<ChartSampleData, DateTime>(
           opacity: 0.7,
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.yValue,
-          markerSettings: const MarkerSettings(height: 15, width: 15),
+          markerSettings: MarkerSettings(height: 15, width: 15),
           name: 'Canada'),
       ScatterSeries<ChartSampleData, DateTime>(
-        dataSource: chartData!,
+        dataSource: chartData,
         color: const Color.fromRGBO(0, 168, 181, 1),
-        xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
         name: 'India',
-        markerSettings: const MarkerSettings(height: 15, width: 15),
+        markerSettings: MarkerSettings(height: 15, width: 15),
       )
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
   }
 }

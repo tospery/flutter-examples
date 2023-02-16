@@ -1,6 +1,6 @@
 /// Package imports
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -28,8 +28,8 @@ class _StochasticcIndicatorState extends SampleViewState {
   late double _overBought;
   late double _overSold;
   late bool _showZones;
-  TrackballBehavior? _trackballBehavior;
-  TooltipBehavior? _tooltipBehavior;
+  late TrackballBehavior _trackballBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
@@ -62,150 +62,125 @@ class _StochasticcIndicatorState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                '  Period',
-                softWrap: false,
-                style: TextStyle(fontSize: 16, color: model.textColor),
+          ListTile(
+            title: Text(
+              'Period',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 50,
+                initialValue: _period,
+                onChanged: (double val) => setState(() {
+                  _period = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
               ),
-              Container(
-                width: 0.5 * screenWidth,
-                padding: EdgeInsets.only(left: 0.03 * screenWidth),
-                child: CustomDirectionalButtons(
-                  maxValue: 50,
-                  initialValue: _period,
-                  onChanged: (double val) => setState(() {
-                    _period = val;
-                  }),
-                  loop: true,
-                  iconColor: model.textColor,
-                  style: TextStyle(fontSize: 20.0, color: model.textColor),
-                ),
-              )
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                '  K Period',
-                softWrap: false,
-                style: TextStyle(fontSize: 16, color: model.textColor),
+          ListTile(
+            title: Text(
+              'K Period',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 100,
+                initialValue: _kPeriod,
+                onChanged: (double val) => setState(() {
+                  _kPeriod = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
               ),
-              Container(
-                width: 0.5 * screenWidth,
-                padding: EdgeInsets.only(left: 0.03 * screenWidth),
-                child: CustomDirectionalButtons(
-                  maxValue: 100,
-                  initialValue: _kPeriod,
-                  onChanged: (double val) => setState(() {
-                    _kPeriod = val;
-                  }),
-                  loop: true,
-                  iconColor: model.textColor,
-                  style: TextStyle(fontSize: 20.0, color: model.textColor),
-                ),
-              )
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                '  D Period',
-                softWrap: false,
-                style: TextStyle(fontSize: 16, color: model.textColor),
+          ListTile(
+            title: Text(
+              'D Period',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 50,
+                initialValue: _dPeriod,
+                onChanged: (double val) => setState(() {
+                  _dPeriod = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
               ),
-              Container(
-                width: 0.5 * screenWidth,
-                padding: EdgeInsets.only(left: 0.03 * screenWidth),
-                child: CustomDirectionalButtons(
-                  maxValue: 50,
-                  initialValue: _dPeriod,
-                  onChanged: (double val) => setState(() {
-                    _dPeriod = val;
-                  }),
-                  loop: true,
-                  iconColor: model.textColor,
-                  style: TextStyle(fontSize: 20.0, color: model.textColor),
-                ),
-              )
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                '  Overbought',
-                softWrap: false,
-                style: TextStyle(fontSize: 16, color: model.textColor),
+          ListTile(
+            title: Text(
+              'Overbought',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 100,
+                initialValue: _overBought,
+                onChanged: (double val) => setState(() {
+                  _overBought = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
               ),
-              Container(
-                width: 0.5 * screenWidth,
-                padding: EdgeInsets.only(left: 0.03 * screenWidth),
-                child: CustomDirectionalButtons(
-                  maxValue: 100,
-                  initialValue: _overBought,
-                  onChanged: (double val) => setState(() {
-                    _overBought = val;
-                  }),
-                  loop: true,
-                  iconColor: model.textColor,
-                  style: TextStyle(fontSize: 20.0, color: model.textColor),
-                ),
-              )
-            ],
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                '  Oversold',
-                softWrap: false,
-                style: TextStyle(fontSize: 16, color: model.textColor),
+          ListTile(
+            title: Text(
+              'Oversold',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 50,
+                initialValue: _overSold,
+                onChanged: (double val) => setState(() {
+                  _overSold = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
               ),
-              Container(
-                width: 0.5 * screenWidth,
-                padding: EdgeInsets.only(left: 0.03 * screenWidth),
-                child: CustomDirectionalButtons(
-                  maxValue: 50,
-                  initialValue: _overSold,
-                  onChanged: (double val) => setState(() {
-                    _overSold = val;
-                  }),
-                  loop: true,
-                  iconColor: model.textColor,
-                  style: TextStyle(fontSize: 20.0, color: model.textColor),
-                ),
-              )
-            ],
+            ),
           ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(model.isWebFullView ? '  Show \n  zones' : '  Show zones',
-                    softWrap: false,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: model.textColor,
-                    )),
-                Container(
-                    padding: EdgeInsets.only(left: 0.05 * screenWidth),
-                    width: 0.5 * screenWidth,
-                    child: CheckboxListTile(
-                        controlAffinity: ListTileControlAffinity.leading,
-                        contentPadding: EdgeInsets.zero,
-                        activeColor: model.backgroundColor,
-                        value: _showZones,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _showZones = value!;
-                            stateSetter(() {});
-                          });
-                        }))
-              ]),
+          ListTile(
+              title: Text('Show zones',
+                  style: TextStyle(
+                    color: model.textColor,
+                  )),
+              trailing: Container(
+                  padding: EdgeInsets.only(left: 0.05 * screenWidth),
+                  width: 0.5 * screenWidth,
+                  child: CheckboxListTile(
+                      controlAffinity: ListTileControlAffinity.leading,
+                      contentPadding: EdgeInsets.zero,
+                      activeColor: model.backgroundColor,
+                      value: _showZones,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          _showZones = value!;
+                          stateSetter(() {});
+                        });
+                      }))),
         ],
       );
     });
@@ -213,31 +188,32 @@ class _StochasticcIndicatorState extends SampleViewState {
 
   /// Returns the OHLC chart  with Stochastic indicator.
   SfCartesianChart _buildDefaultStochasticIndicator() {
+    final List<ChartSampleData> chartData = getChartData();
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       legend: Legend(isVisible: !isCardView),
       primaryXAxis: DateTimeAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         dateFormat: DateFormat.MMM(),
         interval: 3,
-        minimum: DateTime(2016),
-        maximum: DateTime(2017),
+        minimum: DateTime(2016, 01, 01),
+        maximum: DateTime(2017, 01, 01),
       ),
       primaryYAxis: NumericAxis(
           minimum: 70,
           maximum: 130,
           interval: 20,
-          labelFormat: r'${value}',
-          axisLine: const AxisLine(width: 0)),
+          labelFormat: '\${value}',
+          axisLine: AxisLine(width: 0)),
       axes: <ChartAxis>[
         NumericAxis(
-            majorGridLines: const MajorGridLines(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
             opposedPosition: true,
             name: 'yaxes',
             minimum: 10,
             maximum: 110,
             interval: 20,
-            axisLine: const AxisLine(width: 0))
+            axisLine: AxisLine(width: 0))
       ],
       trackballBehavior: _trackballBehavior,
       tooltipBehavior: _tooltipBehavior,
@@ -258,9 +234,9 @@ class _StochasticcIndicatorState extends SampleViewState {
       series: <ChartSeries<ChartSampleData, DateTime>>[
         HiloOpenCloseSeries<ChartSampleData, DateTime>(
             emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.zero),
-            dataSource: getChartData(),
+            dataSource: chartData,
             opacity: 0.7,
-            xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+            xValueMapper: (ChartSampleData sales, _) => sales.x,
             lowValueMapper: (ChartSampleData sales, _) => sales.low,
             highValueMapper: (ChartSampleData sales, _) => sales.high,
             openValueMapper: (ChartSampleData sales, _) => sales.open,

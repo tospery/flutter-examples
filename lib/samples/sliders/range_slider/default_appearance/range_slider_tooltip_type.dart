@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -25,19 +23,43 @@ class TooltipRangeSliderPage extends SampleView {
 
 class _TooltipRangeSliderPageState extends SampleViewState {
   _TooltipRangeSliderPageState();
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _TooltipRangeSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 300, child: rangeSlider),
+          );
+  }
+}
+
+class _TooltipRangeSlider extends SampleView {
+  @override
+  _TooltipRangeSliderState createState() => _TooltipRangeSliderState();
+}
+
+class _TooltipRangeSliderState extends SampleViewState {
   SfRangeValues _yearValues =
-      SfRangeValues(DateTime(2002, 4), DateTime(2003, 10));
-  SfRangeValues _hourValues =
-      SfRangeValues(DateTime(2010, 01, 01, 13), DateTime(2010, 01, 01, 17));
-  bool _shouldAlwaysShowTooltip = false;
+      SfRangeValues(DateTime(2002, 4, 01), DateTime(2003, 10, 01));
+  SfRangeValues _hourValues = SfRangeValues(
+      DateTime(2010, 01, 01, 13, 00, 00), DateTime(2010, 01, 01, 17, 00, 00));
 
   SfRangeSliderTheme _yearRangeSlider() {
     return SfRangeSliderTheme(
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider(
-          min: DateTime(2001),
-          max: DateTime(2005),
+          min: DateTime(2001, 01, 01),
+          max: DateTime(2005, 01, 01),
           showLabels: true,
           interval: 1,
           dateFormat: DateFormat.y(),
@@ -51,7 +73,6 @@ class _TooltipRangeSliderPageState extends SampleViewState {
             });
           },
           enableTooltip: true,
-          shouldAlwaysShowTooltip: _shouldAlwaysShowTooltip,
           tooltipTextFormatterCallback:
               (dynamic actualLabel, String formattedText) {
             return DateFormat.yMMM().format(actualLabel);
@@ -64,13 +85,14 @@ class _TooltipRangeSliderPageState extends SampleViewState {
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider(
-          min: DateTime(2010, 01, 01, 9),
-          max: DateTime(2010, 01, 01, 21, 05),
+          min: DateTime(2010, 01, 01, 9, 00, 00),
+          max: DateTime(2010, 01, 01, 21, 05, 00),
           showLabels: true,
           interval: 4,
           showTicks: true,
           minorTicksPerInterval: 3,
           dateFormat: DateFormat('h a'),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.hours,
           values: _hourValues,
           onChanged: (SfRangeValues values) {
@@ -79,8 +101,7 @@ class _TooltipRangeSliderPageState extends SampleViewState {
             });
           },
           enableTooltip: true,
-          shouldAlwaysShowTooltip: _shouldAlwaysShowTooltip,
-          tooltipShape: const SfPaddleTooltipShape(),
+          tooltipShape: SfPaddleTooltipShape(),
           tooltipTextFormatterCallback:
               (dynamic actualLabel, String formattedText) {
             return DateFormat('h:mm a').format(actualLabel);
@@ -120,37 +141,6 @@ class _TooltipRangeSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 300
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 300, child: rangeSlider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: _shouldAlwaysShowTooltip,
-          title: const Text(
-            'Show tooltip always',
-            softWrap: false,
-          ),
-          activeColor: model.backgroundColor,
-          contentPadding: EdgeInsets.zero,
-          onChanged: (bool? value) {
-            setState(() {
-              _shouldAlwaysShowTooltip = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

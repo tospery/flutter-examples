@@ -34,7 +34,7 @@ class _RadialTextAnnotationState extends SampleViewState {
           startAngle: 180,
           endAngle: 180,
           radiusFactor: model.isWebFullView ? 0.8 : 0.9,
-          axisLineStyle: const AxisLineStyle(
+          axisLineStyle: AxisLineStyle(
               // Dash array not supported in web
               thickness: 30,
               dashArray: <double>[8, 10]),
@@ -43,21 +43,25 @@ class _RadialTextAnnotationState extends SampleViewState {
             showTicks: false,
             showLabels: false,
             startAngle: 180,
+            endAngle: 50,
             radiusFactor: model.isWebFullView ? 0.8 : 0.9,
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
                   angle: 270,
+                  positionFactor: 0,
                   verticalAlignment: GaugeAlignment.far,
-                  widget: Text(' 63%',
-                      style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontFamily: 'Times',
-                          fontWeight: FontWeight.bold,
-                          fontSize: isCardView ? 18 : 25)))
+                  widget: Container(
+                      // added text widget as an annotation.
+                      child: Text(' 63%',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontFamily: 'Times',
+                              fontWeight: FontWeight.bold,
+                              fontSize: isCardView ? 18 : 25))))
             ],
-            axisLineStyle: const AxisLineStyle(
-                color: Color(0xFF00A8B5),
-                gradient: SweepGradient(
+            axisLineStyle: AxisLineStyle(
+                color: const Color(0xFF00A8B5),
+                gradient: const SweepGradient(
                     colors: <Color>[Color(0xFF06974A), Color(0xFFF2E41F)],
                     stops: <double>[0.25, 0.75]),
                 thickness: 30,

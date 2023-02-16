@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -25,22 +23,50 @@ class VerticalRangeSliderIntervalSelectionPage extends SampleView {
 
 class _VerticalRangeSliderIntervalSelectionPageState extends SampleViewState {
   _VerticalRangeSliderIntervalSelectionPageState();
-  SfRangeValues _yearValues = SfRangeValues(DateTime(2012), DateTime(2018));
+
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _RangeSliderIntervalSelection();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: rangeSlider),
+          );
+  }
+}
+
+class _RangeSliderIntervalSelection extends SampleView {
+  @override
+  _RangeSliderIntervalSelectionState createState() =>
+      _RangeSliderIntervalSelectionState();
+}
+
+class _RangeSliderIntervalSelectionState extends SampleViewState {
+  SfRangeValues _yearValues =
+      SfRangeValues(DateTime(2012, 1, 01), DateTime(2018, 1, 1));
   SfRangeValues _values = const SfRangeValues(20.0, 80.0);
-  bool _isInversed = false;
 
   SfRangeSliderTheme _yearRangeSlider() {
     return SfRangeSliderTheme(
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider.vertical(
-          min: DateTime(2010),
-          max: DateTime(2020),
+          min: DateTime(2010, 01, 01),
+          max: DateTime(2020, 01, 01),
+          //showDivisors: true,
           interval: 2,
           showLabels: true,
-          isInversed: _isInversed,
           stepDuration: const SliderStepDuration(years: 2),
           dateFormat: DateFormat.y(),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.years,
           enableIntervalSelection: true,
           showTicks: true,
@@ -65,10 +91,10 @@ class _VerticalRangeSliderIntervalSelectionPageState extends SampleViewState {
         child: SfRangeSlider.vertical(
             showLabels: true,
             interval: 20,
+            min: 0.0,
             max: 100.0,
             stepSize: 20,
             showTicks: true,
-            isInversed: _isInversed,
             enableIntervalSelection: true,
             values: _values,
             onChanged: (SfRangeValues values) {
@@ -93,22 +119,22 @@ class _VerticalRangeSliderIntervalSelectionPageState extends SampleViewState {
     final double padding = MediaQuery.of(context).size.height / 10.0;
     return Padding(
         padding: EdgeInsets.fromLTRB(padding, padding, padding, padding / 2),
-        child: Column(children: <Widget>[
+        child: Column(children: [
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Padding(
                     padding: EdgeInsets.only(bottom: padding / 2),
-                    child: Column(children: <Widget>[
+                    child: Column(children: [
                       Expanded(child: _numericRangeSlider()),
-                      const Text('Numeric')
+                      Text('Numeric')
                     ])),
                 Padding(
                     padding: EdgeInsets.only(bottom: padding / 2),
-                    child: Column(children: <Widget>[
+                    child: Column(children: [
                       Expanded(child: _yearRangeSlider()),
-                      const Text('DateTime'),
+                      Text('DateTime'),
                     ])),
               ],
             ),
@@ -131,37 +157,6 @@ class _VerticalRangeSliderIntervalSelectionPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 400, child: rangeSlider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: _isInversed,
-          title: const Text(
-            'Inversed',
-            softWrap: false,
-          ),
-          contentPadding: EdgeInsets.zero,
-          activeColor: model.backgroundColor,
-          onChanged: (bool? value) {
-            setState(() {
-              _isInversed = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

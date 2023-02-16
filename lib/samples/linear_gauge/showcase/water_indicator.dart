@@ -39,7 +39,7 @@ class _WaterLevelIndicatorState extends SampleViewState {
         : isCardView
             ? _buildWaterIndicator(context)
             : Center(
-                child: SizedBox(
+                child: Container(
                 height: 300,
                 child: _buildWaterIndicator(context),
               ));
@@ -47,30 +47,28 @@ class _WaterLevelIndicatorState extends SampleViewState {
 
   /// Returns the water indicator.
   Widget _buildWaterIndicator(BuildContext context) {
-    final Brightness brightness = Theme.of(context).brightness;
+    final Brightness _brightness = Theme.of(context).brightness;
 
     return Padding(
-        padding: const EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
         child: SfLinearGauge(
           minimum: _minimumLevel,
           maximum: _maximumLevel,
           orientation: LinearGaugeOrientation.vertical,
           interval: 100,
-          axisTrackStyle: const LinearAxisTrackStyle(
+          axisTrackStyle: LinearAxisTrackStyle(
             thickness: 2,
           ),
-          markerPointers: <LinearMarkerPointer>[
+          markerPointers: [
             LinearWidgetPointer(
               value: _level,
               enableAnimation: false,
-              onChanged: (dynamic value) {
-                setState(() {
-                  _level = value as double;
-                });
+              onValueChanged: (value) {
+                setState(() => {_level = value});
               },
               child: Material(
                 elevation: 4.0,
-                shape: const CircleBorder(),
+                shape: CircleBorder(),
                 clipBehavior: Clip.hardEdge,
                 color: Colors.blue,
                 child: Ink(
@@ -109,14 +107,14 @@ class _WaterLevelIndicatorState extends SampleViewState {
                       ? 120
                       : 95,
               position: LinearElementPosition.outside,
-              child: SizedBox(
+              child: Container(
                   width: 50,
                   height: 20,
                   child: Center(
                       child: Text(
                     _level.toStringAsFixed(0) + ' ml',
                     style: TextStyle(
-                        color: brightness == Brightness.light
+                        color: _brightness == Brightness.light
                             ? Colors.black
                             : Colors.white,
                         fontSize: 14,
@@ -159,13 +157,13 @@ class _CustomPathPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Path path = _buildTumblerPath(size.width, size.height);
-    final double factor = size.height / maximumPoint;
+    final double factor = (size.height / maximumPoint);
     final double height = 2 * factor * waterLevel;
-    final Paint strokePaint = Paint()
+    final strokePaint = Paint()
       ..color = Colors.grey
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
-    final Paint paint = Paint()..color = color;
+    final paint = Paint()..color = color;
     canvas.drawPath(path, strokePaint);
     final Rect clipper = Rect.fromCenter(
         center: Offset(size.width / 2, size.height),

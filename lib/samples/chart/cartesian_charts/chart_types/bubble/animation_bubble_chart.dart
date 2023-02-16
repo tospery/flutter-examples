@@ -23,21 +23,6 @@ class AnimationBubbleDefault extends SampleView {
 class _AnimationBubbleDefaultState extends SampleViewState {
   _AnimationBubbleDefaultState();
   Timer? timer;
-  List<_ChartData>? _chartData;
-
-  @override
-  void initState() {
-    _chartData = <_ChartData>[
-      _ChartData(1, 11, 2.5),
-      _ChartData(2, 24, 2.2),
-      _ChartData(3, 36, 1.5),
-      _ChartData(4, 54, 1.2),
-      _ChartData(5, 57, 3),
-      _ChartData(6, 70, 3.8),
-      _ChartData(7, 78, 1)
-    ];
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +38,10 @@ class _AnimationBubbleDefaultState extends SampleViewState {
   SfCartesianChart _buildAnimationBubbleChart() {
     return SfCartesianChart(
         plotAreaBorderWidth: 0,
-        primaryXAxis:
-            CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
+        primaryXAxis: CategoryAxis(majorGridLines: MajorGridLines(width: 0)),
         primaryYAxis: NumericAxis(
-            majorTickLines: const MajorTickLines(color: Colors.transparent),
-            axisLine: const AxisLine(width: 0),
+            majorTickLines: MajorTickLines(color: Colors.transparent),
+            axisLine: AxisLine(width: 0),
             minimum: 0,
             maximum: 100),
         series: _getDefaultBubbleSeries());
@@ -66,7 +50,7 @@ class _AnimationBubbleDefaultState extends SampleViewState {
   List<BubbleSeries<_ChartData, num>> _getDefaultBubbleSeries() {
     return <BubbleSeries<_ChartData, num>>[
       BubbleSeries<_ChartData, num>(
-          dataSource: _chartData!,
+          dataSource: _chartData,
           xValueMapper: (_ChartData sales, _) => sales.x,
           yValueMapper: (_ChartData sales, _) => sales.y,
           sizeValueMapper: (_ChartData sales, _) => sales.size)
@@ -75,9 +59,8 @@ class _AnimationBubbleDefaultState extends SampleViewState {
 
   @override
   void dispose() {
-    timer!.cancel();
-    _chartData!.clear();
     super.dispose();
+    timer!.cancel();
   }
 
   /// To get the random data and return to the chart data source.
@@ -88,13 +71,32 @@ class _AnimationBubbleDefaultState extends SampleViewState {
 
   void _getChartData() {
     final Random randomValue = Random();
-    _chartData = <_ChartData>[];
-    for (int i = 1; i <= 7; i++) {
-      _chartData!.add(
-          _ChartData(i, _getRandomInt(15, 90), randomValue.nextDouble() * 0.9));
-    }
+    _chartData[0] =
+        _ChartData(1, _getRandomInt(10, 50), randomValue.nextDouble() * 0.9);
+    _chartData[1] =
+        _ChartData(2, _getRandomInt(50, 80), randomValue.nextDouble() * 1.6);
+    _chartData[2] =
+        _ChartData(3, _getRandomInt(15, 55), randomValue.nextDouble() * 1.2);
+    _chartData[3] =
+        _ChartData(4, _getRandomInt(60, 89), randomValue.nextDouble() * 1.5);
+    _chartData[4] =
+        _ChartData(5, _getRandomInt(20, 48), randomValue.nextDouble() * 1.3);
+    _chartData[5] =
+        _ChartData(6, _getRandomInt(60, 87), randomValue.nextDouble() * 1.6);
+    _chartData[6] =
+        _ChartData(7, _getRandomInt(15, 60), randomValue.nextDouble() * 0.9);
     timer?.cancel();
   }
+
+  final List<_ChartData> _chartData = <_ChartData>[
+    _ChartData(1, 11, 2.5),
+    _ChartData(2, 24, 2.2),
+    _ChartData(3, 36, 1.5),
+    _ChartData(4, 54, 1.2),
+    _ChartData(5, 57, 3),
+    _ChartData(6, 70, 3.8),
+    _ChartData(7, 78, 1)
+  ];
 }
 
 class _ChartData {

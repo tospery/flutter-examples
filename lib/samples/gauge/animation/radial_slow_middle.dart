@@ -36,42 +36,46 @@ class _RadialSlowMiddleAnimationState extends SampleViewState {
             showAxisLine: false,
             ticksPosition: ElementsPosition.outside,
             labelsPosition: ElementsPosition.outside,
+            minimum: 0,
             maximum: 12,
             interval: 1,
             canRotateLabels: true,
-            majorTickStyle: const MajorTickStyle(
-                length: 0.15, lengthUnit: GaugeSizeUnit.factor),
+            majorTickStyle: MajorTickStyle(
+                length: 0.15, lengthUnit: GaugeSizeUnit.factor, thickness: 1.5),
             minorTicksPerInterval: 4,
             showFirstLabel: false,
-            showLastLabel: true,
-            axisLabelStyle: const GaugeTextStyle(),
-            minorTickStyle: const MinorTickStyle(
-                length: 0.07, lengthUnit: GaugeSizeUnit.factor),
+            axisLabelStyle: GaugeTextStyle(fontSize: 12),
+            minorTickStyle: MinorTickStyle(
+                length: 0.07, lengthUnit: GaugeSizeUnit.factor, thickness: 1.5),
             pointers: <GaugePointer>[
-              const NeedlePointer(
+              NeedlePointer(
                   needleLength: 0.95,
                   needleStartWidth: 0,
+                  lengthUnit: GaugeSizeUnit.factor,
                   needleEndWidth: 5,
-                  needleColor: Color(0xFFC06C84),
+                  needleColor: const Color(0xFFC06C84),
                   knobStyle: KnobStyle(knobRadius: 0),
                   value: 11,
                   enableAnimation: true,
                   animationType: AnimationType.slowMiddle),
-              const NeedlePointer(
+              NeedlePointer(
                 needleLength: 0.7,
                 needleStartWidth: 0,
+                lengthUnit: GaugeSizeUnit.factor,
                 needleEndWidth: 5,
-                needleColor: Color(0xFFF67280),
+                needleColor: const Color(0xFFF67280),
                 value: 2,
                 enableAnimation: true,
                 animationType: AnimationType.slowMiddle,
                 knobStyle: KnobStyle(
-                    color: Color(0xFFF67280),
+                    color: const Color(0xFFF67280),
                     sizeUnit: GaugeSizeUnit.logicalPixel,
                     knobRadius: 10),
               ),
               NeedlePointer(
                   needleLength: 0.8,
+                  needleStartWidth: 1,
+                  lengthUnit: GaugeSizeUnit.factor,
                   needleEndWidth: 1,
                   needleColor: _slowMiddleNeedleColor,
                   knobStyle: KnobStyle(

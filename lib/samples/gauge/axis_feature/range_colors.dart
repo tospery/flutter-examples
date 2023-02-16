@@ -35,15 +35,17 @@ class _RangeColorForLabelsState extends SampleViewState {
             startAngle: 270,
             endAngle: 270,
             useRangeColorForAxis: true,
+            radiusFactor: 0.95,
             interval: 10,
             showFirstLabel: false,
-            showLastLabel: true,
             isInversed: true,
-            axisLabelStyle: const GaugeTextStyle(fontWeight: FontWeight.w500),
-            majorTickStyle: const MajorTickStyle(
+            axisLabelStyle:
+                GaugeTextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+            majorTickStyle: MajorTickStyle(
                 length: 0.15, lengthUnit: GaugeSizeUnit.factor, thickness: 1),
             minorTicksPerInterval: 4,
-            minorTickStyle: const MinorTickStyle(
+            labelOffset: 15,
+            minorTickStyle: MinorTickStyle(
                 length: 0.04, lengthUnit: GaugeSizeUnit.factor, thickness: 1),
             ranges: <GaugeRange>[
               GaugeRange(

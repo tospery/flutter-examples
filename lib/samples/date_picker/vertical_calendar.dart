@@ -21,11 +21,11 @@ class _VerticalCalendarPickerState extends SampleViewState {
 
   DateRangePickerNavigationMode _navigationMode =
       DateRangePickerNavigationMode.scroll;
-  String _navigationModeString = 'scroll';
+  String _navigationModeString = 'Scroll';
   final List<String> _navigationModeList = <String>[
-    'none',
-    'snap',
-    'scroll',
+    'None',
+    'Snap',
+    'Scroll',
   ].toList();
 
   @override
@@ -38,9 +38,11 @@ class _VerticalCalendarPickerState extends SampleViewState {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
       final List<Widget> propertyOptions = <Widget>[];
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
                 flex: 6,
@@ -49,17 +51,15 @@ class _VerticalCalendarPickerState extends SampleViewState {
             Expanded(
               flex: 4,
               child: Container(
-                padding: EdgeInsets.zero,
+                padding: const EdgeInsets.all(0),
                 alignment: Alignment.bottomLeft,
                 child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
+                    underline: Container(color: Color(0xFFBDBDBD), height: 1),
                     value: _navigationModeString,
                     items: _navigationModeList.map((String value) {
                       return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'scroll',
-                          child: Text(value,
+                          value: (value != null) ? value : 'Scroll',
+                          child: Text('$value',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: model.textColor)));
                     }).toList(),
@@ -74,10 +74,13 @@ class _VerticalCalendarPickerState extends SampleViewState {
       ));
       return Padding(
         padding: const EdgeInsets.fromLTRB(15, 10, 0, 5),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: propertyOptions,
-        ),
+        child: model.isWebFullView
+            ? Column(
+                children: propertyOptions,
+              )
+            : ListView(
+                children: propertyOptions,
+              ),
       );
     });
   }
@@ -89,23 +92,19 @@ class _VerticalCalendarPickerState extends SampleViewState {
       padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
       color: model.cardThemeColor,
       child: Theme(
-        data: model.themeData.copyWith(
-            colorScheme: model.themeData.colorScheme
-                .copyWith(secondary: model.backgroundColor)),
+        data: model.themeData.copyWith(accentColor: model.backgroundColor),
         child: _getVerticalCalendar(),
       ),
     );
-    final Widget cardView = Card(
+    final Widget _cardView = Card(
         elevation: 10,
         margin: model.isWebFullView
             ? const EdgeInsets.fromLTRB(30, 20, 30, 10)
             : const EdgeInsets.fromLTRB(30, 30, 30, 10),
-        child: model.isWebFullView
-            ? ListView(children: <Widget>[calendar])
-            : calendar);
+        child: model.isWebFullView ? ListView(children: [calendar]) : calendar);
     return Scaffold(
         backgroundColor: model.themeData == null ||
-                model.themeData.colorScheme.brightness == Brightness.light
+                model.themeData.brightness == Brightness.light
             ? null
             : const Color(0x00171a21),
         body: Column(children: <Widget>[
@@ -116,13 +115,13 @@ class _VerticalCalendarPickerState extends SampleViewState {
                       child:
 
                           /// 580 defines 550 height and 30 margin
-                          SizedBox(width: 400, height: 580, child: cardView))
+                          Container(width: 400, height: 580, child: _cardView))
 
                   /// 590 defines 550 height and 40 margin
                   : ListView(children: <Widget>[
-                      SizedBox(
+                      Container(
                         height: 590,
-                        child: cardView,
+                        child: _cardView,
                       )
                     ]))
         ]));
@@ -130,11 +129,11 @@ class _VerticalCalendarPickerState extends SampleViewState {
 
   void onNavigationModeChange(String value) {
     _navigationModeString = value;
-    if (value == 'none') {
+    if (value == 'None') {
       _navigationMode = DateRangePickerNavigationMode.none;
-    } else if (value == 'snap') {
+    } else if (value == 'Snap') {
       _navigationMode = DateRangePickerNavigationMode.snap;
-    } else if (value == 'scroll') {
+    } else if (value == 'Scroll') {
       _navigationMode = DateRangePickerNavigationMode.scroll;
     }
 
@@ -152,7 +151,7 @@ class _VerticalCalendarPickerState extends SampleViewState {
       navigationDirection: DateRangePickerNavigationDirection.vertical,
       selectionMode: DateRangePickerSelectionMode.multiRange,
       monthViewSettings:
-          const DateRangePickerMonthViewSettings(enableSwipeSelection: false),
+          DateRangePickerMonthViewSettings(enableSwipeSelection: false),
       showNavigationArrow: model.isWebFullView,
       navigationMode: _navigationMode,
     );

@@ -1,6 +1,6 @@
 /// Package imports
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -23,8 +23,8 @@ class MomentummIndicator extends SampleView {
 class _MomentummIndicatorState extends SampleViewState {
   _MomentummIndicatorState();
   late double _period;
-  TooltipBehavior? _tooltipBehavior;
-  TrackballBehavior? _trackballBehavior;
+  late TooltipBehavior _tooltipBehavior;
+  late TrackballBehavior _trackballBehavior;
 
   @override
   void initState() {
@@ -45,6 +45,8 @@ class _MomentummIndicatorState extends SampleViewState {
   @override
   Widget buildSettings(BuildContext c0ntext) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Text(
           'Period',
@@ -69,31 +71,32 @@ class _MomentummIndicatorState extends SampleViewState {
 
   /// Returns the OHLC chart with Momentum indicator.
   SfCartesianChart _buildDefaulMomentumIndicator() {
+    final List<ChartSampleData> chartData = getChartData();
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       legend: Legend(isVisible: !isCardView),
       primaryXAxis: DateTimeAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         dateFormat: DateFormat.MMM(),
         interval: 3,
-        minimum: DateTime(2016),
-        maximum: DateTime(2017),
+        minimum: DateTime(2016, 01, 01),
+        maximum: DateTime(2017, 01, 01),
       ),
       primaryYAxis: NumericAxis(
           minimum: 70,
           maximum: 130,
           interval: 20,
-          labelFormat: r'${value}',
-          axisLine: const AxisLine(width: 0)),
+          labelFormat: '\${value}',
+          axisLine: AxisLine(width: 0)),
       axes: <ChartAxis>[
         NumericAxis(
-            majorGridLines: const MajorGridLines(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
             opposedPosition: true,
             name: 'yaxes',
             minimum: 50,
             maximum: 150,
             interval: 20,
-            axisLine: const AxisLine(width: 0))
+            axisLine: AxisLine(width: 0))
       ],
       trackballBehavior: _trackballBehavior,
       tooltipBehavior: _tooltipBehavior,
@@ -106,9 +109,9 @@ class _MomentummIndicatorState extends SampleViewState {
       series: <ChartSeries<ChartSampleData, DateTime>>[
         HiloOpenCloseSeries<ChartSampleData, DateTime>(
             emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.zero),
-            dataSource: getChartData(),
+            dataSource: chartData,
             opacity: 0.7,
-            xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+            xValueMapper: (ChartSampleData sales, _) => sales.x,
             lowValueMapper: (ChartSampleData sales, _) => sales.low,
             highValueMapper: (ChartSampleData sales, _) => sales.high,
             openValueMapper: (ChartSampleData sales, _) => sales.open,

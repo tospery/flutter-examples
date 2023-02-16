@@ -19,23 +19,21 @@ class LabelAction extends SampleView {
 /// State class of the label intersect action chart.
 class _LabelActionState extends SampleViewState {
   _LabelActionState();
-  List<String>? _labelList;
-  late String _selectedType;
-  AxisLabelIntersectAction? _labelIntersectAction;
-  TooltipBehavior? _tooltipBehavior;
-  List<ChartSampleData>? chartData;
+  final List<String> _labelList = <String>[
+    'hide',
+    'none',
+    'multipleRows',
+    'rotate45',
+    'rotate90',
+    'wrap'
+  ].toList();
+  String _selectedType = 'hide';
+  late AxisLabelIntersectAction _labelIntersectAction =
+      AxisLabelIntersectAction.hide;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
-    _labelList = <String>[
-      'hide',
-      'none',
-      'multipleRows',
-      'rotate45',
-      'rotate90',
-      'wrap',
-      'trim'
-    ].toList();
     _selectedType = 'hide';
     _labelIntersectAction = AxisLabelIntersectAction.hide;
     _tooltipBehavior = TooltipBehavior(
@@ -44,13 +42,6 @@ class _LabelActionState extends SampleViewState {
         header: '',
         canShowMarker: false);
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _labelList!.clear();
-    chartData!.clear();
-    super.dispose();
   }
 
   @override
@@ -63,23 +54,21 @@ class _LabelActionState extends SampleViewState {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
       return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(model.isWebFullView ? 'Intersect \naction' : 'Intersect action ',
+          Text('Intersect action ',
               style: TextStyle(
                 color: model.textColor,
                 fontSize: 16,
               )),
           Container(
-            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
             child: DropdownButton<String>(
-                focusColor: Colors.transparent,
-                underline: Container(color: const Color(0xFFBDBDBD), height: 1),
+                underline: Container(color: Color(0xFFBDBDBD), height: 1),
                 value: _selectedType,
-                items: _labelList!.map((String value) {
+                items: _labelList.map((String value) {
                   return DropdownMenuItem<String>(
                       value: (value != null) ? value : 'hide',
-                      child: Text(value,
+                      child: Text('$value',
                           style: TextStyle(color: model.textColor)));
                 }).toList(),
                 onChanged: (String? value) {
@@ -99,18 +88,13 @@ class _LabelActionState extends SampleViewState {
       title: ChartTitle(
           text: isCardView ? '' : 'Football players with most goals'),
       primaryXAxis: CategoryAxis(
-        // interval: 40,
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         labelIntersectAction: _labelIntersectAction,
       ),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
-          interval: model.isMobile
-              ? model.isCardView
-                  ? 20
-                  : 10
-              : 100,
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          interval: 40,
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getLabelIntersectActionSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -118,7 +102,7 @@ class _LabelActionState extends SampleViewState {
 
   /// Returns the list of chart series which need to render on the column chart.
   List<ColumnSeries<ChartSampleData, String>> _getLabelIntersectActionSeries() {
-    chartData = model.isWebFullView
+    final List<ChartSampleData> chartData = model.isWebFullView
         ? <ChartSampleData>[
             ChartSampleData(x: 'Josef Bican', y: 805),
             ChartSampleData(x: 'Romário', y: 772),
@@ -145,10 +129,10 @@ class _LabelActionState extends SampleViewState {
           ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData data, _) => data.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData data, _) => data.x,
           yValueMapper: (ChartSampleData data, _) => data.y,
-          dataLabelSettings: const DataLabelSettings(
+          dataLabelSettings: DataLabelSettings(
               isVisible: true, labelAlignment: ChartDataLabelAlignment.top))
     ];
   }
@@ -174,9 +158,6 @@ class _LabelActionState extends SampleViewState {
     }
     if (_selectedType == 'wrap') {
       _labelIntersectAction = AxisLabelIntersectAction.wrap;
-    }
-    if (_selectedType == 'trim') {
-      _labelIntersectAction = AxisLabelIntersectAction.trim;
     }
     setState(() {
       /// update the axis label intersection action changes

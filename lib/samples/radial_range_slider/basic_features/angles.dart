@@ -22,6 +22,10 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
 
   double _size = 150;
   late double width, height;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +43,22 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _buildFirstSlider(),
             Align(
+              alignment:
+                  !model.isWebFullView ? Alignment(0, 0) : Alignment(0, 0),
               child: _buildSecondSlider(),
             ),
-            Align(child: _buildThirdSlider()),
-            Align(child: _buildFourthSlider()),
+            Align(
+                alignment:
+                    !model.isWebFullView ? Alignment(0, 0) : Alignment(0, 0),
+                child: _buildThirdSlider()),
+            Align(
+                alignment:
+                    model.isWebFullView ? Alignment(0, 0) : Alignment(0, 0),
+                child: _buildFourthSlider()),
           ],
         ),
       );
@@ -54,29 +67,29 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
       return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             Align(
-              alignment: model.isWebFullView
-                  ? Alignment.centerRight
-                  : Alignment.center,
+              alignment:
+                  model.isWebFullView ? Alignment.centerRight : Alignment(0, 0),
               child: _buildFirstSlider(),
             ),
             Align(
               alignment: model.isWebFullView
                   ? Alignment.centerLeft
-                  : const Alignment(0.8, 0),
+                  : Alignment(0.8, 0),
               child: _buildSecondSlider(),
             ),
             Align(
               alignment: model.isWebFullView
                   ? Alignment.centerLeft
-                  : const Alignment(-0.5, 0),
+                  : Alignment(-0.5, 0),
               child: _buildThirdSlider(),
             ),
             Align(
                 alignment: model.isWebFullView
-                    ? const Alignment(-0.1, 0.25)
-                    : const Alignment(0, 0.5),
+                    ? Alignment(-0.1, 0.25)
+                    : Alignment(0, 0.5),
                 child: _buildFourthSlider()),
           ],
         ),
@@ -84,15 +97,20 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
     }
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget _buildSecondSlider() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
             radiusFactor: 0.8,
             interval: 10,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 color: Color.fromRGBO(88, 194, 143, 0.3),
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor),
@@ -100,7 +118,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
             showTicks: false,
             startAngle: 90,
             endAngle: 270,
-            canScaleToFit: model.isWebFullView && width > height,
+            canScaleToFit: model.isWebFullView
+                ? width > height
+                    ? true
+                    : false
+                : false,
             ranges: <GaugeRange>[
               GaugeRange(
                   startValue: _thirdMarkerValue,
@@ -115,7 +137,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
                 value: _thirdMarkerValue,
                 elevation: 5,
                 enableDragging: true,
-                color: const Color.fromRGBO(88, 194, 143, 1),
+                color: Color.fromRGBO(88, 194, 143, 1),
                 // model.currentThemeData.brightness == Brightness.light
                 //     ? Colors.white
                 //     : Colors.black,
@@ -134,7 +156,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
                 value: _fourthMarkerValue,
                 elevation: 5,
                 enableDragging: true,
-                color: const Color.fromRGBO(88, 194, 143, 1),
+                color: Color.fromRGBO(88, 194, 143, 1),
                 // model.currentThemeData.brightness == Brightness.light
                 //     ? Colors.white
                 //     : Colors.black,
@@ -171,14 +193,14 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   Widget _buildThirdSlider() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
             radiusFactor: 0.8,
             interval: 10,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 color: Color.fromRGBO(88, 194, 143, 0.3),
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor),
@@ -186,7 +208,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
             showTicks: false,
             startAngle: 270,
             endAngle: 90,
-            canScaleToFit: model.isWebFullView && width > height,
+            canScaleToFit: model.isWebFullView
+                ? width > height
+                    ? true
+                    : false
+                : false,
             ranges: <GaugeRange>[
               GaugeRange(
                   startValue: _fifthMarkerValue,
@@ -200,7 +226,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
               MarkerPointer(
                 value: _fifthMarkerValue,
                 elevation: 5,
-                color: const Color.fromRGBO(88, 194, 143, 1),
+                color: Color.fromRGBO(88, 194, 143, 1),
                 // model.currentThemeData.brightness == Brightness.light
                 //     ? Colors.white
                 //     : Colors.black,
@@ -219,7 +245,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
               MarkerPointer(
                 value: _sixthMarkerValue,
                 elevation: 5,
-                color: const Color.fromRGBO(88, 194, 143, 1),
+                color: Color.fromRGBO(88, 194, 143, 1),
                 // model.currentThemeData.brightness == Brightness.light
                 //     ? Colors.white
                 //     : Colors.black,
@@ -257,13 +283,13 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   Widget _buildFirstSlider() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
             radiusFactor: 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 color: Color.fromRGBO(88, 194, 143, 0.3),
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor),
@@ -286,7 +312,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
                 elevation: 5,
                 onValueChanged: handleFirstPointerValueChanged,
                 onValueChanging: handleFirstPointerValueChanging,
-                color: const Color.fromRGBO(88, 194, 143, 1),
+                color: Color.fromRGBO(88, 194, 143, 1),
                 // model.currentThemeData.brightness == Brightness.light
                 //     ? Colors.white
                 //     : Colors.black,
@@ -305,7 +331,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
                 elevation: 5,
                 onValueChanged: handleSecondPointerValueChanged,
                 onValueChanging: handleSecondPointerValueChanging,
-                color: const Color.fromRGBO(88, 194, 143, 1),
+                color: Color.fromRGBO(88, 194, 143, 1),
                 // model.currentThemeData.brightness == Brightness.light
                 //     ? Colors.white
                 //     : Colors.black,
@@ -341,13 +367,13 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   Widget _buildFourthSlider() {
-    return SizedBox(
+    return Container(
       height: _size,
       width: _size,
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
           radiusFactor: 0.8,
-          axisLineStyle: const AxisLineStyle(
+          axisLineStyle: AxisLineStyle(
               color: Color.fromRGBO(88, 194, 143, 0.3),
               thickness: 0.1,
               thicknessUnit: GaugeSizeUnit.factor),
@@ -368,7 +394,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
             MarkerPointer(
               value: _seventhMarkerValue,
               elevation: 5,
-              color: const Color.fromRGBO(88, 194, 143, 1),
+              color: Color.fromRGBO(88, 194, 143, 1),
               // model.currentThemeData.brightness == Brightness.light
               //     ? Colors.white
               //     : Colors.black,
@@ -386,7 +412,7 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
             MarkerPointer(
               value: _eighthMarkerValue,
               elevation: 5,
-              color: const Color.fromRGBO(88, 194, 143, 1),
+              color: Color.fromRGBO(88, 194, 143, 1),
               // model.currentThemeData.brightness == Brightness.light
               //     ? Colors.white
               //     : Colors.black,
@@ -425,11 +451,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
 
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
-  void handleSecondPointerValueChanged(double markerValue) {
+  void handleSecondPointerValueChanged(double value) {
     setState(() {
-      _secondMarkerValue = markerValue;
-      final int value = _secondMarkerValue.abs().roundToDouble().toInt();
-      _annotationValue_1 = '$value';
+      _secondMarkerValue = value;
+      final int _value = _secondMarkerValue.abs().roundToDouble().toInt();
+      _annotationValue_1 = '$_value';
     });
   }
 
@@ -442,11 +468,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   /// Value changed call back for first pointer
-  void handleFirstPointerValueChanged(double markerValue) {
+  void handleFirstPointerValueChanged(double value) {
     setState(() {
-      _firstMarkerValue = markerValue;
-      final int value = _firstMarkerValue.abs().roundToDouble().toInt();
-      _annotationValue1 = '$value';
+      _firstMarkerValue = value;
+      final int _value = _firstMarkerValue.abs().roundToDouble().toInt();
+      _annotationValue1 = '$_value';
     });
   }
 
@@ -460,11 +486,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
 
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
-  void handleFourthPointerValueChanged(double markerValue) {
+  void handleFourthPointerValueChanged(double value) {
     setState(() {
-      _fourthMarkerValue = markerValue;
-      final int value = _fourthMarkerValue.abs().round();
-      _annotationValue_2 = '$value';
+      _fourthMarkerValue = value;
+      final int _value = _fourthMarkerValue.abs().round().toInt();
+      _annotationValue_2 = '$_value';
     });
   }
 
@@ -476,11 +502,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   /// Value changed call back for first pointer
-  void handleThirdPointerValueChanged(double markerValue) {
+  void handleThirdPointerValueChanged(double value) {
     setState(() {
-      _thirdMarkerValue = markerValue;
-      final int value = _thirdMarkerValue.abs().round();
-      _annotationValue2 = '$value';
+      _thirdMarkerValue = value;
+      final int _value = _thirdMarkerValue.abs().round().toInt();
+      _annotationValue2 = '$_value';
     });
   }
 
@@ -493,11 +519,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
 
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
-  void handleSixthPointerValueChanged(double markerValue) {
+  void handleSixthPointerValueChanged(double value) {
     setState(() {
-      _sixthMarkerValue = markerValue;
-      final int value = _sixthMarkerValue.abs().round();
-      _annotationValue_3 = '$value';
+      _sixthMarkerValue = value;
+      final int _value = _sixthMarkerValue.abs().round().toInt();
+      _annotationValue_3 = '$_value';
     });
   }
 
@@ -509,11 +535,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   /// Value changed call back for first pointer
-  void handleFifthPointerValueChanged(double markerValue) {
+  void handleFifthPointerValueChanged(double value) {
     setState(() {
-      _fifthMarkerValue = markerValue;
-      final int value = _fifthMarkerValue.abs().round();
-      _annotationValue3 = '$value';
+      _fifthMarkerValue = value;
+      final int _value = _fifthMarkerValue.abs().round().toInt();
+      _annotationValue3 = '$_value';
     });
   }
 
@@ -526,11 +552,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
 
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
-  void handleEighthPointerValueChanged(double markerValue) {
+  void handleEighthPointerValueChanged(double value) {
     setState(() {
-      _eighthMarkerValue = markerValue;
-      final int value = _eighthMarkerValue.abs().round();
-      _annotationValue_4 = '$value';
+      _eighthMarkerValue = value;
+      final int _value = _eighthMarkerValue.abs().round().toInt();
+      _annotationValue_4 = '$_value';
     });
   }
 
@@ -542,11 +568,11 @@ class _RadialRangeSliderAnglesState extends SampleViewState {
   }
 
   /// Value changed call back for first pointer
-  void handleSeventhPointerValueChanged(double markerValue) {
+  void handleSeventhPointerValueChanged(double value) {
     setState(() {
-      _seventhMarkerValue = markerValue;
-      final int value = _seventhMarkerValue.abs().round();
-      _annotationValue4 = '$value';
+      _seventhMarkerValue = value;
+      final int _value = _seventhMarkerValue.abs().round().toInt();
+      _annotationValue4 = '$_value';
     });
   }
 

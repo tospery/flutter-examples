@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 /// Creates a widget that makes its child partially transparent.
 class AnimateOpacityWidget extends StatefulWidget {
   /// Holds custom opacity widget information
-  // ignore: tighten_type_of_initializing_formals
   const AnimateOpacityWidget({this.opacity, this.child, this.controller})
       : assert(opacity != null),
         assert(child != null);
@@ -43,7 +42,9 @@ class _AnimateOpacityWidgetState extends State<AnimateOpacityWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Opacity(opacity: _opacity!, child: widget.child);
+    return Container(
+      child: Opacity(opacity: _opacity!, child: widget.child),
+    );
   }
 
   @override

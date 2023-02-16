@@ -32,6 +32,7 @@ class _RangeDataLabelExampleState extends SampleViewState {
             showLabels: false,
             showAxisLine: false,
             showTicks: false,
+            minimum: 0,
             maximum: 99,
             radiusFactor: model.isWebFullView ? 0.8 : 0.9,
             ranges: <GaugeRange>[
@@ -81,10 +82,13 @@ class _RangeDataLabelExampleState extends SampleViewState {
                 endWidth: 0.15,
               ),
             ],
-            pointers: const <GaugePointer>[
+            pointers: <GaugePointer>[
               NeedlePointer(
                   value: 60,
                   needleLength: 0.7,
+                  lengthUnit: GaugeSizeUnit.factor,
+                  needleStartWidth: 1,
+                  needleEndWidth: 10,
                   knobStyle: KnobStyle(
                     knobRadius: 12,
                     sizeUnit: GaugeSizeUnit.logicalPixel,

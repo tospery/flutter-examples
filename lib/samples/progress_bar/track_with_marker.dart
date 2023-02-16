@@ -30,7 +30,7 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
   void initState() {
     super.initState();
     if (mounted) {
-      _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer _timer) {
         setState(() {
           progressValue++;
 
@@ -52,32 +52,44 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
       return Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
             getProgressBarWithCircle(),
-            const Center(child: Text('Circle marker')),
+            Center(child: Text('Circle marker')),
             getProgressBarWithRectangle(),
-            const Center(child: Text('Rectangle marker')),
+            Center(child: Text('Rectangle marker')),
             getProgressBarWithImage(),
-            const Center(child: Text('Image marker')),
+            Center(child: Text('Image marker')),
           ]));
     } else {
       _size = MediaQuery.of(context).size.width / 4.5;
       return Center(
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          getProgressBarWithCircle(),
-          const Center(child: Text('Circle marker')),
-        ]),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          getProgressBarWithRectangle(),
-          const Center(child: Text('Rectangle marker')),
-        ]),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          getProgressBarWithImage(),
-          const Center(child: Text('Image marker')),
-        ]),
-      ]));
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  getProgressBarWithCircle(),
+                  Center(child: Text('Circle marker')),
+                ]),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  getProgressBarWithRectangle(),
+                  Center(child: Text('Rectangle marker')),
+                ]),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  getProgressBarWithImage(),
+                  Center(child: Text('Image marker')),
+                ]),
+          ]));
     }
   }
 
@@ -89,7 +101,7 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget getProgressBarWithCircle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -99,9 +111,9 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
-                color: Color.fromARGB(30, 0, 169, 181),
+                color: const Color.fromARGB(30, 0, 169, 181),
                 thicknessUnit: GaugeSizeUnit.factor,
                 cornerStyle: CornerStyle.startCurve,
               ),
@@ -114,7 +126,7 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
                     animationDuration: 30,
                     animationType: AnimationType.linear,
                     cornerStyle: CornerStyle.startCurve,
-                    gradient: const SweepGradient(
+                    gradient: SweepGradient(
                         colors: <Color>[Color(0xFF00a9b5), Color(0xFFa4edeb)],
                         stops: <double>[0.25, 0.75])),
                 MarkerPointer(
@@ -138,7 +150,7 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget getProgressBarWithRectangle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -148,9 +160,9 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
-                color: Color.fromARGB(30, 0, 169, 181),
+                color: const Color.fromARGB(30, 0, 169, 181),
                 thicknessUnit: GaugeSizeUnit.factor,
                 cornerStyle: CornerStyle.startCurve,
               ),
@@ -187,7 +199,7 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget getProgressBarWithImage() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -197,9 +209,9 @@ class _ProgressBarTrackWithMarkerState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
-                color: Color.fromARGB(30, 0, 169, 181),
+                color: const Color.fromARGB(30, 0, 169, 181),
                 thicknessUnit: GaugeSizeUnit.factor,
                 cornerStyle: CornerStyle.startCurve,
               ),

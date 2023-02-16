@@ -21,23 +21,16 @@ class PieGradient extends SampleView {
 /// State class of pie series.
 class _PieGradientState extends SampleViewState {
   _PieGradientState();
+  late List<Color> colors;
 
+  late List<double> stops;
   late String _shaderType;
-  List<Color>? colors;
-  List<double>? stops;
-  List<String>? _shader;
+  late List<String> _shader;
 
   @override
   void initState() {
     _initializeVariables();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    stops!.clear();
-    _shader!.clear();
-    super.dispose();
   }
 
   @override
@@ -49,37 +42,32 @@ class _PieGradientState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(model.isWebFullView ? 'Gradient \nmode' : 'Gradient mode',
-                  softWrap: false,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: model.textColor,
-                  )),
-              Container(
-                width: 0.5 * screenWidth,
-                alignment: Alignment.bottomLeft,
-                child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
-                    value: _shaderType,
-                    items: _shader!.map((String value) {
-                      return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'point',
-                          child: Text(value,
-                              style: TextStyle(color: model.textColor)));
-                    }).toList(),
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        onShaderTyeChange(value);
-                        stateSetter(() {});
-                      });
-                    }),
-              )
-            ],
+          ListTile(
+            title: Text('Gradient mode',
+                style: TextStyle(
+                  color: model.textColor,
+                )),
+            trailing: Container(
+              padding: EdgeInsets.only(left: 0.07 * screenWidth),
+              width: 0.5 * screenWidth,
+              height: 50,
+              alignment: Alignment.bottomLeft,
+              child: DropdownButton<String>(
+                  underline: Container(color: Color(0xFFBDBDBD), height: 1),
+                  value: _shaderType,
+                  items: _shader.map((String value) {
+                    return DropdownMenuItem<String>(
+                        value: (value != null) ? value : 'point',
+                        child: Text('$value',
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (dynamic value) {
+                    setState(() {
+                      onShaderTyeChange(value);
+                      stateSetter(() {});
+                    });
+                  }),
+            ),
           ),
         ],
       );
@@ -109,18 +97,18 @@ class _PieGradientState extends SampleViewState {
       onCreateShader: (ChartShaderDetails chartShaderDetails) {
         if (_shaderType == 'linear') {
           return ui.Gradient.linear(chartShaderDetails.outerRect.topRight,
-              chartShaderDetails.outerRect.centerLeft, colors!, stops);
+              chartShaderDetails.outerRect.centerLeft, colors, stops);
         } else if (_shaderType == 'radial') {
           return ui.Gradient.radial(
               chartShaderDetails.outerRect.center,
               chartShaderDetails.outerRect.right -
                   chartShaderDetails.outerRect.center.dx,
-              colors!,
+              colors,
               stops);
         } else {
           return ui.Gradient.sweep(
               chartShaderDetails.outerRect.center,
-              colors!,
+              colors,
               stops,
               TileMode.clamp,
               _degreeToRadian(0),
@@ -137,15 +125,15 @@ class _PieGradientState extends SampleViewState {
 
   /// Returns the pie series.
   List<PieSeries<ChartSampleData, String>> _getDefaultPieSeries() {
+    final List<ChartSampleData> pieData = <ChartSampleData>[
+      ChartSampleData(x: 'David', y: 17, text: 'David \n 17%'),
+      ChartSampleData(x: 'Steve', y: 20, text: 'Steve \n 20%'),
+      ChartSampleData(x: 'Jack', y: 25, text: 'Jack \n 25%'),
+      ChartSampleData(x: 'Others', y: 38, text: 'Others \n 38%')
+    ];
     return <PieSeries<ChartSampleData, String>>[
       PieSeries<ChartSampleData, String>(
-          animationDuration: 0,
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: 'David', y: 17, text: 'David \n 17%'),
-            ChartSampleData(x: 'Steve', y: 20, text: 'Steve \n 20%'),
-            ChartSampleData(x: 'Jack', y: 25, text: 'Jack \n 25%'),
-            ChartSampleData(x: 'Others', y: 38, text: 'Others \n 38%')
-          ],
+          dataSource: pieData,
           explodeAll: true,
           explodeOffset: '3%',
           explode: true,
@@ -153,11 +141,11 @@ class _PieGradientState extends SampleViewState {
               ? Colors.black.withOpacity(0.3)
               : Colors.white.withOpacity(0.3),
           strokeWidth: 1.5,
-          dataLabelSettings: const DataLabelSettings(
+          dataLabelSettings: DataLabelSettings(
             isVisible: true,
             textStyle: TextStyle(fontSize: 13, color: Colors.white),
           ),
-          xValueMapper: (ChartSampleData data, _) => data.x as String,
+          xValueMapper: (ChartSampleData data, _) => data.x,
           yValueMapper: (ChartSampleData data, _) => data.y,
           dataLabelMapper: (ChartSampleData data, _) => data.text),
     ];

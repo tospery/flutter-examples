@@ -19,8 +19,7 @@ class BarRounded extends SampleView {
 /// State class of the rounded bar chart.
 class _BarRoundedState extends SampleViewState {
   _BarRoundedState();
-
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
@@ -39,12 +38,9 @@ class _BarRoundedState extends SampleViewState {
       plotAreaBorderWidth: 0,
       title: ChartTitle(
           text: isCardView ? '' : 'Population growth rate of countries'),
-      primaryXAxis:
-          CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
+      primaryXAxis: CategoryAxis(majorGridLines: MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
-          minimum: -2,
-          maximum: 2,
-          majorTickLines: const MajorTickLines(size: 0)),
+          minimum: -2, maximum: 2, majorTickLines: MajorTickLines(size: 0)),
       series: _getRoundedBarSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -53,22 +49,23 @@ class _BarRoundedState extends SampleViewState {
   /// Returns the list of chart series
   /// which need to render on the rounded bar chart.
   List<BarSeries<ChartSampleData, String>> _getRoundedBarSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'Iceland', y: 1.13),
+      ChartSampleData(x: 'Moldova', y: -1.05),
+      ChartSampleData(x: 'Malaysia', y: 1.37),
+      ChartSampleData(x: 'American Samoa', y: -1.3),
+      ChartSampleData(x: 'Singapore', y: 1.82),
+      ChartSampleData(x: 'Puerto Rico', y: -1.74),
+      ChartSampleData(x: 'Algeria', y: 1.7)
+    ];
     return <BarSeries<ChartSampleData, String>>[
       BarSeries<ChartSampleData, String>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'Iceland', y: 1.13),
-          ChartSampleData(x: 'Moldova', y: -1.05),
-          ChartSampleData(x: 'Malaysia', y: 1.37),
-          ChartSampleData(x: 'American Samoa', y: -1.3),
-          ChartSampleData(x: 'Singapore', y: 1.82),
-          ChartSampleData(x: 'Puerto Rico', y: -1.74),
-          ChartSampleData(x: 'Algeria', y: 1.7)
-        ],
+        dataSource: chartData,
 
         /// If we set the border radius value for bar series,
         /// then the series will appear as rounder corner.
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
       ),
     ];

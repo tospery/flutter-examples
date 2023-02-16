@@ -21,12 +21,28 @@ class AddDataPoints extends SampleView {
 
 /// State class of the chart with add and remove points options.
 class _LiveVerticalState extends SampleViewState {
-  _LiveVerticalState();
+  _LiveVerticalState() {
+    if (chartData.length > 11) {
+      chartData.removeRange(10, chartData.length - 1);
+    }
+  }
   ChartSeriesController? _chartSeriesController;
 
   /// List for storing the chart series data points.
-  List<ChartSampleData>? chartData;
-  late int count;
+  List<ChartSampleData> chartData = <ChartSampleData>[
+    ChartSampleData(x: 0, y: 10),
+    ChartSampleData(x: 1, y: 13),
+    ChartSampleData(x: 2, y: 80),
+    ChartSampleData(x: 3, y: 30),
+    ChartSampleData(x: 4, y: 72),
+    ChartSampleData(x: 5, y: 19),
+    ChartSampleData(x: 6, y: 30),
+    ChartSampleData(x: 7, y: 92),
+    ChartSampleData(x: 8, y: 48),
+    ChartSampleData(x: 9, y: 20),
+    ChartSampleData(x: 10, y: 51),
+  ];
+  int count = 11;
 
   /// Get the random value
   int _getRandomInt(int min, int max) {
@@ -36,59 +52,36 @@ class _LiveVerticalState extends SampleViewState {
 
   /// Add the data point into the line series
   List<ChartSampleData> _addDataPoint() {
-    chartData!.add(ChartSampleData(x: count, y: _getRandomInt(10, 100)));
+    chartData.add(ChartSampleData(x: count, y: _getRandomInt(10, 100)));
     count = count + 1;
-    return chartData!;
+    return chartData;
   }
 
   /// Remove the data point from the line series
   List<ChartSampleData> _removeDataPoint() {
-    if (chartData != null && chartData!.isNotEmpty) {
-      chartData!.removeAt(chartData!.length - 1);
+    if (chartData != null && chartData.isNotEmpty) {
+      chartData.removeAt(chartData.length - 1);
     }
     count = count - 1;
-    return chartData!;
-  }
-
-  @override
-  void initState() {
-    count = 11;
-    chartData = <ChartSampleData>[
-      ChartSampleData(x: 0, y: 10),
-      ChartSampleData(x: 1, y: 13),
-      ChartSampleData(x: 2, y: 80),
-      ChartSampleData(x: 3, y: 30),
-      ChartSampleData(x: 4, y: 72),
-      ChartSampleData(x: 5, y: 19),
-      ChartSampleData(x: 6, y: 30),
-      ChartSampleData(x: 7, y: 92),
-      ChartSampleData(x: 8, y: 48),
-      ChartSampleData(x: 9, y: 20),
-      ChartSampleData(x: 10, y: 51),
-    ];
-
-    if (chartData!.length > 11) {
-      chartData!.removeRange(10, chartData!.length - 1);
-    }
-    super.initState();
+    return chartData;
   }
 
   @override
   Widget build(BuildContext context) {
-    const double bottomPadding = 40;
+    final double bottomPadding = 40;
     return Scaffold(
         backgroundColor: model.cardThemeColor,
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 0, 5, bottomPadding),
+          padding: EdgeInsets.fromLTRB(5, 0, 5, bottomPadding),
           child: Container(child: _buildAddRemovePointsChart()),
         ),
         floatingActionButton: Stack(
-          children: <Widget>[
+          children: [
             Align(
                 alignment: Alignment.bottomRight,
                 child: Padding(
                     padding: const EdgeInsets.fromLTRB(30, 50, 0, 0),
-                    child: SizedBox(
+                    child: Container(
                         height: isCardView ? 40 : 45,
                         width: model.isWebFullView
                             ? 140
@@ -106,7 +99,7 @@ class _LiveVerticalState extends SampleViewState {
                                     chartData = _addDataPoint();
                                     _chartSeriesController?.updateDataSource(
                                       addedDataIndexes: <int>[
-                                        chartData!.length - 1
+                                        chartData.length - 1
                                       ],
                                     );
                                   },
@@ -123,15 +116,15 @@ class _LiveVerticalState extends SampleViewState {
                                       height: 50,
                                       child: IconButton(
                                           onPressed: () {
-                                            if (chartData!.length > 1) {
+                                            if (chartData.length > 1) {
                                               chartData = _removeDataPoint();
                                               _chartSeriesController
                                                   ?.updateDataSource(
                                                 updatedDataIndexes: <int>[
-                                                  chartData!.length - 1
+                                                  chartData.length - 1
                                                 ],
                                                 removedDataIndexes: <int>[
-                                                  chartData!.length - 1
+                                                  chartData.length - 1
                                                 ],
                                               );
                                             }
@@ -151,11 +144,11 @@ class _LiveVerticalState extends SampleViewState {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       primaryXAxis: NumericAxis(
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           edgeLabelPlacement: EdgeLabelPlacement.shift),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getAddRemovePointSeries(),
     );
   }
@@ -169,17 +162,10 @@ class _LiveVerticalState extends SampleViewState {
             _chartSeriesController = controller;
           },
           animationDuration: 0,
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           width: 2),
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    _chartSeriesController = null;
-    super.dispose();
   }
 }

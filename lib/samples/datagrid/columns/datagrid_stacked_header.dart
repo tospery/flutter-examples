@@ -1,22 +1,24 @@
+/// Dart import
+import 'dart:math';
+
 /// Package imports
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
-
-/// Core import
-import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart';
 
 /// DataGrid import
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+/// Core import
+import 'package:syncfusion_flutter_core/theme.dart';
+
 /// Local import
 import '../../../model/sample_view.dart';
-import '../datagridsource/product_datagridsource.dart';
 
 /// Renders stacked header data grid
 class StackedHeaderDataGrid extends SampleView {
   /// Creates stacked header data grid
-  const StackedHeaderDataGrid({Key? key}) : super(key: key);
+  StackedHeaderDataGrid({Key? key}) : super(key: key);
 
   @override
   _StackedHeaderDataGridState createState() => _StackedHeaderDataGridState();
@@ -24,98 +26,106 @@ class StackedHeaderDataGrid extends SampleView {
 
 class _StackedHeaderDataGridState extends SampleViewState {
   /// DataGridSource required for SfDataGrid to obtain the row data.
-  final ProductDataGridSource stackedHeaderDataGridSource =
-      ProductDataGridSource('Stacked Header', productDataCount: 30);
+  final _StackedHeaderDataGridSource stackedHeaderDataGridSource =
+      _StackedHeaderDataGridSource();
 
   late bool isWebOrDesktop;
 
   List<GridColumn> _getColumns() {
     List<GridColumn> columns;
     columns = <GridColumn>[
-      GridColumn(
+      GridTextColumn(
           columnName: 'customerName',
           width: isWebOrDesktop ? 180 : 140,
           label: Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Customer Name',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'city',
           width: isWebOrDesktop ? 140 : 100,
           label: Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'City',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'orderId',
           width: isWebOrDesktop ? 140 : 90,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Order ID',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'orderDate',
           width: isWebOrDesktop ? 140 : 110,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Order Date',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'product',
           width: isWebOrDesktop ? 160 : 100,
           label: Container(
             alignment: Alignment.centerLeft,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Product',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'productId',
           width: isWebOrDesktop ? 150 : 100,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Product ID',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'quantity',
           width: isWebOrDesktop ? 150 : 90,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Quantity',
               overflow: TextOverflow.ellipsis,
             ),
           )),
-      GridColumn(
+      GridTextColumn(
           columnName: 'unitPrice',
           width: isWebOrDesktop ? 140 : 100,
           label: Container(
             alignment: Alignment.centerRight,
-            padding: const EdgeInsets.all(8.0),
-            child: const Text(
+            padding: EdgeInsets.all(8.0),
+            color: _getHeaderCellBackgroundColor(),
+            child: Text(
               'Unit Price',
               overflow: TextOverflow.ellipsis,
             ),
@@ -125,53 +135,50 @@ class _StackedHeaderDataGridState extends SampleViewState {
   }
 
   Color _getHeaderCellBackgroundColor() {
-    return model.themeData.colorScheme.brightness == Brightness.light
+    return model.themeData.brightness == Brightness.light
         ? const Color(0xFFF1F1F1)
         : const Color(0xFF3A3A3A);
   }
 
   Widget _getWidgetForStackedHeaderCell(String title) {
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        color: _getHeaderCellBackgroundColor(),
         alignment: Alignment.centerLeft,
         child: Text(title));
   }
 
   List<StackedHeaderRow> _getStackedHeaderRows() {
-    List<StackedHeaderRow> stackedHeaderRows;
-    stackedHeaderRows = <StackedHeaderRow>[
-      StackedHeaderRow(cells: <StackedHeaderCell>[
-        StackedHeaderCell(columnNames: <String>[
+    List<StackedHeaderRow> _stackedHeaderRows;
+    _stackedHeaderRows = <StackedHeaderRow>[
+      StackedHeaderRow(cells: [
+        StackedHeaderCell(columnNames: [
           'customerName',
           'city',
         ], child: _getWidgetForStackedHeaderCell('Customer Details')),
-        StackedHeaderCell(columnNames: <String>[
+        StackedHeaderCell(columnNames: [
           'orderId',
           'orderDate',
         ], child: _getWidgetForStackedHeaderCell('Order Details')),
-        StackedHeaderCell(columnNames: <String>[
-          'product',
-          'productId',
-          'quantity',
-          'unitPrice'
-        ], child: _getWidgetForStackedHeaderCell('Product Details'))
+        StackedHeaderCell(
+            columnNames: ['product', 'productId', 'quantity', 'unitPrice'],
+            child: _getWidgetForStackedHeaderCell('Product Details'))
       ])
     ];
-    return stackedHeaderRows;
+    return _stackedHeaderRows;
   }
 
   @override
   void initState() {
     super.initState();
-    isWebOrDesktop = model.isWeb || model.isDesktop;
+    isWebOrDesktop = (model.isWeb || model.isDesktop);
   }
 
   @override
   Widget build(BuildContext context) {
     return SfDataGridTheme(
         data: SfDataGridThemeData(
-          brightness: model.themeData.colorScheme.brightness,
-          headerColor: _getHeaderCellBackgroundColor(),
+          brightness: model.themeData.brightness,
           headerHoverColor: Colors.transparent,
         ),
         child: SfDataGrid(
@@ -181,5 +188,278 @@ class _StackedHeaderDataGridState extends SampleViewState {
           columns: _getColumns(),
           stackedHeaderRows: _getStackedHeaderRows(),
         ));
+  }
+}
+
+class _Product {
+  _Product(
+      this.orderId,
+      this.productId,
+      this.product,
+      this.quantity,
+      this.unitPrice,
+      this.city,
+      this.customerId,
+      this.orderDate,
+      this.customerName);
+  final int orderId;
+  final int productId;
+  final String product;
+  final int quantity;
+  final double unitPrice;
+  final String city;
+  final int customerId;
+  final DateTime orderDate;
+  final String customerName;
+}
+
+class _StackedHeaderDataGridSource extends DataGridSource {
+  _StackedHeaderDataGridSource() {
+    products = getProducts(30);
+    buildDataGridRow();
+  }
+
+  final Random random = Random();
+
+  List<_Product> products = [];
+
+  List<DataGridRow> dataGridRows = [];
+
+  // Building the DataGridRows
+
+  void buildDataGridRow() {
+    dataGridRows = products.map<DataGridRow>((dataGridRow) {
+      return DataGridRow(cells: [
+        DataGridCell(
+            columnName: 'customerName', value: dataGridRow.customerName),
+        DataGridCell(columnName: 'city', value: dataGridRow.city),
+        DataGridCell(columnName: 'orderId', value: dataGridRow.orderId),
+        DataGridCell(columnName: 'orderDate', value: dataGridRow.orderDate),
+        DataGridCell(columnName: 'product', value: dataGridRow.product),
+        DataGridCell(columnName: 'productId', value: dataGridRow.productId),
+        DataGridCell(columnName: 'quantity', value: dataGridRow.quantity),
+        DataGridCell(columnName: 'unitPrice', value: dataGridRow.unitPrice),
+      ]);
+    }).toList(growable: false);
+  }
+
+  // Overrides
+
+  @override
+  List<DataGridRow> get rows => dataGridRows;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(cells: [
+      Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[0].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[1].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[2].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          DateFormat('MM/dd/yyyy').format(row.getCells()[3].value).toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[4].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[5].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          row.getCells()[6].value.toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+      Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          NumberFormat.currency(locale: 'en_US', symbol: '\$')
+              .format(row.getCells()[7].value)
+              .toString(),
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ]);
+  }
+
+  // Products data set collections
+
+  final List<String> product = <String>[
+    'Lax',
+    'Chocolate',
+    'Syrup',
+    'Chai',
+    'Bags',
+    'Meat',
+    'Filo',
+    'Cashew',
+    'Walnuts',
+    'Geitost',
+    'Cote de',
+    'Crab',
+    'Chang',
+    'Cajun',
+    'Gum',
+    'Filo',
+    'Cashew',
+    'Walnuts',
+    'Geitost',
+    'Bag',
+    'Meat',
+    'Filo',
+    'Cashew',
+    'Geitost',
+    'Cote de',
+    'Crab',
+    'Chang',
+    'Cajun',
+    'Gum',
+  ];
+
+  final List<String> cities = <String>[
+    'Bruxelles',
+    'Rosario',
+    'Recife',
+    'Graz',
+    'Montreal',
+    'Tsawassen',
+    'Campinas',
+    'Resende',
+  ];
+
+  final List<int> productId = <int>[
+    3524,
+    2523,
+    1345,
+    5243,
+    1803,
+    4932,
+    6532,
+    9475,
+    2435,
+    2123,
+    3652,
+    4523,
+    4263,
+    3527,
+    3634,
+    4932,
+    6532,
+    9475,
+    2435,
+    2123,
+    6532,
+    9475,
+    2435,
+    2123,
+    4523,
+    4263,
+    3527,
+    3634,
+    4932,
+  ];
+
+  final List<DateTime> orderDate = <DateTime>[
+    DateTime.now(),
+    DateTime(2002, 8, 27),
+    DateTime(2015, 7, 4),
+    DateTime(2007, 4, 15),
+    DateTime(2010, 12, 23),
+    DateTime(2010, 4, 20),
+    DateTime(2004, 6, 13),
+    DateTime(2008, 11, 11),
+    DateTime(2005, 7, 29),
+    DateTime(2009, 4, 5),
+    DateTime(2003, 3, 20),
+    DateTime(2011, 3, 8),
+    DateTime(2013, 10, 22),
+  ];
+
+  List<String> names = [
+    'Kyle',
+    'Gina',
+    'Irene',
+    'Katie',
+    'Michael',
+    'Oscar',
+    'Ralph',
+    'Torrey',
+    'William',
+    'Bill',
+    'Daniel',
+    'Frank',
+    'Brenda',
+    'Danielle',
+    'Fiona',
+    'Howard',
+    'Jack',
+    'Larry',
+    'Holly',
+    'Jennifer',
+    'Liz',
+    'Pete',
+    'Steve',
+    'Vince',
+    'Zeke'
+  ];
+
+  List<_Product> getProducts(int count) {
+    final List<_Product> productData = <_Product>[];
+    for (int i = 0; i < count; i++) {
+      productData.add(
+        _Product(
+            i + 1000,
+            productId[i < productId.length
+                ? i
+                : random.nextInt(productId.length - 1)],
+            product[
+                i < product.length ? i : random.nextInt(product.length - 1)],
+            random.nextInt(count),
+            70.0 + random.nextInt(100),
+            cities[i < cities.length ? i : random.nextInt(cities.length - 1)],
+            1700 + random.nextInt(100),
+            orderDate[random.nextInt(orderDate.length - 1)],
+            names[i < names.length ? i : random.nextInt(names.length - 1)]),
+      );
+    }
+    return productData;
   }
 }

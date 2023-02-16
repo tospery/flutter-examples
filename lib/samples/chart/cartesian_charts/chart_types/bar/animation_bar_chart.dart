@@ -22,7 +22,7 @@ class AnimationBarDefault extends SampleView {
 
 class _AnimationBarDefaultState extends SampleViewState {
   _AnimationBarDefaultState();
-  List<_ChartData>? _chartData;
+  late List<_ChartData> _chartData;
   Timer? _timer;
   @override
   Widget build(BuildContext context) {
@@ -39,12 +39,9 @@ class _AnimationBarDefaultState extends SampleViewState {
   SfCartesianChart _buildAnimationBarChart() {
     return SfCartesianChart(
         plotAreaBorderWidth: 0,
-        primaryXAxis:
-            CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
+        primaryXAxis: CategoryAxis(majorGridLines: MajorGridLines(width: 0)),
         primaryYAxis: NumericAxis(
-            majorGridLines: const MajorGridLines(width: 0),
-            minimum: 0,
-            maximum: 100),
+            majorGridLines: MajorGridLines(width: 0), minimum: 0, maximum: 100),
         series: _getDefaultBarSeries());
   }
 
@@ -52,7 +49,7 @@ class _AnimationBarDefaultState extends SampleViewState {
   List<BarSeries<_ChartData, num>> _getDefaultBarSeries() {
     return <BarSeries<_ChartData, num>>[
       BarSeries<_ChartData, num>(
-          dataSource: _chartData!,
+          dataSource: _chartData,
           xValueMapper: (_ChartData sales, _) => sales.x,
           yValueMapper: (_ChartData sales, _) => sales.y)
     ];
@@ -60,9 +57,8 @@ class _AnimationBarDefaultState extends SampleViewState {
 
   @override
   void dispose() {
-    _timer!.cancel();
-    _chartData!.clear();
     super.dispose();
+    _timer!.cancel();
   }
 
   int _getRandomInt(int min, int max) {
@@ -73,7 +69,7 @@ class _AnimationBarDefaultState extends SampleViewState {
   void _getChartData() {
     _chartData = <_ChartData>[];
     for (int i = 1; i <= 7; i++) {
-      _chartData!.add(_ChartData(i, _getRandomInt(10, 95)));
+      _chartData.add(_ChartData(i, _getRandomInt(10, 95)));
     }
     _timer?.cancel();
   }

@@ -21,9 +21,11 @@ class RadialBarGradient extends SampleView {
 /// State class of radial bar.
 class _RadialBarGradientState extends SampleViewState {
   _RadialBarGradientState();
-  TooltipBehavior? _tooltipBehavior;
-  List<Color>? colors;
-  List<double>? stops;
+  late TooltipBehavior _tooltipBehavior;
+
+  late List<Color> colors;
+
+  late List<double> stops;
 
   @override
   void initState() {
@@ -43,12 +45,6 @@ class _RadialBarGradientState extends SampleViewState {
     return _buildDefaultRadialBarChart();
   }
 
-  @override
-  void dispose() {
-    stops!.clear();
-    super.dispose();
-  }
-
   /// Returns the circular chart with radial series.
   SfCircularChart _buildDefaultRadialBarChart() {
     return SfCircularChart(
@@ -56,7 +52,7 @@ class _RadialBarGradientState extends SampleViewState {
         onCreateShader: (ChartShaderDetails chartShaderDetails) {
           return ui.Gradient.sweep(
               chartShaderDetails.outerRect.center,
-              colors!,
+              colors,
               stops,
               TileMode.clamp,
               _degreeToRadian(0),
@@ -68,7 +64,7 @@ class _RadialBarGradientState extends SampleViewState {
             isVisible: !isCardView,
             iconHeight: 20,
             iconWidth: 20,
-            textStyle: const TextStyle(fontSize: 15)),
+            textStyle: TextStyle(fontSize: 15)),
         title: ChartTitle(text: isCardView ? '' : 'Shot put distance'),
         series: _getRadialBarGradientSeries(),
         tooltipBehavior: _tooltipBehavior);
@@ -77,16 +73,17 @@ class _RadialBarGradientState extends SampleViewState {
   /// Returns default radial series.
   List<RadialBarSeries<_ChartShaderData, String>>
       _getRadialBarGradientSeries() {
+    final List<_ChartShaderData> chartData = <_ChartShaderData>[
+      _ChartShaderData('John', 10, '100%'),
+      _ChartShaderData('Almaida', 11, '100%'),
+      _ChartShaderData('Don', 12, '100%'),
+    ];
     return <RadialBarSeries<_ChartShaderData, String>>[
       RadialBarSeries<_ChartShaderData, String>(
           maximumValue: 15,
-          dataLabelSettings: const DataLabelSettings(
-              isVisible: true, textStyle: TextStyle(fontSize: 10.0)),
-          dataSource: <_ChartShaderData>[
-            _ChartShaderData('John', 10, '100%'),
-            _ChartShaderData('Almaida', 11, '100%'),
-            _ChartShaderData('Don', 12, '100%'),
-          ],
+          dataLabelSettings: DataLabelSettings(
+              isVisible: true, textStyle: const TextStyle(fontSize: 10.0)),
+          dataSource: chartData,
           cornerStyle: CornerStyle.bothCurve,
           gap: '10%',
           radius: '90%',

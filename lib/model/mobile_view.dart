@@ -1,6 +1,5 @@
 /// Package imports
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Local imports
@@ -36,7 +35,6 @@ class _LayoutPageState extends State<LayoutPage> {
   void initState() {
     _model = widget.sampleModel!;
     _category = widget.category!;
-    isInitState = true;
     super.initState();
   }
 
@@ -44,25 +42,8 @@ class _LayoutPageState extends State<LayoutPage> {
   int _secondaryTabIndex = 0;
   bool _showIcon = false;
 
-  /// Method to get the widget's color based on the widget state
-  Color? getColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.selected,
-    };
-    if (states.any(interactiveStates.contains)) {
-      return widget.sampleModel!.backgroundColor;
-    }
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (isInitState) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        isInitState = false;
-      });
-    }
     _showIcon = _category
                 .controlList![_category.selectedIndex!].subItems[0].type ==
             'sample' ||
@@ -75,7 +56,6 @@ class _LayoutPageState extends State<LayoutPage> {
                 .controlList![_category.selectedIndex!].subItems[0].type ==
             'sample'
         ? _category.controlList![_category.selectedIndex!].subItems[0]
-            as SubItem
         : (_category.controlList![_category.selectedIndex!].subItems[0].type !=
                     'parent' &&
                 _category.controlList![_category.selectedIndex!].subItems[0]
@@ -84,16 +64,13 @@ class _LayoutPageState extends State<LayoutPage> {
                 _category.controlList![_category.selectedIndex!].subItems[0]
                         .subItems !=
                     null)
-            ? _category.controlList![_category.selectedIndex!].subItems[0]
-                .subItems[0] as SubItem
+            ? _category
+                .controlList![_category.selectedIndex!].subItems[0].subItems[0]
             : null;
     return Theme(
         data: ThemeData(
-            checkboxTheme: CheckboxThemeData(
-                fillColor: MaterialStateProperty.resolveWith(getColor)),
-            brightness: _model.themeData.colorScheme.brightness,
-            primaryColor: _model.backgroundColor,
-            colorScheme: _model.themeData.colorScheme),
+            brightness: _model.themeData.brightness,
+            primaryColor: _model.backgroundColor),
         child: SafeArea(
           child: DefaultTabController(
             length: _category
@@ -105,12 +82,12 @@ class _LayoutPageState extends State<LayoutPage> {
                     onPressed: () => Navigator.maybePop(context, false),
                   ),
                   backgroundColor: _model.paletteColor,
-                  bottom: (_category.controlList![_category.selectedIndex!]
+                  bottom: ((_category.controlList![_category.selectedIndex!]
                                       .sampleList !=
                                   null &&
                               _category.controlList![_category.selectedIndex!]
                                       .displayType ==
-                                  'card') ||
+                                  'card')) ||
                           _category.controlList![_category.selectedIndex!]
                                   .subItems.length ==
                               1
@@ -122,13 +99,17 @@ class _LayoutPageState extends State<LayoutPage> {
                               _secondaryTabIndex = 0;
                               if (codeIconChangeSetState != null) {
                                 codeIconChangeSetState!(() {
-                                  currentSample = _category.controlList![_category.selectedIndex!].subItems[index].type ==
-                                          'sample'
-                                      ? _category.controlList![_category.selectedIndex!].subItems[index]
-                                          as SubItem
-                                      : ((_category.controlList![_category.selectedIndex!].subItems[index].type !=
-                                                  'parent' &&
-                                              _category.controlList![_category.selectedIndex!].subItems[index].displayType !=
+                                  currentSample = _category.controlList![_category.selectedIndex!].subItems[index].type == 'sample'
+                                      ? _category
+                                          .controlList![
+                                              _category.selectedIndex!]
+                                          .subItems[index]
+                                      : ((_category.controlList![_category.selectedIndex!].subItems[index].type != 'parent' &&
+                                              _category
+                                                      .controlList![_category
+                                                          .selectedIndex!]
+                                                      .subItems[index]
+                                                      .displayType !=
                                                   'card' &&
                                               _category
                                                       .controlList![_category
@@ -137,21 +118,11 @@ class _LayoutPageState extends State<LayoutPage> {
                                                       .subItems
                                                       .length ==
                                                   1)
-                                          ? _category.controlList![_category.selectedIndex!].subItems[index].subItems[0]
-                                              as SubItem
-                                          : _category
+                                          ? _category
                                               .controlList![_category.selectedIndex!]
                                               .subItems[index]
-                                              .subItems[0] as SubItem);
-
-                                  if (currentSample != null &&
-                                      currentSample!.subItems != null &&
-                                      currentSample!.subItems!.length == 1) {
-                                    currentSample =
-                                        currentSample!.subItems![0] as SubItem;
-                                  }
-
-                                  resetLocaleValue(_model, currentSample!);
+                                              .subItems[0]
+                                          : _category.controlList![_category.selectedIndex!].subItems[index].subItems[0]);
 
                                   _showIcon = _category
                                               .controlList![
@@ -170,20 +141,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                                       _category.selectedIndex!]
                                                   .subItems[index]
                                                   .displayType !=
-                                              'card') ||
-                                      (_category
-                                                  .controlList![
-                                                      _category.selectedIndex!]
-                                                  .subItems[index]
-                                                  .type ==
-                                              'parent' &&
-                                          _category
-                                                  .controlList![
-                                                      _category.selectedIndex!]
-                                                  .subItems[index]
-                                                  .subItems[0]
-                                                  .displayType ==
-                                              'tab');
+                                              'card');
                                   infoIconChangeSetState!(() {});
                                 });
                               }
@@ -221,8 +179,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                       .controlList![_category.selectedIndex!]
                                       .childList[_primaryTabIndex]
                                       .displayType !=
-                                  'card') ||
-                          isInitState)
+                                  'card'))
                       ? <Widget>[
                           StatefulBuilder(builder: (BuildContext buildContext,
                               StateSetter setState) {
@@ -232,7 +189,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                                  child: SizedBox(
+                                  child: Container(
                                     height: 37,
                                     width: 37,
                                     child: IconButton(
@@ -240,8 +197,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                           'images/git_hub_mobile.png',
                                           color: Colors.white),
                                       onPressed: () {
-                                        launchUrl(Uri.parse(
-                                            currentSample!.codeLink!));
+                                        launch(currentSample!.codeLink!);
                                       },
                                     ),
                                   ),
@@ -258,11 +214,11 @@ class _LayoutPageState extends State<LayoutPage> {
                                 child: Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                  child: SizedBox(
+                                  child: Container(
                                     height: 40,
                                     width: 40,
                                     child: IconButton(
-                                      icon: const Icon(Icons.info_outline,
+                                      icon: Icon(Icons.info_outline,
                                           color: Colors.white),
                                       onPressed: () {
                                         showBottomInfo(context,
@@ -314,7 +270,6 @@ class _LayoutPageState extends State<LayoutPage> {
         return false;
       }
     }
-
     return true;
   }
 
@@ -327,165 +282,138 @@ class _LayoutPageState extends State<LayoutPage> {
 
   /// Get tabs which length is equal to list length
   List<Widget> _getTabs(List<SubItem> list, [String? tabView]) {
-    final List<Widget> tabs = <Widget>[];
-    String status;
+    final List<Widget> _tabs = <Widget>[];
+    String _status;
     for (int i = 0; i < list.length; i++) {
       if (list.isNotEmpty) {
-        status = getStatusTag(list[i]);
-        tabs.add(Tab(
+        _status = getStatusTag(list[i]);
+        _tabs.add(Tab(
             child: Row(
           children: <Widget>[
-            Text(list[i].title.toString() + (status != '' ? '  ' : ''),
+            Text(list[i].title.toString() + (_status != '' ? '  ' : ''),
                 style: tabView != 'parent'
                     ? const TextStyle(
                         fontSize: 14, fontWeight: FontWeight.normal)
                     : const TextStyle(fontSize: 15, color: Colors.white)),
-            if (status == '')
-              Container()
-            else
-              Container(
-                height: tabView != 'parent' ? 17 : 20,
-                width: tabView != 'parent' ? 17 : 20,
-                decoration: BoxDecoration(
-                  color: status == 'N'
-                      ? const Color.fromRGBO(55, 153, 30, 1)
-                      : status == 'U'
-                          ? const Color.fromRGBO(246, 117, 0, 1)
-                          : Colors.transparent,
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  status,
-                  style: TextStyle(
-                      fontSize: tabView != 'parent' ? 11 : 12,
-                      color: Colors.white),
-                ),
-              ),
+            _status == ''
+                ? Container()
+                : Container(
+                    height: tabView != 'parent' ? 17 : 20,
+                    width: tabView != 'parent' ? 17 : 20,
+                    decoration: BoxDecoration(
+                      color: _status == 'N'
+                          ? const Color.fromRGBO(55, 153, 30, 1)
+                          : _status == 'U'
+                              ? const Color.fromRGBO(246, 117, 0, 1)
+                              : Colors.transparent,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      _status,
+                      style: TextStyle(
+                          fontSize: tabView != 'parent' ? 11 : 12,
+                          color: Colors.white),
+                    ),
+                  ),
           ],
         )));
       }
     }
-    return tabs;
+    return _tabs;
   }
 
   /// To displaying sample in full screen height,
   /// it doesn't contains expanded view.
   List<Widget> _getFullViewSamples(SampleModel model, List<SubItem> list) {
-    final List<Widget> tabs = <Widget>[];
-    SubItem sampleDetail;
-    bool needsFloatingBotton;
+    final List<Widget> _tabs = <Widget>[];
+    SubItem _sampleDetail;
+    bool _needsFloatingBotton;
     for (int j = 0; j < list.length; j++) {
-      sampleDetail = list[j];
-      needsFloatingBotton =
-          (sampleDetail.sourceLink != null && sampleDetail.sourceLink != '') ||
-              (sampleDetail.needsPropertyPanel ?? false);
-      final Function? sampleWidget = model.sampleWidget[list[j].key];
-      final SampleView sampleView =
-          sampleWidget!(GlobalKey<State>()) as SampleView;
-
-      tabs.add(
+      _sampleDetail = list[j];
+      _needsFloatingBotton = (_sampleDetail.sourceLink != null &&
+              _sampleDetail.sourceLink != '') ||
+          _sampleDetail.needsPropertyPanel == true;
+      final Function? _sampleWidget = model.sampleWidget[list[j].key];
+      final SampleView _sampleView = _sampleWidget!(GlobalKey<State>());
+      _tabs.add(
         Scaffold(
           backgroundColor: model.cardThemeColor,
-          body: sampleView,
-          floatingActionButton: needsFloatingBotton
+          body: Container(child: _sampleView),
+          floatingActionButton: _needsFloatingBotton
               ? Stack(children: <Widget>[
-                  if (sampleDetail.sourceLink != null &&
-                      sampleDetail.sourceLink != '')
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-                        child: SizedBox(
-                          height: 30,
-                          width: 230,
-                          child: InkWell(
-                            onTap: () =>
-                                launchUrl(Uri.parse(sampleDetail.sourceLink!)),
-                            child: Row(
-                              children: <Widget>[
-                                Text('Source: ',
-                                    style: TextStyle(
-                                        fontSize: 16, color: model.textColor)),
-                                Text(sampleDetail.sourceText!,
-                                    style: const TextStyle(
-                                        fontSize: 14, color: Colors.blue)),
-                              ],
+                  (_sampleDetail.sourceLink != null &&
+                          _sampleDetail.sourceLink != '')
+                      ? Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                            child: Container(
+                              height: 50,
+                              width: 230,
+                              child: InkWell(
+                                onTap: () => launch(_sampleDetail.sourceLink!),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text('Source: ',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: model.textColor)),
+                                    Text(_sampleDetail.sourceText!,
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.blue)),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
+                        )
+                      : Container(),
+                  _sampleDetail.needsPropertyPanel != true
+                      ? Container()
+                      : Align(
+                          alignment: Alignment.bottomRight,
+                          child: FloatingActionButton(
+                            heroTag: null,
+                            onPressed: () {
+                              final GlobalKey _sampleKey =
+                                  _sampleView.key as GlobalKey;
+                              final SampleViewState _sampleState =
+                                  _sampleKey.currentState as SampleViewState;
+                              final Widget _settingsContent =
+                                  _sampleState.buildSettings(context)!;
+                              showBottomSheetSettingsPanel(
+                                  context, _settingsContent);
+                            },
+                            backgroundColor: model.paletteColor,
+                            child: const Icon(Icons.graphic_eq,
+                                color: Colors.white),
+                          ),
                         ),
-                      ),
-                    )
-                  else
-                    Container(),
-                  if (sampleDetail.needsPropertyPanel != true)
-                    Container()
-                  else
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: FloatingActionButton(
-                        heroTag: null,
-                        onPressed: () {
-                          final GlobalKey sampleKey =
-                              sampleView.key! as GlobalKey;
-                          final Widget settingsContent =
-                              _getSettingsView(sampleKey)!;
-                          showBottomSheetSettingsPanel(
-                              context, settingsContent);
-                        },
-                        backgroundColor: model.paletteColor,
-                        child:
-                            const Icon(Icons.graphic_eq, color: Colors.white),
-                      ),
-                    ),
                 ])
               : null,
         ),
       );
     }
-
-    return tabs;
-  }
-
-  Widget? _getSettingsView(GlobalKey sampleKey) {
-    final SampleViewState sampleState =
-        sampleKey.currentState! as SampleViewState;
-    final bool isLocalizationSample =
-        sampleKey.currentState! is LocalizationSampleViewState;
-    final bool isDirectionalitySample =
-        sampleKey.currentState! is DirectionalitySampleViewState;
-    if (isLocalizationSample || isDirectionalitySample) {
-      return ListView(shrinkWrap: true, children: <Widget>[
-        (sampleKey.currentState! as LocalizationSampleViewState)
-            .localizationSelectorWidget(context),
-        if (isDirectionalitySample)
-          (sampleKey.currentState! as DirectionalitySampleViewState)
-              .textDirectionSelectorWidget(context)
-        else
-          Container(),
-        sampleState.buildSettings(context) ?? Container()
-      ]);
-    } else {
-      return sampleState.buildSettings(context);
-    }
+    return _tabs;
   }
 
   /// To displaying sample in cards, it contains expanded sample view option.
   List<Widget> _getCardViewSamples(SampleModel model, List<SubItem> list) {
-    final List<Widget> tabChildren = <Widget>[];
-    Function sampleWidget;
-    SampleView sampleView;
+    final List<Widget> _tabChildren = <Widget>[];
+    Function _sampleWidget;
+    SampleView _sampleView;
     for (int i = 0; i < list.length; i++) {
-      tabChildren.add(ListView.builder(
+      _tabChildren.add(ListView.builder(
           cacheExtent: (list.length).toDouble(),
+          addAutomaticKeepAlives: true,
           itemCount: list.length,
           itemBuilder: (BuildContext context, int position) {
-            final String? status = list[position].status;
-            sampleWidget = model.sampleWidget[list[position].key]!;
-            sampleView = sampleWidget(GlobalKey<State>()) as SampleView;
-
+            final String? _status = list[position].status;
+            _sampleWidget = model.sampleWidget[list[position].key]!;
+            _sampleView = _sampleWidget(GlobalKey<State>());
             return Container(
-              color: model.themeData.colorScheme.brightness == Brightness.dark
+              color: model.themeData.brightness == Brightness.dark
                   ? Colors.black
                   : const Color.fromRGBO(250, 250, 250, 1),
               padding: const EdgeInsets.all(5.0),
@@ -514,7 +442,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    list[position].title!,
+                                    '${list[position].title}',
                                     textAlign: TextAlign.left,
                                     softWrap: true,
                                     textScaleFactor: 1,
@@ -525,28 +453,30 @@ class _LayoutPageState extends State<LayoutPage> {
                                         color: model.textColor,
                                         letterSpacing: 0.2),
                                   ),
-                                  Row(
+                                  Container(
+                                      child: Row(
                                     children: <Widget>[
                                       Container(
                                           decoration: BoxDecoration(
-                                              color: (status != null && status != '')
-                                                  ? (status == 'New' ||
-                                                          status == 'new'
+                                              color: (_status != null && _status != '')
+                                                  ? (_status == 'New' ||
+                                                          _status == 'new'
                                                       ? const Color.fromRGBO(
                                                           55, 153, 30, 1)
                                                       : const Color.fromRGBO(
                                                           246, 117, 0, 1))
                                                   : Colors.transparent,
+                                              shape: BoxShape.rectangle,
                                               borderRadius: const BorderRadius.all(
                                                   Radius.circular(10.0))),
                                           padding: const EdgeInsets.fromLTRB(
                                               5, 2.7, 5, 2.7),
                                           child: Text(
-                                              (status == 'New' ||
-                                                      status == 'new')
+                                              (_status == 'New' ||
+                                                      _status == 'new')
                                                   ? 'New'
-                                                  : (status == 'Updated' ||
-                                                          status == 'updated')
+                                                  : (_status == 'Updated' ||
+                                                          _status == 'updated')
                                                       ? 'Updated'
                                                       : '',
                                               style: const TextStyle(fontSize: 12, color: Colors.white))),
@@ -569,16 +499,18 @@ class _LayoutPageState extends State<LayoutPage> {
                                         ),
                                       ),
                                     ],
-                                  ),
+                                  )),
                                 ]),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                          child: SizedBox(
-                              width: double.infinity,
-                              height: 230,
-                              child: sampleView),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                            child: SizedBox(
+                                width: double.infinity,
+                                height: 230,
+                                child: _sampleView),
+                          ),
                         ),
                       ],
                     ),
@@ -588,16 +520,15 @@ class _LayoutPageState extends State<LayoutPage> {
             );
           }));
     }
-
-    return tabChildren;
+    return _tabChildren;
   }
 
   /// If child type given to control subitems.
   List<Widget> _getChildTabViewChildren(SampleModel model, List<SubItem> list) {
-    final List<Widget> tabs = <Widget>[];
+    final List<Widget> _tabs = <Widget>[];
     for (int i = 0; i < list.length; i++) {
       if (list[i].subItems!.isNotEmpty) {
-        tabs.add(Container(
+        _tabs.add(Container(
           alignment: Alignment.center,
           child: DefaultTabController(
               length: list[i].subItems!.length,
@@ -617,8 +548,7 @@ class _LayoutPageState extends State<LayoutPage> {
                                     codeIconChangeSetState != null) {
                                   codeIconChangeSetState!(() {
                                     _secondaryTabIndex = index;
-                                    currentSample =
-                                        list[i].subItems![index] as SubItem;
+                                    currentSample = list[i].subItems![index];
                                     infoIconChangeSetState!(() {});
                                   });
                                 }
@@ -628,29 +558,28 @@ class _LayoutPageState extends State<LayoutPage> {
                               indicatorColor: Colors.transparent,
                               indicatorWeight: 0.1,
                               isScrollable: true,
-                              tabs:
-                                  _getTabs(list[i].subItems! as List<SubItem>),
+                              tabs: _getTabs(list[i].subItems as List<SubItem>),
                             ),
                           )),
                   body: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
                       children: _getSamples(
                           model,
-                          list[i].subItems! as List<SubItem>,
+                          list[i].subItems as List<SubItem>,
                           list[i].displayType)))),
         ));
       }
     }
-    return tabs;
+    return _tabs;
   }
 
   /// If parent type given to control's subitem.
   List<Widget> _getParentTabViewChildren(
       SampleModel model, List<SubItem> list) {
-    final List<Widget> tabs = <Widget>[];
+    final List<Widget> _tabs = <Widget>[];
     for (int i = 0; i < list.length; i++) {
       if (list[i].subItems!.isNotEmpty) {
-        tabs.add(Container(
+        _tabs.add(Container(
           alignment: Alignment.center,
           child: DefaultTabController(
               length: list[i].subItems!.length,
@@ -672,16 +601,15 @@ class _LayoutPageState extends State<LayoutPage> {
                                   _secondaryTabIndex = index;
                                   codeIconChangeSetState!(() {
                                     _showIcon =
-                                        list[i].subItems![index].displayType !=
+                                        (list[i].subItems![index].displayType !=
                                                 'card' ||
                                             list[i]
                                                     .subItems![index]
                                                     .subItems
                                                     .length ==
-                                                1;
+                                                1);
                                     currentSample = _showIcon
                                         ? list[i].subItems![index].subItems[0]
-                                            as SubItem
                                         : null;
                                     infoIconChangeSetState!(() {});
                                   });
@@ -692,8 +620,7 @@ class _LayoutPageState extends State<LayoutPage> {
                               indicatorColor: Colors.transparent,
                               indicatorWeight: 0.1,
                               isScrollable: true,
-                              tabs:
-                                  _getTabs(list[i].subItems! as List<SubItem>),
+                              tabs: _getTabs(list[i].subItems as List<SubItem>),
                             ),
                           ),
                         ),
@@ -702,19 +629,13 @@ class _LayoutPageState extends State<LayoutPage> {
                       children: list[i].type == 'child'
                           ? _getSamples(
                               model,
-                              list[i].subItems! as List<SubItem>,
+                              list[i].subItems as List<SubItem>,
                               list[i].displayType)
                           : _getChildTabViewChildren(
-                              model, list[i].subItems! as List<SubItem>)))),
+                              model, list[i].subItems as List<SubItem>)))),
         ));
       }
     }
-
-    return tabs;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    return _tabs;
   }
 }

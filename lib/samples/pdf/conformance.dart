@@ -2,7 +2,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Pdf import
@@ -35,58 +34,62 @@ class _ConformancePdfState extends SampleViewState {
     return Scaffold(
       backgroundColor: model.cardThemeColor,
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                    'This sample shows how to create various PDF conformance document like PDF/A-1B, PDF/A-2B, and PDF/A-3B',
-                    style: TextStyle(fontSize: 16, color: model.textColor)),
-                const SizedBox(height: 20, width: 30),
-                Text('Choose the conformance level:',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: model.textColor,
-                        fontWeight: FontWeight.bold)),
-                const SizedBox(height: 10, width: 25),
-                if (MediaQuery.of(context).size.width > 800)
-                  Row(children: getChildWidgets(context))
-                else
-                  Column(children: getChildWidgets(context)),
-                const SizedBox(height: 10, width: 30),
-                Align(
-                    child: TextButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(model.backgroundColor),
-                    padding: model.isMobile
-                        ? null
-                        : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                            vertical: 15, horizontal: 15)),
-                  ),
-                  onPressed: _conformance,
-                  child: const Text('Generate PDF',
-                      style: TextStyle(color: Colors.white)),
-                ))
-              ]),
-        ),
-      ),
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+            child: Container(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                        'This sample shows how to create various PDF conformance document like PDF/A-1B, PDF/A-2B, and PDF/A-3B',
+                        style: TextStyle(fontSize: 16, color: model.textColor)),
+                    const SizedBox(height: 20, width: 30),
+                    Text('Choose the conformance level:',
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: model.textColor,
+                            fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10, width: 25),
+                    (MediaQuery.of(context).size.width > 800)
+                        ? Row(children: getChildWidgets(context))
+                        : Column(children: getChildWidgets(context)),
+                    const SizedBox(height: 10, width: 30),
+                    Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                model.backgroundColor),
+                            padding: model.isMobile
+                                ? null
+                                : MaterialStateProperty.all(
+                                    EdgeInsets.symmetric(
+                                        vertical: 15, horizontal: 15)),
+                          ),
+                          onPressed: _conformance,
+                          child: const Text('Generate PDF',
+                              style: TextStyle(color: Colors.white)),
+                        ))
+                  ]),
+            ),
+          )),
     );
   }
 
   List<Widget> getChildWidgets(BuildContext context) {
-    return <Widget>[
-      Row(children: <Widget>[
-        Radio<int>(groupValue: _groupValue, onChanged: _changed, value: 0),
+    return [
+      Row(children: [
+        Radio(groupValue: _groupValue, onChanged: _changed, value: 0),
         Text('PDF/A-1B', style: TextStyle(fontSize: 16, color: model.textColor))
       ]),
-      Row(children: <Widget>[
-        Radio<int>(groupValue: _groupValue, onChanged: _changed, value: 1),
+      Row(children: [
+        Radio(groupValue: _groupValue, onChanged: _changed, value: 1),
         Text('PDF/A-2B', style: TextStyle(fontSize: 16, color: model.textColor))
       ]),
-      Row(children: <Widget>[
-        Radio<int>(groupValue: _groupValue, onChanged: _changed, value: 2),
+      Row(children: [
+        Radio(groupValue: _groupValue, onChanged: _changed, value: 2),
         Text('PDF/A-3B', style: TextStyle(fontSize: 16, color: model.textColor))
       ]),
     ];
@@ -103,7 +106,7 @@ class _ConformancePdfState extends SampleViewState {
     } else {
       //Create document with PDF/A-3B standard.
       document = PdfDocument(conformanceLevel: PdfConformanceLevel.a3b);
-      const String text =
+      final String text =
           'Adventure Works Cycles, the fictitious company on which the AdventureWorks sample databases are based, is a large, multinational manufacturing company. The company manufactures and sells metal and composite bicycles to North American, European and Asian commercial markets. While its base operation is located in Bothell, Washington with 290 employees, several regional sales teams are located throughout their market base.';
       document.attachments.add(PdfAttachment(
           'AdventureCycle.txt', utf8.encode(text),
@@ -116,7 +119,7 @@ class _ConformancePdfState extends SampleViewState {
     //Draw rectangle
     page.graphics.drawRectangle(
         bounds: Rect.fromLTWH(0, 0, pageSize.width, pageSize.height),
-        pen: PdfPen(PdfColor(142, 170, 219)));
+        pen: PdfPen(PdfColor(142, 170, 219, 255)));
     //Read font file.
     final List<int> fontData = await _readData('Roboto-Regular.ttf');
     //Create a PDF true type font.
@@ -133,7 +136,7 @@ class _ConformancePdfState extends SampleViewState {
     //Add invoice footer
     _drawFooter(page, pageSize, contentFont);
     //Save and dispose the document.
-    final List<int> bytes = await document.save();
+    final List<int> bytes = document.save();
     document.dispose();
     //Save and launch file.
     await FileSaveHelper.saveAndLaunchFile(bytes, 'ConformancePDF.pdf');
@@ -149,7 +152,7 @@ class _ConformancePdfState extends SampleViewState {
       PdfFont contentFont, PdfFont headerFont, PdfFont footerFont) {
     //Draw rectangle
     page.graphics.drawRectangle(
-        brush: PdfSolidBrush(PdfColor(91, 126, 215)),
+        brush: PdfSolidBrush(PdfColor(91, 126, 215, 255)),
         bounds: Rect.fromLTWH(0, 0, pageSize.width - 115, 90));
     //Draw string
     page.graphics.drawString('INVOICE', headerFont,
@@ -160,7 +163,7 @@ class _ConformancePdfState extends SampleViewState {
         bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 90),
         brush: PdfSolidBrush(PdfColor(65, 104, 205)));
     page.graphics.drawString(
-        r'$' + _getTotalAmount(grid).toString(), footerFont,
+        '\$' + _getTotalAmount(grid).toString(), footerFont,
         bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 100),
         brush: PdfBrushes.white,
         format: PdfStringFormat(
@@ -225,7 +228,7 @@ class _ConformancePdfState extends SampleViewState {
   //Draw the invoice footer data.
   void _drawFooter(PdfPage page, Size pageSize, PdfFont contentFont) {
     final PdfPen linePen =
-        PdfPen(PdfColor(142, 170, 219), dashStyle: PdfDashStyle.custom);
+        PdfPen(PdfColor(142, 170, 219, 255), dashStyle: PdfDashStyle.custom);
     linePen.dashPattern = <double>[3, 3];
     //Draw line
     page.graphics.drawLine(linePen, Offset(0, pageSize.height - 100),
@@ -275,7 +278,7 @@ class _ConformancePdfState extends SampleViewState {
     }
     for (int i = 0; i < grid.rows.count; i++) {
       final PdfGridRow row = grid.rows[i];
-      if (i.isEven) {
+      if (i % 2 == 0) {
         row.style.backgroundBrush = PdfSolidBrush(PdfColor(217, 226, 243));
       }
       for (int j = 0; j < row.cells.count; j++) {
@@ -307,8 +310,7 @@ class _ConformancePdfState extends SampleViewState {
   double _getTotalAmount(PdfGrid grid) {
     double total = 0;
     for (int i = 0; i < grid.rows.count; i++) {
-      final String value =
-          grid.rows[i].cells[grid.columns.count - 1].value as String;
+      final String value = grid.rows[i].cells[grid.columns.count - 1].value;
       total += double.parse(value);
     }
     return total;

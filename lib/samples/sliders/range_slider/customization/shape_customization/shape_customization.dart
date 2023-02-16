@@ -1,10 +1,14 @@
+import 'package:flutter/foundation.dart';
+
 ///Package imports
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 ///Local imports
 import '../../../../../model/sample_view.dart';
 import '../../../slider_utils.dart';
-import 'divider_customization.dart';
+
+import 'divisor_customization.dart';
 import 'thumb_customization.dart';
 import 'tick_customization.dart';
 
@@ -20,9 +24,44 @@ class ShapeCustomizedRangeSliderPage extends SampleView {
 
 class _ShapeCustomizedRangeSliderPageState extends SampleViewState {
   _ShapeCustomizedRangeSliderPageState();
-  final GlobalKey dividerKey = GlobalKey();
-  final GlobalKey thumbKey = GlobalKey();
-  final GlobalKey tickKey = GlobalKey();
+
+  late Widget rangeSlider;
+  late bool _isDesktop;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _ShapeCustomizedRangeSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    _isDesktop = kIsWeb ||
+        themeData.platform == TargetPlatform.macOS ||
+        themeData.platform == TargetPlatform.windows ||
+        themeData.platform == TargetPlatform.linux;
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            _isDesktop
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(
+                height: 500,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 50),
+                  child: Container(child: rangeSlider),
+                )));
+  }
+}
+
+class _ShapeCustomizedRangeSlider extends SampleView {
+  @override
+  _ShapeCustomizedRangeSliderState createState() =>
+      _ShapeCustomizedRangeSliderState();
+}
+
+class _ShapeCustomizedRangeSliderState extends SampleViewState {
+  late bool _isDesktop;
 
   Widget _buildWebLayout() {
     return Container(
@@ -42,32 +81,24 @@ class _ShapeCustomizedRangeSliderPageState extends SampleViewState {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ThumbCustomizedRangeSlider(thumbKey),
+            ThumbCustomizedRangeSlider(),
             columnSpacing40,
-            title('Divider'),
-            DividerCustomizedRangeSlider(dividerKey),
+            title('Divisor'),
+            DivisorCustomizedRangeSlider(),
             columnSpacing40,
             title('Ticks'),
-            TickCustomizedRangeSlider(tickKey)
+            TickCustomizedRangeSlider()
           ],
         ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 400
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(
-              height: 500,
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 50),
-                  child: rangeSlider),
-            ));
-    });
+    final ThemeData themeData = Theme.of(context);
+    _isDesktop = kIsWeb ||
+        themeData.platform == TargetPlatform.macOS ||
+        themeData.platform == TargetPlatform.windows ||
+        themeData.platform == TargetPlatform.linux;
+    return _isDesktop ? _buildWebLayout() : _buildMobileLayout();
   }
 }

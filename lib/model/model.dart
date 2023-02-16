@@ -3,35 +3,30 @@ import 'dart:convert';
 import 'dart:io' show Platform;
 
 /// Package imports
-import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:desktop_window/desktop_window.dart';
 
 import '../model/web_view.dart';
 
 /// Local import
 import '../sample_list.dart';
-import '../widgets/search_bar.dart';
 
 /// WidgetCategory of the each control as Data Visualization, Editors,etc.,
 class WidgetCategory {
-  /// Constructor holds the name, id, control collection of the [WidgetCategory]
+  /// Contructor holds the name, id, control collection of the [WidgetCategory]
   WidgetCategory(
       [this.categoryName,
       this.controlList,
       this.mobileCategoryId,
       this.webCategoryId,
-      this.platformsToHide]);
+      this.showInWeb]);
 
   /// Getting the control details from the json file
   factory WidgetCategory.fromJson(Map<String, dynamic> json) {
-    return WidgetCategory(
-        json['categoryName'],
-        json['controlList'],
-        json['mobileCategoryId'],
-        json['webCategoryId'],
-        json['platformsToHide']);
+    return WidgetCategory(json['categoryName'], json['controlList'],
+        json['mobileCategoryId'], json['webCategoryId'], json['showInWeb']);
   }
 
   /// Name of the category
@@ -46,16 +41,12 @@ class WidgetCategory {
   /// Sorting the categories based on this id in web.
   final int? webCategoryId;
 
+  /// Specify false if the category need not to show in web
+  /// (as Viewer - not supported in web).
+  final bool? showInWeb;
+
   /// Selected control in the controllist under the particular category
   int? selectedIndex = 0;
-
-  /// To specify the category not to show on the web/android/iOS/windows/linux/macOS
-  /// platforms in list format.
-  ///
-  /// Eg: In json file we can specify like below,
-  ///
-  /// "platformsToHide": ["linux", "android"] => the specific category should not show on the linux and android platforms
-  final List<dynamic>? platformsToHide;
 }
 
 /// Defines the control class.
@@ -69,8 +60,8 @@ class Control {
       this.displayType,
       this.subItems,
       this.controlId,
-      this.isBeta,
-      this.platformsToHide);
+      this.showInWeb,
+      this.isBeta);
 
   /// Getting the control details from the json file
   factory Control.fromJson(Map<String, dynamic> json) {
@@ -82,8 +73,8 @@ class Control {
         json['displayType'],
         json['subItems'],
         json['controlId'],
-        json['isBeta'],
-        json['platformsToHide']);
+        json['showInWeb'],
+        json['isBeta']);
   }
 
   /// Contains title of the control, display in the home page
@@ -105,6 +96,10 @@ class Control {
   /// Mention as card/fullView, by default it will taken as "fullView".
   final String? displayType;
 
+  /// Specify false if the control need not to show in web
+  /// (as pdf viewer - not supported in web).
+  final bool? showInWeb;
+
   /// Contains the subItem list which comes under sample type
   List<SubItem>? sampleList;
 
@@ -116,14 +111,6 @@ class Control {
 
   /// To specify the control is beta or not in `https://pub.dev/publishers/syncfusion.com/packages`
   final bool? isBeta;
-
-  /// To specify the control not to show on the web/android/iOS/windows/linux/macOS
-  /// platforms in list format.
-  ///
-  /// Eg: In json file we can specify like below,
-  ///
-  /// "platformsToHide": ["linux", "android"] => the current control should not show on the linux and android platforms
-  final List<dynamic>? platformsToHide;
 }
 
 /// Contains the detail of sample in different hierarchy levels
@@ -139,10 +126,10 @@ class SubItem {
       this.description,
       this.status,
       this.subItems,
+      this.showInWeb,
       this.sourceLink,
       this.sourceText,
-      this.needsPropertyPanel,
-      this.platformsToHide]);
+      this.needsPropertyPanel]);
 
   /// Getting the SubItem details from the json file
   factory SubItem.fromJson(Map<String, dynamic> json) {
@@ -155,10 +142,10 @@ class SubItem {
         json['description'],
         json['status'],
         json['subItems'],
+        json['showInWeb'],
         json['sourceLink'],
         json['sourceText'],
-        json['needsPropertyPanel'],
-        json['platformsToHide']);
+        json['needsPropertyPanel']);
   }
 
   /// Type given as parent/child/sample.
@@ -193,6 +180,10 @@ class SubItem {
   /// Status of the sample, displays above the sample
   final String? status;
 
+  /// Specify false if the sample need not to show in web
+  /// (as sample with dash array).
+  final bool? showInWeb;
+
   /// SourceLink which will launch a url of the sample's source
   /// on tapping source text present under the sample.
   final String? sourceLink;
@@ -223,14 +214,6 @@ class SubItem {
 
   /// Holds appropriate control
   Control? control;
-
-  /// To specify the sample not to show on the web/android/iOS/windows/linux/macOS
-  /// platforms in list format.
-  ///
-  /// Eg: In json file we can specify like below,
-  ///
-  /// "platformsToHide": ["linux", "android"] => the specific sample should not show on the linux and android platforms
-  final List<dynamic>? platformsToHide;
 }
 
 /// SampleModel class is the base of the Sample browser
@@ -238,7 +221,6 @@ class SubItem {
 class SampleModel extends Listenable {
   /// Contains the category, control, theme information
   SampleModel() {
-    isInitialRender = true;
     searchControlItems = <Control>[];
     sampleList = <SubItem>[];
     searchResults = <SubItem>[];
@@ -289,9 +271,6 @@ class SampleModel extends Listenable {
   /// Used to create the instance of [SampleModel]
   static SampleModel instance = SampleModel();
 
-  /// Specifies the widget initial rendering
-  late bool isInitialRender;
-
   /// Contains the output widget of sample
   /// appropriate key and output widget mapped
   final Map<String, Function> sampleWidget = getSampleWidget();
@@ -317,9 +296,6 @@ class SampleModel extends Listenable {
 
   /// To handle search
   late List<SubItem> searchResults;
-
-  /// To handle the search bar
-  SearchBar? searchBar;
 
   /// holds theme based current palette color
   Color backgroundColor = const Color.fromRGBO(0, 116, 227, 1);
@@ -376,7 +352,7 @@ class SampleModel extends Listenable {
   late List<SampleRoute>? routes;
 
   /// Holds the current visible sample, only for web
-  late dynamic currentRenderSample;
+  late dynamic? currentRenderSample;
 
   /// Holds the current rendered sample's key, only for web
   late String? currentSampleKey;
@@ -387,7 +363,7 @@ class SampleModel extends Listenable {
   /// Contains the pallete's border colors
   late List<Color>? paletteBorderColors;
 
-  /// Contains dark theme theme palatte colors.
+  /// Contains dark theme theme palatte colors
   late List<Color>? darkPaletteColors;
 
   /// Holds current theme data
@@ -402,12 +378,6 @@ class SampleModel extends Listenable {
 
   /// Holds the information of isCardView or not
   bool isCardView = true;
-
-  /// Gets the locale assigned to [SampleModel].
-  Locale? locale = const Locale('ar', 'AE');
-
-  /// Gets the textDirection assigned to [SampleModel].
-  TextDirection textDirection = TextDirection.rtl;
 
   /// Holds the information of isMobileResolution or not
   /// To render the appbar and search bar based on it
@@ -458,25 +428,10 @@ class SampleModel extends Listenable {
   ///Check whether application is running on the macOS desktop
   bool isMacOS = false;
 
-  /// This controls to open / hide the property panel
-  bool isPropertyPanelOpened = true;
-
-  /// holds the current route of sample.
-  late SampleRoute currentSampleRoute;
-
-  /// Hold the current sample details.
-  late SubItem sampleDetail;
-
-  /// holds the collection of all sample routes.
-  static List<SampleRoute> sampleRoutes = <SampleRoute>[];
-
-  /// Holds the value whether the property panel option is tapped
-  late bool isPropertyPanelTapped;
-
   /// Switching between light, dark, system themes
-  void changeTheme(ThemeData currentThemeData) {
-    themeData = currentThemeData;
-    switch (currentThemeData.colorScheme.brightness) {
+  void changeTheme(ThemeData _themeData) {
+    themeData = _themeData;
+    switch (_themeData.brightness) {
       case Brightness.dark:
         {
           dividerColor = const Color.fromRGBO(61, 61, 61, 1);
@@ -491,7 +446,6 @@ class SampleModel extends Listenable {
           cardThemeColor = const Color.fromRGBO(33, 33, 33, 1);
           break;
         }
-      // ignore: no_default_cases
       default:
         {
           dividerColor = const Color.fromRGBO(204, 204, 204, 1);
@@ -537,206 +491,189 @@ class SampleModel extends Listenable {
 /// and [SampleModel._controlList]
 Future<void> updateControlItems() async {
   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
-    await DesktopWindow.setMinWindowSize(const Size(775, 230));
+    await DesktopWindow.setMinWindowSize(Size(775, 230));
   }
 
-  bool isSample = false;
-  bool isChild = false;
-  final bool isWeb =
+  bool _isSample = false;
+  bool _isChild = false;
+  final bool _isWeb =
       kIsWeb || Platform.isWindows || Platform.isMacOS || Platform.isLinux;
-  final String jsonText =
+  final String _jsonText =
       await rootBundle.loadString('lib/sample_details.json');
-  List<SubItem> firstLevelSubItems = <SubItem>[];
-  List<SubItem> secondLevelSubItems = <SubItem>[];
-  List<SubItem> thirdLevelSubItems = <SubItem>[];
+  List<SubItem> _firstLevelSubItems = <SubItem>[];
+  List<SubItem> _secondLevelSubItems = <SubItem>[];
+  List<SubItem> _thirdLevelSubItems = <SubItem>[];
   final List<SampleRoute> sampleRoutes = <SampleRoute>[];
 
-  final List<dynamic> categoryList = json.decode(jsonText) as List<dynamic>;
+  final List<dynamic> categoryList = json.decode(_jsonText);
   for (int index = 0; index < categoryList.length; index++) {
     SampleModel._categoryList.add(WidgetCategory.fromJson(categoryList[index]));
     final List<Control> controlList = <Control>[];
-    if (SampleModel._categoryList[index].platformsToHide == null ||
-        _needToShow(SampleModel._categoryList[index].platformsToHide)) {
+    if ((!_isWeb || SampleModel._categoryList[index].showInWeb != false) &&
+        (SampleModel._categoryList[index].categoryName != 'Viewer' ||
+            kIsWeb ||
+            (!Platform.isWindows && !Platform.isMacOS && !Platform.isLinux))) {
       for (int i = 0;
           i < SampleModel._categoryList[index].controlList!.length;
           i++) {
         controlList.add(
             Control.fromJson(SampleModel._categoryList[index].controlList![i]));
-        if (controlList[i].platformsToHide == null ||
-            _needToShow(controlList[i].platformsToHide)) {
+        if (!_isWeb || controlList[i].showInWeb != false) {
           for (int j = 0; j < controlList[i].subItems!.length; j++) {
-            firstLevelSubItems
+            _firstLevelSubItems
                 .add(SubItem.fromJson(controlList[i].subItems![j]));
-            if (firstLevelSubItems[j].type == 'parent') {
-              for (int k = 0; k < firstLevelSubItems[j].subItems!.length; k++) {
-                if (SubItem.fromJson(firstLevelSubItems[j].subItems![k])
-                            .platformsToHide ==
-                        null ||
-                    _needToShow(
-                        SubItem.fromJson(firstLevelSubItems[j].subItems![k])
-                            .platformsToHide)) {
-                  secondLevelSubItems.add(
-                      SubItem.fromJson(firstLevelSubItems[j].subItems![k]));
+            if (_firstLevelSubItems[j].type == 'parent') {
+              for (int k = 0;
+                  k < _firstLevelSubItems[j].subItems!.length;
+                  k++) {
+                if (!_isWeb ||
+                    SubItem.fromJson(_firstLevelSubItems[j].subItems![k])
+                            .showInWeb !=
+                        false) {
+                  _secondLevelSubItems.add(
+                      SubItem.fromJson(_firstLevelSubItems[j].subItems![k]));
                   for (int l = 0;
                       l <
-                          secondLevelSubItems[secondLevelSubItems.length - 1]
+                          _secondLevelSubItems[_secondLevelSubItems.length - 1]
                               .subItems!
                               .length;
                       l++) {
-                    if (SubItem.fromJson(secondLevelSubItems[
-                                        secondLevelSubItems.length - 1]
+                    if (!_isWeb ||
+                        SubItem.fromJson(_secondLevelSubItems[
+                                        _secondLevelSubItems.length - 1]
                                     .subItems![l])
-                                .platformsToHide ==
-                            null ||
-                        _needToShow(SubItem.fromJson(secondLevelSubItems[
-                                    secondLevelSubItems.length - 1]
-                                .subItems![l])
-                            .platformsToHide)) {
-                      thirdLevelSubItems.add(SubItem.fromJson(
-                          secondLevelSubItems[secondLevelSubItems.length - 1]
+                                .showInWeb !=
+                            false) {
+                      _thirdLevelSubItems.add(SubItem.fromJson(
+                          _secondLevelSubItems[_secondLevelSubItems.length - 1]
                               .subItems![l]));
                     }
-                    thirdLevelSubItems[thirdLevelSubItems.length - 1]
+                    _thirdLevelSubItems[_thirdLevelSubItems.length - 1]
                         .parentIndex = j;
-                    thirdLevelSubItems[thirdLevelSubItems.length - 1]
+                    _thirdLevelSubItems[_thirdLevelSubItems.length - 1]
                         .childIndex = k;
-                    thirdLevelSubItems[thirdLevelSubItems.length - 1]
-                        .sampleIndex ??= thirdLevelSubItems.length - 1;
-                    thirdLevelSubItems[thirdLevelSubItems.length - 1].control =
-                        controlList[i];
+                    _thirdLevelSubItems[_thirdLevelSubItems.length - 1]
+                        .sampleIndex ??= _thirdLevelSubItems.length - 1;
+                    _thirdLevelSubItems[_thirdLevelSubItems.length - 1]
+                        .control = controlList[i];
                     final String breadCrumbText = ('/' +
                             controlList[i].title! +
                             '/' +
-                            firstLevelSubItems[j].title! +
+                            _firstLevelSubItems[j].title! +
                             '/' +
-                            secondLevelSubItems[secondLevelSubItems.length - 1]
+                            _secondLevelSubItems[
+                                    _secondLevelSubItems.length - 1]
                                 .title! +
-                            (secondLevelSubItems[secondLevelSubItems.length - 1]
+                            (_secondLevelSubItems[
+                                            _secondLevelSubItems.length - 1]
                                         .subItems!
                                         .length ==
                                     1
                                 ? ''
                                 : ('/' +
-                                    thirdLevelSubItems[
-                                            thirdLevelSubItems.length - 1]
+                                    _thirdLevelSubItems[
+                                            _thirdLevelSubItems.length - 1]
                                         .title!)))
                         .replaceAll(' ', '-')
                         .toLowerCase();
-                    thirdLevelSubItems[thirdLevelSubItems.length - 1]
+                    _thirdLevelSubItems[_thirdLevelSubItems.length - 1]
                         .breadCrumbText = breadCrumbText;
-                    thirdLevelSubItems[thirdLevelSubItems.length - 1]
+                    _thirdLevelSubItems[_thirdLevelSubItems.length - 1]
                             .categoryName =
-                        SampleModel._categoryList[index].categoryName;
+                        SampleModel._categoryList[index].categoryName!;
                     sampleRoutes.add(SampleRoute(
                         routeName: breadCrumbText,
-                        subItem:
-                            thirdLevelSubItems[thirdLevelSubItems.length - 1]));
+                        subItem: _thirdLevelSubItems[
+                            _thirdLevelSubItems.length - 1]));
                   }
-                  secondLevelSubItems[secondLevelSubItems.length - 1].subItems =
-                      thirdLevelSubItems;
-                  thirdLevelSubItems = <SubItem>[];
+                  _secondLevelSubItems[_secondLevelSubItems.length - 1]
+                      .subItems = _thirdLevelSubItems;
+                  _thirdLevelSubItems = <SubItem>[];
                 }
               }
-              firstLevelSubItems[j].subItems = secondLevelSubItems;
-              secondLevelSubItems = <SubItem>[];
-            } else if (firstLevelSubItems[j].type == 'child') {
-              if (firstLevelSubItems[j].platformsToHide == null ||
-                  _needToShow(firstLevelSubItems[j].platformsToHide)) {
-                isChild = true;
+              _firstLevelSubItems[j].subItems = _secondLevelSubItems;
+              _secondLevelSubItems = <SubItem>[];
+            } else if (_firstLevelSubItems[j].type == 'child') {
+              if (!_isWeb || _firstLevelSubItems[j].showInWeb != false) {
+                _isChild = true;
                 for (int k = 0;
-                    k < firstLevelSubItems[j].subItems!.length;
+                    k < _firstLevelSubItems[j].subItems!.length;
                     k++) {
-                  if (SubItem.fromJson(firstLevelSubItems[j].subItems![k])
-                              .platformsToHide ==
-                          null ||
-                      _needToShow(
-                          SubItem.fromJson(firstLevelSubItems[j].subItems![k])
-                              .platformsToHide)) {
-                    secondLevelSubItems.add(
-                        SubItem.fromJson(firstLevelSubItems[j].subItems![k]));
-                    secondLevelSubItems[secondLevelSubItems.length - 1]
+                  if (!_isWeb ||
+                      SubItem.fromJson(_firstLevelSubItems[j].subItems![k])
+                              .showInWeb !=
+                          false) {
+                    _secondLevelSubItems.add(
+                        SubItem.fromJson(_firstLevelSubItems[j].subItems![k]));
+                    _secondLevelSubItems[_secondLevelSubItems.length - 1]
                         .childIndex = j;
-                    secondLevelSubItems[secondLevelSubItems.length - 1]
+                    _secondLevelSubItems[_secondLevelSubItems.length - 1]
                         .sampleIndex ??= k;
-                    secondLevelSubItems[secondLevelSubItems.length - 1]
+                    _secondLevelSubItems[_secondLevelSubItems.length - 1]
                         .control = controlList[i];
-                    String breadCrumbText;
-                    if (firstLevelSubItems[j].subItems!.length == 1 &&
-                        secondLevelSubItems.length == 1) {
-                      breadCrumbText = ('/' +
-                              controlList[i].title! +
-                              '/' +
-                              secondLevelSubItems[
-                                      secondLevelSubItems.length - 1]
-                                  .title!)
-                          .replaceAll(' ', '-')
-                          .toLowerCase();
-                    } else {
-                      breadCrumbText = ('/' +
-                              controlList[i].title! +
-                              '/' +
-                              firstLevelSubItems[j].title! +
-                              '/' +
-                              secondLevelSubItems[
-                                      secondLevelSubItems.length - 1]
-                                  .title!)
-                          .replaceAll(' ', '-')
-                          .toLowerCase();
-                    }
-
-                    secondLevelSubItems[secondLevelSubItems.length - 1]
+                    final String breadCrumbText = ('/' +
+                            controlList[i].title! +
+                            '/' +
+                            _firstLevelSubItems[j].title! +
+                            '/' +
+                            _secondLevelSubItems[
+                                    _secondLevelSubItems.length - 1]
+                                .title!)
+                        .replaceAll(' ', '-')
+                        .toLowerCase();
+                    _secondLevelSubItems[_secondLevelSubItems.length - 1]
                         .breadCrumbText = breadCrumbText;
-                    secondLevelSubItems[secondLevelSubItems.length - 1]
+                    _secondLevelSubItems[_secondLevelSubItems.length - 1]
                             .categoryName =
-                        SampleModel._categoryList[index].categoryName;
+                        SampleModel._categoryList[index].categoryName!;
                     sampleRoutes.add(SampleRoute(
                         routeName: breadCrumbText,
-                        subItem: secondLevelSubItems[
-                            secondLevelSubItems.length - 1]));
+                        subItem: _secondLevelSubItems[
+                            _secondLevelSubItems.length - 1]));
                   }
                 }
-                firstLevelSubItems[j].subItems = secondLevelSubItems;
-                secondLevelSubItems = <SubItem>[];
+                _firstLevelSubItems[j].subItems = _secondLevelSubItems;
+                _secondLevelSubItems = <SubItem>[];
               } else {
-                firstLevelSubItems.removeAt(j);
+                _firstLevelSubItems.removeAt(j);
                 controlList[i].subItems!.removeAt(j);
                 j--;
               }
             } else {
-              isSample = true;
-              firstLevelSubItems[j].sampleIndex ??= j;
-              if (firstLevelSubItems[j].platformsToHide == null ||
-                  _needToShow(firstLevelSubItems[j].platformsToHide)) {
+              _isSample = true;
+              _firstLevelSubItems[j].sampleIndex ??= j;
+              if (!_isWeb || _firstLevelSubItems[j].showInWeb != false) {
                 final String breadCrumbText = ('/' +
                         controlList[i].title! +
                         '/' +
-                        firstLevelSubItems[j].title!)
+                        _firstLevelSubItems[j].title!)
                     .replaceAll(' ', '-')
                     .toLowerCase();
-                firstLevelSubItems[j].breadCrumbText = breadCrumbText;
-                firstLevelSubItems[j].control = controlList[i];
-                firstLevelSubItems[j].categoryName =
-                    SampleModel._categoryList[index].categoryName;
+                _firstLevelSubItems[j].breadCrumbText = breadCrumbText;
+                _firstLevelSubItems[j].control = controlList[i];
+                _firstLevelSubItems[j].categoryName =
+                    SampleModel._categoryList[index].categoryName!;
                 sampleRoutes.add(SampleRoute(
-                    routeName: breadCrumbText, subItem: firstLevelSubItems[j]));
-                secondLevelSubItems.add(firstLevelSubItems[j]);
+                    routeName: breadCrumbText,
+                    subItem: _firstLevelSubItems[j]));
+                _secondLevelSubItems.add(_firstLevelSubItems[j]);
               }
             }
           }
-          if (isSample) {
-            controlList[i].sampleList = secondLevelSubItems;
-            controlList[i].subItems = secondLevelSubItems;
-            secondLevelSubItems = <SubItem>[];
-          } else if (isChild) {
-            controlList[i].childList = firstLevelSubItems;
-            secondLevelSubItems = <SubItem>[];
-            isChild = false;
+          if (_isSample) {
+            controlList[i].sampleList = _secondLevelSubItems;
+            controlList[i].subItems = _secondLevelSubItems;
+            _secondLevelSubItems = <SubItem>[];
+          } else if (_isChild) {
+            controlList[i].childList = _firstLevelSubItems;
+            _secondLevelSubItems = <SubItem>[];
+            _isChild = false;
           }
-          (!isSample)
-              ? controlList[i].subItems = firstLevelSubItems
-              : isSample = false;
+          (!_isSample)
+              ? controlList[i].subItems = _firstLevelSubItems
+              : _isSample = false;
 
-          firstLevelSubItems = <SubItem>[];
+          _firstLevelSubItems = <SubItem>[];
         } else {
           controlList.removeAt(i);
           SampleModel._categoryList[index].controlList!.removeAt(i);
@@ -757,11 +694,11 @@ Future<void> updateControlItems() async {
 
   /// Sorting the controls based on control id category wise.
   for (int i = 0; i < SampleModel._categoryList.length; i++) {
-    SampleModel._categoryList[i].controlList!.sort(
-        (dynamic a, dynamic b) => a.controlId.compareTo(b.controlId) as int);
+    SampleModel._categoryList[i].controlList!
+        .sort((dynamic a, dynamic b) => a.controlId.compareTo(b.controlId));
   }
 
-  if (isWeb) {
+  if (_isWeb) {
     /// Sorting categories based on [webCategoryId]
     SampleModel._categoryList.sort((WidgetCategory a, WidgetCategory b) =>
         a.webCategoryId!.compareTo(b.webCategoryId!));
@@ -772,42 +709,14 @@ Future<void> updateControlItems() async {
   }
 }
 
-bool _needToShow(List<dynamic>? platforms) {
-  return !((platforms!.contains('web') && kIsWeb) ||
-      (!kIsWeb &&
-          ((platforms.contains('linux') && Platform.isLinux) ||
-              (platforms.contains('android') && Platform.isAndroid) ||
-              (platforms.contains('iOS') && Platform.isIOS) ||
-              (platforms.contains('windows') && Platform.isWindows) ||
-              (platforms.contains('macOS') && Platform.isMacOS))));
-}
-
 ///Holds the [SubItem] and the appropriate route name
 class SampleRoute {
   ///Contains the URL routes of the appropriate subItem
-  SampleRoute(
-      {this.routeName,
-      this.subItem,
-      this.currentContext,
-      this.currentState,
-      this.currentWidget,
-      this.globalKey});
+  SampleRoute({this.routeName, this.subItem});
+
+  ///Holds the text which show in the URL
+  final String? routeName;
 
   ///Holds the sample details
   final SubItem? subItem;
-
-  ///Holds the global key
-  final GlobalKey<State>? globalKey;
-
-  ///Holds the text which show in the URL
-  String? routeName;
-
-  ///Holds the current state
-  State? currentState;
-
-  ///Holds the current context
-  BuildContext? currentContext;
-
-  ///Holds the current widget
-  Widget? currentWidget;
 }

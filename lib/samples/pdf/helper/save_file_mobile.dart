@@ -4,10 +4,8 @@ import 'dart:io';
 ///Package imports
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-// ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 
-// ignore: avoid_classes_with_only_static_members
 ///To save the pdf file in the device
 class FileSaveHelper {
   static const MethodChannel _platformCall = MethodChannel('launchFile');
@@ -40,13 +38,11 @@ class FileSaveHelper {
         throw Exception(e);
       }
     } else if (Platform.isWindows) {
-      await Process.run('start', <String>['$path\\$fileName'],
-          runInShell: true);
+      await Process.run('start', ['$path\\$fileName'], runInShell: true);
     } else if (Platform.isMacOS) {
-      await Process.run('open', <String>['$path/$fileName'], runInShell: true);
+      await Process.run('open', ['$path/$fileName'], runInShell: true);
     } else if (Platform.isLinux) {
-      await Process.run('xdg-open', <String>['$path/$fileName'],
-          runInShell: true);
+      await Process.run('xdg-open', ['$path/$fileName'], runInShell: true);
     }
   }
 }

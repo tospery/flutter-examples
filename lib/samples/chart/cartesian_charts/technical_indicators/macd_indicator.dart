@@ -1,6 +1,6 @@
 /// Package imports
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -27,11 +27,12 @@ class _MACDIndicatorState extends SampleViewState {
   late double _period;
   late double _longPeriod;
   late double _shortPeriod;
-  List<String>? _macdIndicatorTypeList;
-  late String _selectedMacdIndicatorType;
+  final List<String> _macdIndicatorTypeList =
+      <String>['Both', 'Line', 'Histogram'].toList();
+  late String _selectedMacdIndicatorType = 'Both';
   late MacdType _macdType = MacdType.both;
-  TrackballBehavior? _trackballBehavior;
-  TooltipBehavior? _tooltipBehavior;
+  late TrackballBehavior _trackballBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
@@ -39,9 +40,8 @@ class _MACDIndicatorState extends SampleViewState {
     _period = 14;
     _longPeriod = 5.0;
     _shortPeriod = 2.0;
-    _selectedMacdIndicatorType = 'both';
+    _selectedMacdIndicatorType = 'Both';
     _macdType = MacdType.both;
-    _macdIndicatorTypeList = <String>['both', 'line', 'histogram'].toList();
     _trackballBehavior = TrackballBehavior(
       enable: !isCardView,
       activationMode: ActivationMode.singleTap,
@@ -59,182 +59,124 @@ class _MACDIndicatorState extends SampleViewState {
   Widget buildSettings(BuildContext context) {
     final double screenWidth =
         model.isWebFullView ? 245 : MediaQuery.of(context).size.width;
-    final double dropDownWidth = 0.7 * screenWidth;
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(flex: model.isMobile ? 2 : 1, child: Container()),
-              Expanded(
-                flex: 14,
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            'Period',
-                            softWrap: false,
-                            style:
-                                TextStyle(fontSize: 16, color: model.textColor),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 4,
-                          child: SizedBox(
-                            width: dropDownWidth,
-                            child: CustomDirectionalButtons(
-                              maxValue: 50,
-                              initialValue: _period,
-                              onChanged: (double val) => setState(() {
-                                _period = val;
-                              }),
-                              loop: true,
-                              iconColor: model.textColor,
-                              style: TextStyle(
-                                  fontSize: 20.0, color: model.textColor),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            model.isWebFullView
-                                ? 'Long \nperiod'
-                                : 'Long period',
-                            softWrap: false,
-                            style:
-                                TextStyle(fontSize: 16, color: model.textColor),
-                          ),
-                        ),
-                        Flexible(
-                            flex: 4,
-                            child: CustomDirectionalButtons(
-                              maxValue: 50,
-                              initialValue: _longPeriod,
-                              onChanged: (double val) => setState(() {
-                                _longPeriod = val;
-                              }),
-                              loop: true,
-                              iconColor: model.textColor,
-                              style: TextStyle(
-                                  fontSize: 20.0, color: model.textColor),
-                            ))
-                      ],
-                    ),
-                    const SizedBox(height: 6.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          flex: 3,
-                          child: Text(
-                            model.isWebFullView
-                                ? 'Short \nperiod'
-                                : 'Short period',
-                            softWrap: false,
-                            style:
-                                TextStyle(fontSize: 16, color: model.textColor),
-                          ),
-                        ),
-                        Flexible(
-                          flex: 4,
-                          child: CustomDirectionalButtons(
-                            maxValue: 50,
-                            initialValue: _shortPeriod,
-                            onChanged: (double val) => setState(() {
-                              _shortPeriod = val;
-                            }),
-                            loop: true,
-                            iconColor: model.textColor,
-                            style: TextStyle(
-                                fontSize: 20.0, color: model.textColor),
-                          ),
-                        )
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Flexible(
-                          child: Text('MACD type',
-                              softWrap: false,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: model.textColor,
-                              )),
-                        ),
-                        Flexible(
-                          child: DropdownButton<String>(
-                              focusColor: Colors.transparent,
-                              isExpanded: true,
-                              underline: Container(
-                                  color: const Color(0xFFBDBDBD), height: 1),
-                              value: _selectedMacdIndicatorType,
-                              items:
-                                  _macdIndicatorTypeList!.map((String value) {
-                                return DropdownMenuItem<String>(
-                                    value: (value != null) ? value : 'Both',
-                                    child: Text(value,
-                                        style:
-                                            TextStyle(color: model.textColor)));
-                              }).toList(),
-                              onChanged: (String? value) {
-                                _onMacdIndicatorTypeChanged(value.toString());
-                                stateSetter(() {});
-                              }),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+          ListTile(
+            title: Text(
+              'Period',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 50,
+                initialValue: _period,
+                onChanged: (double val) => setState(() {
+                  _period = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
               ),
-              Expanded(flex: model.isMobile ? 3 : 1, child: Container()),
-            ],
+            ),
+          ),
+          ListTile(
+            title: Text(
+              'Long Period',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 50,
+                initialValue: _longPeriod,
+                onChanged: (double val) => setState(() {
+                  _longPeriod = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              'Short period',
+              style: TextStyle(color: model.textColor),
+            ),
+            trailing: Container(
+              width: 0.5 * screenWidth,
+              padding: EdgeInsets.only(left: 0.03 * screenWidth),
+              child: CustomDirectionalButtons(
+                maxValue: 50,
+                initialValue: _shortPeriod,
+                onChanged: (double val) => setState(() {
+                  _shortPeriod = val;
+                }),
+                loop: true,
+                iconColor: model.textColor,
+                style: TextStyle(fontSize: 20.0, color: model.textColor),
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text('MACD type      ',
+                style: TextStyle(
+                  color: model.textColor,
+                )),
+            trailing: Container(
+              padding: EdgeInsets.only(left: 0.07 * screenWidth),
+              width: 0.5 * screenWidth,
+              height: 50,
+              alignment: Alignment.bottomLeft,
+              child: DropdownButton<String>(
+                  underline: Container(color: Color(0xFFBDBDBD), height: 1),
+                  value: _selectedMacdIndicatorType,
+                  items: _macdIndicatorTypeList.map((String value) {
+                    return DropdownMenuItem<String>(
+                        value: (value != null) ? value : 'Both',
+                        child: Text('$value',
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (String? value) {
+                    _onMacdIndicatorTypeChanged(value.toString());
+                    stateSetter(() {});
+                  }),
+            ),
           ),
         ],
       );
     });
   }
 
-  @override
-  void dispose() {
-    _macdIndicatorTypeList!.clear();
-    super.dispose();
-  }
-
   /// Returns the OHLC chart with
   /// Moving average convergence divergence indicator.
   SfCartesianChart _buildDefaultMACDIndicator() {
+    final List<ChartSampleData> chartData = getChartData();
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
       legend: Legend(isVisible: !isCardView),
       primaryXAxis: DateTimeAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         dateFormat: DateFormat.MMM(),
         interval: 3,
-        minimum: DateTime(2016),
-        maximum: DateTime(2017),
+        minimum: DateTime(2016, 01, 01),
+        maximum: DateTime(2017, 01, 01),
       ),
       primaryYAxis: NumericAxis(
           minimum: 70,
           maximum: 130,
           interval: 20,
-          axisLine: const AxisLine(width: 0)),
+          axisLine: AxisLine(width: 0)),
       axes: <ChartAxis>[
         NumericAxis(
-            majorGridLines: const MajorGridLines(width: 0),
-            axisLine: const AxisLine(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
+            axisLine: AxisLine(width: 0),
             opposedPosition: true,
             name: 'agybrd',
             interval: 2)
@@ -256,9 +198,9 @@ class _MACDIndicatorState extends SampleViewState {
       series: <ChartSeries<ChartSampleData, DateTime>>[
         HiloOpenCloseSeries<ChartSampleData, DateTime>(
             emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.zero),
-            dataSource: getChartData(),
+            dataSource: chartData,
             opacity: 0.7,
-            xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+            xValueMapper: (ChartSampleData sales, _) => sales.x,
             lowValueMapper: (ChartSampleData sales, _) => sales.low,
             highValueMapper: (ChartSampleData sales, _) => sales.high,
             openValueMapper: (ChartSampleData sales, _) => sales.open,
@@ -272,13 +214,13 @@ class _MACDIndicatorState extends SampleViewState {
   void _onMacdIndicatorTypeChanged(String item) {
     _selectedMacdIndicatorType = item;
     switch (_selectedMacdIndicatorType) {
-      case 'both':
+      case 'Both':
         _macdType = MacdType.both;
         break;
-      case 'line':
+      case 'Line':
         _macdType = MacdType.line;
         break;
-      case 'histogram':
+      case 'Histogram':
         _macdType = MacdType.histogram;
         break;
     }

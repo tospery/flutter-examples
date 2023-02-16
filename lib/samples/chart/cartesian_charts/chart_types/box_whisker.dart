@@ -18,11 +18,12 @@ class BoxWhisker extends SampleView {
 
 class _BoxWhiskerState extends SampleViewState {
   _BoxWhiskerState();
-  late String _selectMode;
-  BoxPlotMode? _boxMode;
+  late var _selectMode;
+  late BoxPlotMode _boxMode;
   late bool _mean;
-  List<String>? _modeType;
-  TooltipBehavior? _tooltipBehavior;
+  final List<String> _modeType =
+      <String>['normal', 'exclusive', 'inclusive'].toList();
+  late TooltipBehavior _tooltipBehavior;
   @override
   Widget buildSettings(BuildContext context) {
     return StatefulBuilder(
@@ -30,21 +31,22 @@ class _BoxWhiskerState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
+          Container(
+              child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Text('Box plot mode ',
                   style: TextStyle(fontSize: 16.0, color: model.textColor)),
               Container(
                 padding: const EdgeInsets.fromLTRB(40, 0, 0, 0),
                 child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
+                    underline: Container(color: Color(0xFFBDBDBD), height: 1),
                     value: _selectMode,
-                    items: _modeType!.map((String value) {
+                    items: _modeType.map((String value) {
                       return DropdownMenuItem<String>(
                           value: (value != null) ? value : 'normal',
-                          child: Text(value,
+                          child: Text('$value',
                               style: TextStyle(color: model.textColor)));
                     }).toList(),
                     onChanged: (dynamic value) {
@@ -53,29 +55,31 @@ class _BoxWhiskerState extends SampleViewState {
                     }),
               ),
             ],
-          ),
-          Row(
-            children: <Widget>[
-              Text('Mean',
-                  style: TextStyle(
-                    color: model.textColor,
-                    fontSize: 16,
-                  )),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
-                child: SizedBox(
-                    width: 90,
-                    child: CheckboxListTile(
-                        activeColor: model.backgroundColor,
-                        value: _mean,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _mean = value!;
-                            stateSetter(() {});
-                          });
-                        })),
-              ),
-            ],
+          )),
+          Container(
+            child: Row(
+              children: <Widget>[
+                Text('Mean',
+                    style: TextStyle(
+                      color: model.textColor,
+                      fontSize: 16,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(60, 0, 0, 0),
+                  child: Container(
+                      width: 90,
+                      child: CheckboxListTile(
+                          activeColor: model.backgroundColor,
+                          value: _mean,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _mean = value!;
+                              stateSetter(() {});
+                            });
+                          })),
+                ),
+              ],
+            ),
           ),
         ],
       );
@@ -96,15 +100,15 @@ class _BoxWhiskerState extends SampleViewState {
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: 'Employees age group in various departments'),
       primaryXAxis: CategoryAxis(
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           labelIntersectAction: AxisLabelIntersectAction.rotate45),
       primaryYAxis: NumericAxis(
           name: 'Age',
           minimum: 10,
           maximum: 60,
           interval: 10,
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getBoxWhiskerSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -112,64 +116,53 @@ class _BoxWhiskerState extends SampleViewState {
 
   ///Get the histogram series
   List<BoxAndWhiskerSeries<SalesData, dynamic>> _getBoxWhiskerSeries() {
+    final List<SalesData> chartData = <SalesData>[
+      SalesData(
+          'Development',
+          [
+            22,
+            22,
+            23,
+            25,
+            25,
+            25,
+            26,
+            27,
+            27,
+            28,
+            28,
+            29,
+            30,
+            32,
+            34,
+            32,
+            34,
+            36,
+            35,
+            38
+          ],
+          null,
+          Color.fromRGBO(75, 135, 185, 0.9)),
+      SalesData('HR', [22, 24, 25, 30, 32, 34, 36, 38, 39, 41, 35, 36, 40, 56],
+          null, Color.fromRGBO(75, 135, 185, 0.9)),
+      SalesData('Finance  ', [26, 27, 28, 30, 32, 34, 35, 37, 35, 37, 45], null,
+          Color.fromRGBO(75, 135, 185, 0.9)),
+      SalesData('Inventory', [21, 23, 24, 25, 26, 27, 28, 30, 34, 36, 38], null,
+          Color.fromRGBO(75, 135, 185, 0.9)),
+      SalesData('Sales', [27, 26, 28, 29, 29, 29, 32, 35, 32, 38, 53], null,
+          Color.fromRGBO(75, 135, 185, 0.9)),
+      SalesData('R&D', [26, 27, 29, 32, 34, 35, 36, 37, 38, 39, 41, 43, 58],
+          null, Color.fromRGBO(75, 135, 185, 0.9)),
+      SalesData('Graphics', [26, 28, 29, 30, 32, 33, 35, 36, 52], null,
+          Color.fromRGBO(75, 135, 185, 0.9)),
+    ];
     return <BoxAndWhiskerSeries<SalesData, dynamic>>[
       BoxAndWhiskerSeries<SalesData, dynamic>(
         name: 'Department',
-        dataSource: <SalesData>[
-          SalesData(
-              'Development',
-              <int>[
-                22,
-                22,
-                23,
-                25,
-                25,
-                25,
-                26,
-                27,
-                27,
-                28,
-                28,
-                29,
-                30,
-                32,
-                34,
-                32,
-                34,
-                36,
-                35,
-                38
-              ],
-              null,
-              const Color.fromRGBO(75, 135, 185, 0.9)),
-          SalesData(
-              'HR',
-              <int>[22, 24, 25, 30, 32, 34, 36, 38, 39, 41, 35, 36, 40, 56],
-              null,
-              const Color.fromRGBO(75, 135, 185, 0.9)),
-          SalesData(
-              'Finance  ',
-              <int>[26, 27, 28, 30, 32, 34, 35, 37, 35, 37, 45],
-              null,
-              const Color.fromRGBO(75, 135, 185, 0.9)),
-          SalesData(
-              'Inventory',
-              <int>[21, 23, 24, 25, 26, 27, 28, 30, 34, 36, 38],
-              null,
-              const Color.fromRGBO(75, 135, 185, 0.9)),
-          SalesData('Sales', <int>[27, 26, 28, 29, 29, 29, 32, 35, 32, 38, 53],
-              null, const Color.fromRGBO(75, 135, 185, 0.9)),
-          SalesData(
-              'R&D',
-              <int>[26, 27, 29, 32, 34, 35, 36, 37, 38, 39, 41, 43, 58],
-              null,
-              const Color.fromRGBO(75, 135, 185, 0.9)),
-          SalesData('Graphics', <int>[26, 28, 29, 30, 32, 33, 35, 36, 52], null,
-              const Color.fromRGBO(75, 135, 185, 0.9)),
-        ],
+        dataSource: chartData,
         showMean: _mean,
-        boxPlotMode: _boxMode!,
-        borderColor: model.themeData.colorScheme.brightness == Brightness.dark
+        boxPlotMode: _boxMode,
+        borderColor: model.themeData.brightness == Brightness.dark
             ? Colors.white
             : Colors.black,
         xValueMapper: (SalesData sales, _) => sales.x,
@@ -184,7 +177,6 @@ class _BoxWhiskerState extends SampleViewState {
     _selectMode = 'normal';
     _mean = true;
     _boxMode = BoxPlotMode.normal;
-    _modeType = <String>['normal', 'exclusive', 'inclusive'].toList();
     _tooltipBehavior = TooltipBehavior(enable: true);
     super.initState();
   }
@@ -200,11 +192,5 @@ class _BoxWhiskerState extends SampleViewState {
         _boxMode = BoxPlotMode.exclusive;
       }
     });
-  }
-
-  @override
-  void dispose() {
-    _modeType!.clear();
-    super.dispose();
   }
 }

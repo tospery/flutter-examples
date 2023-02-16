@@ -30,7 +30,7 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
   void initState() {
     super.initState();
     if (mounted) {
-      _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer _timer) {
         setState(() {
           if (progressValue == 100) {
             progressValue = 0;
@@ -52,13 +52,14 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             getFilledTrackStyle(),
-            const Center(child: Text('Filled track')),
+            Center(child: Text('Filled track')),
             getFilledProgressStyle(),
-            const Center(child: Text('Filled progress')),
+            Center(child: Text('Filled progress')),
             getGradientProgressStyle(),
-            const Center(child: Text('Gradient track'))
+            Center(child: Text('Gradient track'))
           ],
         ),
       );
@@ -67,26 +68,30 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
       return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 getFilledTrackStyle(),
-                const Center(child: Text('Filled track')),
+                Center(child: Text('Filled track')),
               ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 getFilledProgressStyle(),
-                const Center(child: Text('Filled progress')),
+                Center(child: Text('Filled progress')),
               ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
                 getGradientProgressStyle(),
-                const Center(child: Text('Gradient track'))
+                Center(child: Text('Gradient track'))
               ],
             ),
           ],
@@ -103,19 +108,21 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
 
   /// Returns filled track style circular progress bar.
   Widget getFilledTrackStyle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
           RadialAxis(
+              minimum: 0,
+              maximum: 100,
               showLabels: false,
               showTicks: false,
               startAngle: 270,
               endAngle: 270,
               radiusFactor: model.isWebFullView ? 0.7 : 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 1,
-                color: Color.fromARGB(255, 0, 169, 181),
+                color: const Color.fromARGB(255, 0, 169, 181),
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
               pointers: <GaugePointer>[
@@ -143,19 +150,21 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
 
   /// Returns filled progress style circular progress bar.
   Widget getFilledProgressStyle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
           RadialAxis(
+            minimum: 0,
+            maximum: 100,
             showLabels: false,
             showTicks: false,
             startAngle: 270,
             endAngle: 270,
             radiusFactor: model.isWebFullView ? 0.7 : 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.05,
-              color: Color.fromARGB(100, 0, 169, 181),
+              color: const Color.fromARGB(100, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -175,7 +184,7 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget getGradientProgressStyle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -185,9 +194,9 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: model.isWebFullView ? 0.7 : 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.2,
-                color: Color.fromARGB(30, 0, 169, 181),
+                color: const Color.fromARGB(30, 0, 169, 181),
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
               pointers: <GaugePointer>[
@@ -198,7 +207,7 @@ class _ProgressBarDeterminateStyleState extends SampleViewState {
                     enableAnimation: true,
                     animationDuration: 75,
                     animationType: AnimationType.linear,
-                    gradient: const SweepGradient(
+                    gradient: SweepGradient(
                         colors: <Color>[Color(0xFFa4edeb), Color(0xFF00a9b5)],
                         stops: <double>[0.25, 0.75])),
               ],

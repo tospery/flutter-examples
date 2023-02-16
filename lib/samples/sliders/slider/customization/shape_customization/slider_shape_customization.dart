@@ -1,8 +1,10 @@
+///Dart import
+import 'dart:ui';
+
 ///flutter package import
 import 'package:flutter/material.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -11,7 +13,7 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 ///Local imports
 import '../../../../../model/sample_view.dart';
 import '../../../slider_utils.dart';
-import 'slider_divider_customization.dart';
+import 'slider_divisor_customization.dart';
 import 'slider_thumb_customization.dart';
 import 'slider_tick_customization.dart';
 
@@ -27,12 +29,39 @@ class ShapeCustomizedSliderPage extends SampleView {
 
 class _ShapeCustomizedSliderPageState extends SampleViewState {
   _ShapeCustomizedSliderPageState();
-  final GlobalKey dividerKey = GlobalKey();
-  final GlobalKey thumbKey = GlobalKey();
-  final GlobalKey tickKey = GlobalKey();
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _ShapeCustomizedSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(
+                height: 500,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 50),
+                  child: Container(child: slider),
+                )));
+  }
+}
+
+class _ShapeCustomizedSlider extends SampleView {
+  @override
+  _ShapeCustomizedSliderState createState() => _ShapeCustomizedSliderState();
+}
+
+class _ShapeCustomizedSliderState extends SampleViewState {
+  _ShapeCustomizedSliderState();
+  double _value = 60.0;
   final double _min = 0.0;
   final double _max = 100.0;
-  double _value = 60.0;
 
   Widget _buildWebLayout() {
     return Container(
@@ -68,48 +97,35 @@ class _ShapeCustomizedSliderPageState extends SampleViewState {
                     thumbShape: _SfThumbShape(_min, _max),
                     onChanged: (dynamic value) {
                       setState(() {
-                        _value = value as double;
+                        _value = value;
                       });
                     },
                   )),
               columnSpacing40,
-              title('Divider'),
-              DividerCustomizedSlider(dividerKey),
+              title('Divisor'),
+              DivisorCustomizedSlider(),
               columnSpacing40,
-              ThumbCustomizedSlider(thumbKey),
+              ThumbCustomizedSlider(),
               title('Tick'),
               columnSpacing10,
-              TickCustomizedSlider(tickKey),
+              TickCustomizedSlider(),
             ]));
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 400
-          ? slider
-          : SingleChildScrollView(
-              child: SizedBox(
-              height: 500,
-              child: Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 50),
-                  child: slider),
-            ));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }
 
 class _SfTrackShape extends SfTrackShape {
   _SfTrackShape(dynamic min, dynamic max) {
-    this.min = (min.runtimeType == DateTime
+    this.min = min.runtimeType == DateTime
         ? min.millisecondsSinceEpoch.toDouble()
-        : min) as double;
-    this.max = (max.runtimeType == DateTime
+        : min;
+    this.max = max.runtimeType == DateTime
         ? max.millisecondsSinceEpoch.toDouble()
-        : max) as double;
+        : max;
   }
 
   late double min;
@@ -128,9 +144,9 @@ class _SfTrackShape extends SfTrackShape {
       required Paint? activePaint,
       required TextDirection textDirection}) {
     final Rect trackRect = getPreferredRect(parentBox, themeData, offset);
-    final double actualValue = (currentValue.runtimeType == DateTime
+    final double actualValue = currentValue.runtimeType == DateTime
         ? currentValue.millisecondsSinceEpoch.toDouble()
-        : currentValue) as double;
+        : currentValue;
     final double actualValueInPercent =
         ((actualValue - min) * 100) / (max - min);
     trackIntermediatePos = _getTrackIntermediatePosition(trackRect);
@@ -166,12 +182,12 @@ class _SfTrackShape extends SfTrackShape {
 
 class _SfThumbShape extends SfThumbShape {
   _SfThumbShape(dynamic min, dynamic max) {
-    this.min = (min.runtimeType == DateTime
+    this.min = min.runtimeType == DateTime
         ? min.millisecondsSinceEpoch.toDouble()
-        : min) as double;
-    this.max = (max.runtimeType == DateTime
+        : min;
+    this.max = max.runtimeType == DateTime
         ? max.millisecondsSinceEpoch.toDouble()
-        : max) as double;
+        : max;
   }
 
   late double min;
@@ -188,9 +204,9 @@ class _SfThumbShape extends SfThumbShape {
       required Animation<double> enableAnimation,
       required TextDirection textDirection,
       required SfThumb? thumb}) {
-    final double actualValue = (currentValue.runtimeType == DateTime
+    final double actualValue = currentValue.runtimeType == DateTime
         ? currentValue.millisecondsSinceEpoch.toDouble()
-        : currentValue) as double;
+        : currentValue;
 
     final double actualValueInPercent =
         ((actualValue - min) * 100) / (max - min);

@@ -1,11 +1,12 @@
 ///Flutter package imports
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Map import
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:syncfusion_flutter_maps/maps.dart';
 
 ///Local import
@@ -71,40 +72,45 @@ class _MapBubblePageState extends SampleViewState
   void initState() {
     super.initState();
 
-    _isLightTheme = model.themeData.colorScheme.brightness == Brightness.light;
+    _isLightTheme = model.themeData.brightness == Brightness.light;
 
     _facebookController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
-        lowerBound: 0.6);
+        lowerBound: 0.6,
+        upperBound: 1.0);
     _facebookAnimation =
         CurvedAnimation(parent: _facebookController, curve: Curves.easeInOut);
 
     _twitterController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
-        lowerBound: 0.6);
+        lowerBound: 0.6,
+        upperBound: 1.0);
     _twitterAnimation =
         CurvedAnimation(parent: _twitterController, curve: Curves.easeInOut);
 
     _instagramController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
-        lowerBound: 0.6);
+        lowerBound: 0.6,
+        upperBound: 1.0);
     _instagramAnimation =
         CurvedAnimation(parent: _instagramController, curve: Curves.easeInOut);
 
     _tiktokController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
-        lowerBound: 0.6);
+        lowerBound: 0.6,
+        upperBound: 1.0);
     _tiktokAnimation =
         CurvedAnimation(parent: _tiktokController, curve: Curves.easeInOut);
 
     _snapchatController = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
-        lowerBound: 0.6);
+        lowerBound: 0.6,
+        upperBound: 1.0);
     _snapchatAnimation =
         CurvedAnimation(parent: _snapchatController, curve: Curves.easeInOut);
 
@@ -305,33 +311,19 @@ class _MapBubblePageState extends SampleViewState
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final bool scrollEnabled = constraints.maxHeight > 400;
-      double height = scrollEnabled ? constraints.maxHeight : 400;
-      if (model.isWebFullView ||
-          (model.isMobile &&
-              MediaQuery.of(context).orientation == Orientation.landscape)) {
-        final double refHeight = height * 0.6;
-        height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
-      }
-      return Center(
-        child: SingleChildScrollView(
-          child: SizedBox(
-            width: constraints.maxWidth,
-            height: height,
-            child: _buildMapsWidget(scrollEnabled),
-          ),
-        ),
-      );
-    });
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? _buildMapsWidget()
+        : SingleChildScrollView(
+            child: Container(height: 400, child: _buildMapsWidget()));
   }
 
-  Widget _buildMapsWidget(bool scrollEnabled) {
+  Widget _buildMapsWidget() {
     return Stack(
       children: <Widget>[
         Padding(
-          padding: scrollEnabled
+          padding: MediaQuery.of(context).orientation == Orientation.portrait ||
+                  model.isWebFullView
               ? EdgeInsets.only(
                   top: MediaQuery.of(context).size.height * 0.05,
                   bottom: MediaQuery.of(context).size.height * 0.15,
@@ -345,21 +337,22 @@ class _MapBubblePageState extends SampleViewState
                 bubbleHoverStrokeColor: _bubbleColor,
                 bubbleHoverStrokeWidth: 1.5,
               ),
-              child: Column(children: <Widget>[
+              child: Column(children: [
                 Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 30),
+                    padding: EdgeInsets.only(top: 15, bottom: 30),
                     child: Align(
+                        alignment: Alignment.center,
                         child: Text('Social Media Users Statistics',
-                            style: Theme.of(context).textTheme.titleMedium))),
+                            style: Theme.of(context).textTheme.subtitle1))),
                 Expanded(
                   child: SfMaps(
                     layers: <MapLayer>[
                       MapShapeLayer(
                         loadingBuilder: (BuildContext context) {
-                          return const SizedBox(
+                          return Container(
                             height: 25,
                             width: 25,
-                            child: CircularProgressIndicator(
+                            child: const CircularProgressIndicator(
                               strokeWidth: 3,
                             ),
                           );
@@ -376,7 +369,7 @@ class _MapBubblePageState extends SampleViewState
                             child: Text(_getCustomizedString(index),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodySmall!
+                                    .caption!
                                     .copyWith(color: _tooltipTextColor)),
                           );
                         },
@@ -384,6 +377,7 @@ class _MapBubblePageState extends SampleViewState
                             strokeColor: _bubbleStrokeColor,
                             strokeWidth: 0.5,
                             color: _bubbleColor,
+                            minRadius: 10,
                             maxRadius: 40),
                         tooltipSettings: MapTooltipSettings(
                             color: _tooltipColor,

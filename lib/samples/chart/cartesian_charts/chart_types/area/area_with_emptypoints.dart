@@ -20,9 +20,7 @@ class AreaEmpty extends SampleView {
 /// State class for the area with empty point chart.
 class _AreaEmptyState extends SampleViewState {
   _AreaEmptyState();
-
-  TooltipBehavior? _tooltipBehavior;
-
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
@@ -41,7 +39,7 @@ class _AreaEmptyState extends SampleViewState {
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: isCardView ? '' : 'Inflation rate of US'),
       primaryXAxis: NumericAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         interval: 1,
       ),
       primaryYAxis: NumericAxis(
@@ -49,8 +47,8 @@ class _AreaEmptyState extends SampleViewState {
           maximum: 500000000,
           title: AxisTitle(text: isCardView ? '' : 'Rates'),
           numberFormat: NumberFormat.compact(),
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getEmptyPointAreaSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -59,23 +57,24 @@ class _AreaEmptyState extends SampleViewState {
   /// Returns the list of chart series
   /// which need to render on the emptypoints area chart.
   List<AreaSeries<ChartSampleData, num>> _getEmptyPointAreaSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 2002, y: 220000000),
+      ChartSampleData(x: 2003, y: 340000000),
+      ChartSampleData(x: 2004, y: 280000000),
+
+      /// Data for empty point.
+      ChartSampleData(x: 2005, y: null),
+      ChartSampleData(x: 2006, y: null),
+      ChartSampleData(x: 2007, y: 250000000),
+      ChartSampleData(x: 2008, y: 290000000),
+      ChartSampleData(x: 2009, y: 380000000),
+      ChartSampleData(x: 2010, y: 140000000),
+      ChartSampleData(x: 2011, y: 310000000),
+    ];
     return <AreaSeries<ChartSampleData, num>>[
       AreaSeries<ChartSampleData, num>(
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: 2002, y: 220000000),
-            ChartSampleData(x: 2003, y: 340000000),
-            ChartSampleData(x: 2004, y: 280000000),
-
-            /// Data for empty point.
-            ChartSampleData(x: 2005),
-            ChartSampleData(x: 2006),
-            ChartSampleData(x: 2007, y: 250000000),
-            ChartSampleData(x: 2008, y: 290000000),
-            ChartSampleData(x: 2009, y: 380000000),
-            ChartSampleData(x: 2010, y: 140000000),
-            ChartSampleData(x: 2011, y: 310000000),
-          ],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y),
     ];
   }

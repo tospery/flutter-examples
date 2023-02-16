@@ -1,6 +1,6 @@
 /// Package imports
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -23,8 +23,8 @@ class ATRIndicator extends SampleView {
 class _ATRIndicatorState extends SampleViewState {
   _ATRIndicatorState();
   late double _period;
-  TrackballBehavior? _trackballBehavior;
-  TooltipBehavior? _tooltipBehavior;
+  late TrackballBehavior _trackballBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
@@ -46,6 +46,8 @@ class _ATRIndicatorState extends SampleViewState {
   @override
   Widget buildSettings(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Text(
           'Period',
@@ -70,26 +72,27 @@ class _ATRIndicatorState extends SampleViewState {
 
   /// Returns the OHLC Ohart with Average true range indicator.
   SfCartesianChart _buildDefaultATRIndicator() {
+    final List<ChartSampleData> chartData = getChartData();
     return SfCartesianChart(
       legend: Legend(isVisible: !isCardView),
       plotAreaBorderWidth: 0,
       primaryXAxis: DateTimeAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         dateFormat: DateFormat.MMM(),
         interval: 3,
-        minimum: DateTime(2016),
-        maximum: DateTime(2017),
+        minimum: DateTime(2016, 01, 01),
+        maximum: DateTime(2017, 01, 01),
       ),
       primaryYAxis: NumericAxis(
           minimum: 70,
           maximum: 130,
           interval: 20,
-          labelFormat: r'${value}',
-          axisLine: const AxisLine(width: 0)),
+          labelFormat: '\${value}',
+          axisLine: AxisLine(width: 0)),
       axes: <ChartAxis>[
         NumericAxis(
-            axisLine: const AxisLine(width: 0),
-            majorGridLines: const MajorGridLines(width: 0),
+            axisLine: AxisLine(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
             opposedPosition: true,
             name: 'yaxes',
             minimum: 2,
@@ -107,9 +110,9 @@ class _ATRIndicatorState extends SampleViewState {
       series: <ChartSeries<ChartSampleData, DateTime>>[
         HiloOpenCloseSeries<ChartSampleData, DateTime>(
           emptyPointSettings: EmptyPointSettings(mode: EmptyPointMode.zero),
-          dataSource: getChartData(),
+          dataSource: chartData,
           opacity: 0.7,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           lowValueMapper: (ChartSampleData sales, _) => sales.low,
           highValueMapper: (ChartSampleData sales, _) => sales.high,
           openValueMapper: (ChartSampleData sales, _) => sales.open,

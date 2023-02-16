@@ -25,7 +25,7 @@ class _StepsCounterState extends SampleViewState {
 
   @override
   void didChangeDependencies() {
-    precacheImage(const AssetImage('images/person_walking.png'), context);
+    precacheImage(AssetImage('images/person_walking.png'), context);
     super.didChangeDependencies();
   }
 
@@ -43,20 +43,21 @@ class _StepsCounterState extends SampleViewState {
 
   /// Returns the steps counter.
   Widget _buildStepsCounter(BuildContext context) {
-    final Brightness brightness = Theme.of(context).brightness;
+    final Brightness _brightness = Theme.of(context).brightness;
 
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
+        children: [
+          Container(
             width: isWebOrDesktop
                 ? MediaQuery.of(context).size.width >= 550
                     ? 450
                     : MediaQuery.of(context).size.width * 0.68
                 : MediaQuery.of(context).size.width * 0.68,
             child: SfLinearGauge(
+              minimum: 0.0,
               maximum: 12000.0,
               interval: 12000.0,
               animateAxis: true,
@@ -64,19 +65,19 @@ class _StepsCounterState extends SampleViewState {
               axisTrackStyle: LinearAxisTrackStyle(
                 thickness: 32,
                 borderWidth: 1,
-                borderColor: brightness == Brightness.dark
-                    ? const Color(0xff898989)
+                borderColor: _brightness == Brightness.dark
+                    ? Color(0xff898989)
                     : Colors.grey[350],
-                color: brightness == Brightness.light
-                    ? const Color(0xffE8EAEB)
-                    : const Color(0xff62686A),
+                color: _brightness == Brightness.light
+                    ? Color(0xffE8EAEB)
+                    : Color(0xff62686A),
               ),
-              barPointers: <LinearBarPointer>[
+              barPointers: [
                 LinearBarPointer(
                     value: _pointerValue,
                     animationDuration: 3000,
                     thickness: 32,
-                    color: const Color(0xff0DC9AB)),
+                    color: Color(0xff0DC9AB)),
                 LinearBarPointer(
                     value: 12000,
                     enableAnimation: false,
@@ -86,21 +87,22 @@ class _StepsCounterState extends SampleViewState {
                         : 60,
                     color: Colors.transparent,
                     position: LinearElementPosition.outside,
-                    child: const Text('Sun, 7 February',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500))),
+                    child: Container(
+                        child: Text('Sun, 7 February',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w500)))),
               ],
-              markerPointers: <LinearMarkerPointer>[
+              markerPointers: [
                 LinearWidgetPointer(
                     value: _pointerValue,
                     animationDuration: 2800,
-                    onAnimationCompleted: () {
-                      setState(() {
-                        _image = 'images/person_walking.png';
-                      });
-                    },
+                    onAnimationCompleted: () => {
+                          setState(() {
+                            _image = 'images/person_walking.png';
+                          })
+                        },
                     position: LinearElementPosition.outside,
-                    child: SizedBox(
+                    child: Container(
                       width: 45,
                       height: 45,
                       child: Image.asset(
@@ -112,22 +114,21 @@ class _StepsCounterState extends SampleViewState {
             ),
           ),
           Container(
-            margin: const EdgeInsets.only(top: 65),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text(
-                    'STEPS',
-                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
-                  ),
-                  Text(
-                    _pointerValue.toStringAsFixed(0),
-                    style: const TextStyle(
-                        fontSize: 24,
-                        color: Color(0xff0DC9AB),
-                        fontWeight: FontWeight.bold),
-                  )
-                ]),
+            margin: EdgeInsets.only(top: 65),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                'STEPS',
+                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+              ),
+              Text(
+                _pointerValue.toStringAsFixed(0),
+                style: TextStyle(
+                    fontSize: 24,
+                    color: Color(0xff0DC9AB),
+                    fontWeight: FontWeight.bold),
+              )
+            ]),
           )
         ],
       ),

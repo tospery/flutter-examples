@@ -1,8 +1,8 @@
-/// Package import
-import 'package:flutter/material.dart';
-
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
+
+/// Package import
+import 'package:flutter/material.dart';
 
 /// Local imports
 import '../../../../../model/sample_view.dart';
@@ -19,19 +19,18 @@ class AreaAxisCrossingBaseValue extends SampleView {
 /// State class of the spline chart with axis crossing.
 class _AxisCrossingBaseValueState extends SampleViewState {
   _AxisCrossingBaseValueState();
-  List<String>? _axis;
+  final List<String> _axis = <String>['-2 (modified)', '0 (default)'].toList();
   //ignore: unused_field
-  late String _selectedAxisType;
+  late String _selectedAxisType = '-2 (modified)';
   late String _selectedAxis;
-  late double _crossAt;
-  TooltipBehavior? _tooltipBehavior;
+  double _crossAt = 0;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
     _selectedAxisType = '-2 (modified)';
     _selectedAxis = '-2 (modified)';
     _crossAt = -2;
-    _axis = <String>['-2 (modified)', '0 (default)'].toList();
     _tooltipBehavior =
         TooltipBehavior(enable: true, header: '', canShowMarker: false);
     super.initState();
@@ -55,13 +54,12 @@ class _AxisCrossingBaseValueState extends SampleViewState {
             height: 50,
             alignment: Alignment.bottomLeft,
             child: DropdownButton<String>(
-                focusColor: Colors.transparent,
-                underline: Container(color: const Color(0xFFBDBDBD), height: 1),
+                underline: Container(color: Color(0xFFBDBDBD), height: 1),
                 value: _selectedAxis,
-                items: _axis!.map((String value) {
+                items: _axis.map((String value) {
                   return DropdownMenuItem<String>(
                       value: (value != null) ? value : '-2 (modified)',
-                      child: Text(value,
+                      child: Text('$value',
                           style: TextStyle(color: model.textColor)));
                 }).toList(),
                 onChanged: (dynamic value) {
@@ -77,13 +75,13 @@ class _AxisCrossingBaseValueState extends SampleViewState {
   /// Returns the spline chart with axis crossing at provided axis value.
   SfCartesianChart _buildAxisCrossingBaseValueSample() {
     return SfCartesianChart(
-      margin: const EdgeInsets.fromLTRB(10, 10, 15, 10),
+      margin: EdgeInsets.fromLTRB(10, 10, 15, 10),
       plotAreaBorderWidth: 0,
       title: ChartTitle(
           text: isCardView ? '' : 'Population growth rate of countries'),
       primaryXAxis: CategoryAxis(
           labelPlacement: LabelPlacement.onTicks,
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           edgeLabelPlacement: model.isWebFullView
               ? EdgeLabelPlacement.shift
               : EdgeLabelPlacement.none,
@@ -93,10 +91,10 @@ class _AxisCrossingBaseValueState extends SampleViewState {
           crossesAt: _crossAt,
           placeLabelsNearAxisLine: false),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
+          axisLine: AxisLine(width: 0),
           minimum: -2,
           maximum: 3,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -106,24 +104,27 @@ class _AxisCrossingBaseValueState extends SampleViewState {
   /// the bar or column chart with axis crossing.
 
   List<ChartSeries<ChartSampleData, String>> _getSeries() {
-    return <ChartSeries<ChartSampleData, String>>[
+    List<ChartSeries<ChartSampleData, String>> chart;
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'Iceland', y: 1.13),
+      ChartSampleData(x: 'Algeria', y: 1.7),
+      ChartSampleData(x: 'Singapore', y: 1.82),
+      ChartSampleData(x: 'Malaysia', y: 1.37),
+      ChartSampleData(x: 'Moldova', y: -1.05),
+      ChartSampleData(x: 'American Samoa', y: -1.3),
+      ChartSampleData(x: 'Latvia', y: -1.1)
+    ];
+    chart = <ChartSeries<ChartSampleData, String>>[
       AreaSeries<ChartSampleData, String>(
           color: const Color.fromRGBO(75, 135, 185, 0.6),
           borderColor: const Color.fromRGBO(75, 135, 185, 1),
           borderWidth: 2,
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: 'Iceland', y: 1.13),
-            ChartSampleData(x: 'Algeria', y: 1.7),
-            ChartSampleData(x: 'Singapore', y: 1.82),
-            ChartSampleData(x: 'Malaysia', y: 1.37),
-            ChartSampleData(x: 'Moldova', y: -1.05),
-            ChartSampleData(x: 'American Samoa', y: -1.3),
-            ChartSampleData(x: 'Latvia', y: -1.1)
-          ],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
-          markerSettings: const MarkerSettings(isVisible: true)),
+          markerSettings: MarkerSettings(isVisible: true)),
     ];
+    return chart;
   }
 
   /// Method for updating the axis type on change.
@@ -139,11 +140,5 @@ class _AxisCrossingBaseValueState extends SampleViewState {
     setState(() {
       /// update the axis type changes
     });
-  }
-
-  @override
-  void dispose() {
-    _axis!.clear();
-    super.dispose();
   }
 }

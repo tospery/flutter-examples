@@ -1,7 +1,6 @@
 /// Package import
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// Chart import
@@ -22,11 +21,12 @@ class DoughnutGradient extends SampleView {
 /// State class of pie series.
 class _DoughnutGradientState extends SampleViewState {
   _DoughnutGradientState();
+  late List<Color> colors;
+
+  late List<double> stops;
   late String _shaderType;
-  List<Color>? colors;
-  List<double>? stops;
-  List<String>? _shader;
-  List<double>? customStops;
+  late List<String> _shader;
+  late List<double> customStops;
 
   @override
   void initState() {
@@ -43,38 +43,32 @@ class _DoughnutGradientState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(model.isWebFullView ? 'Gradient \nmode' : 'Gradient mode',
-                  softWrap: false,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: model.textColor,
-                  )),
-              Container(
-                padding: EdgeInsets.only(left: 0.07 * screenWidth),
-                width: 0.5 * screenWidth,
-                alignment: Alignment.bottomLeft,
-                child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
-                    value: _shaderType,
-                    items: _shader!.map((String value) {
-                      return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'point',
-                          child: Text(value,
-                              style: TextStyle(color: model.textColor)));
-                    }).toList(),
-                    onChanged: (dynamic value) {
-                      setState(() {
-                        onShaderTyeChange(value);
-                        stateSetter(() {});
-                      });
-                    }),
-              )
-            ],
+          ListTile(
+            title: Text('Gradient mode',
+                style: TextStyle(
+                  color: model.textColor,
+                )),
+            trailing: Container(
+              padding: EdgeInsets.only(left: 0.07 * screenWidth),
+              width: 0.5 * screenWidth,
+              height: 50,
+              alignment: Alignment.bottomLeft,
+              child: DropdownButton<String>(
+                  underline: Container(color: Color(0xFFBDBDBD), height: 1),
+                  value: _shaderType,
+                  items: _shader.map((String value) {
+                    return DropdownMenuItem<String>(
+                        value: (value != null) ? value : 'point',
+                        child: Text('$value',
+                            style: TextStyle(color: model.textColor)));
+                  }).toList(),
+                  onChanged: (dynamic value) {
+                    setState(() {
+                      onShaderTyeChange(value);
+                      stateSetter(() {});
+                    });
+                  }),
+            ),
           ),
         ],
       );
@@ -103,23 +97,23 @@ class _DoughnutGradientState extends SampleViewState {
     return SfCircularChart(
       onCreateShader: (ChartShaderDetails chartShaderDetails) {
         if (chartShaderDetails.renderType == 'series') {
-          customStops = _calculateDoughnut(colors!, stops!,
+          customStops = _calculateDoughnut(colors, stops,
               chartShaderDetails.outerRect, chartShaderDetails.innerRect!);
         }
         if (_shaderType == 'linear') {
           return ui.Gradient.linear(chartShaderDetails.outerRect.topRight,
-              chartShaderDetails.outerRect.centerLeft, colors!, stops);
+              chartShaderDetails.outerRect.centerLeft, colors, stops);
         } else if (_shaderType == 'radial') {
           return ui.Gradient.radial(
               chartShaderDetails.outerRect.center,
               chartShaderDetails.outerRect.right -
                   chartShaderDetails.outerRect.center.dx,
-              colors!,
+              colors,
               customStops);
         } else {
           return ui.Gradient.sweep(
               chartShaderDetails.outerRect.center,
-              colors!,
+              colors,
               stops,
               TileMode.clamp,
               _degreeToRadian(0),
@@ -136,15 +130,15 @@ class _DoughnutGradientState extends SampleViewState {
 
   /// Returns the pie series.
   List<DoughnutSeries<ChartSampleData, String>> _getGradientDoughnutSeries() {
+    final List<ChartSampleData> pieData = <ChartSampleData>[
+      ChartSampleData(x: 'David', y: 14, text: '14%'),
+      ChartSampleData(x: 'Steve', y: 15, text: '15%'),
+      ChartSampleData(x: 'Jack', y: 30, text: '30%'),
+      ChartSampleData(x: 'Others', y: 41, text: '41%')
+    ];
     return <DoughnutSeries<ChartSampleData, String>>[
       DoughnutSeries<ChartSampleData, String>(
-          animationDuration: 0,
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: 'David', y: 14, text: '14%'),
-            ChartSampleData(x: 'Steve', y: 15, text: '15%'),
-            ChartSampleData(x: 'Jack', y: 30, text: '30%'),
-            ChartSampleData(x: 'Others', y: 41, text: '41%')
-          ],
+          dataSource: pieData,
           explodeAll: true,
           radius: isCardView ? '85%' : '63%',
           explodeOffset: '3%',
@@ -165,7 +159,7 @@ class _DoughnutGradientState extends SampleViewState {
               type: ConnectorType.curve,
             ),
           ),
-          xValueMapper: (ChartSampleData data, _) => data.x as String,
+          xValueMapper: (ChartSampleData data, _) => data.x,
           yValueMapper: (ChartSampleData data, _) => data.y,
           dataLabelMapper: (ChartSampleData data, _) => data.text),
     ];
@@ -195,20 +189,19 @@ class _DoughnutGradientState extends SampleViewState {
   // Convert degree to radian
   double _degreeToRadian(int deg) => deg * (3.141592653589793 / 180);
 
-  List<double> _calculateDoughnut(
+  dynamic _calculateDoughnut(
       List<Color> colors, List<double> stops, Rect outerRect, Rect innerRect) {
-    List<double> stopOffsets = <double>[];
-    final List<double> defaultStopOffsets = <double>[0.625, 0.75, 0.875, 1.0];
-    final num chartStart = innerRect.right;
-    final Offset chartCenter = outerRect.center;
-    final num chartend = outerRect.right;
+    final List<double> stopOffsets = <double>[];
+    final num _chartStart = innerRect.right;
+    final Offset _chartCenter = outerRect.center;
+    final num _chartend = outerRect.right;
     num diffCenterEnd;
     num diffStartEnd;
     num diffCenterStart;
     num centerStops;
-    diffCenterEnd = chartend - chartCenter.dx;
-    diffStartEnd = chartend - chartStart;
-    diffCenterStart = chartStart - chartCenter.dx;
+    diffCenterEnd = _chartend - _chartCenter.dx;
+    diffStartEnd = _chartend - _chartStart;
+    diffCenterStart = _chartStart - _chartCenter.dx;
     centerStops = diffCenterStart / diffCenterEnd;
     for (int i = 0; i < colors.length; i++) {
       if (i == 0) {
@@ -218,17 +211,6 @@ class _DoughnutGradientState extends SampleViewState {
             (diffStartEnd * (stops[i] - stops[i - 1])) / diffCenterEnd);
       }
     }
-    stopOffsets = listEquals(stopOffsets, defaultStopOffsets)
-        ? stopOffsets
-        : defaultStopOffsets;
     return stopOffsets;
-  }
-
-  @override
-  void dispose() {
-    stops!.clear();
-    _shader!.clear();
-    customStops!.clear();
-    super.dispose();
   }
 }

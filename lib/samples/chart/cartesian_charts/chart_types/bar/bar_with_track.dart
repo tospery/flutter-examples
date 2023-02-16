@@ -19,8 +19,7 @@ class BarTracker extends SampleView {
 /// State class of tracker bar chart.
 class _BarTrackerState extends SampleViewState {
   _BarTrackerState();
-
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
@@ -39,14 +38,14 @@ class _BarTrackerState extends SampleViewState {
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: isCardView ? '' : 'Working hours of employees'),
       primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           title: AxisTitle(text: isCardView ? '' : 'Hours'),
           minimum: 0,
           maximum: 8,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getTrackerBarSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -55,25 +54,26 @@ class _BarTrackerState extends SampleViewState {
   /// Returns the lsit of chart series
   /// which need to render on the bar chart with trackers.
   List<BarSeries<ChartSampleData, String>> _getTrackerBarSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'Mike', y: 7.5),
+      ChartSampleData(x: 'Chris', y: 7),
+      ChartSampleData(x: 'Helana', y: 6),
+      ChartSampleData(x: 'Tom', y: 5),
+      ChartSampleData(x: 'Federer', y: 7),
+      ChartSampleData(x: 'Hussain', y: 7),
+    ];
     return <BarSeries<ChartSampleData, String>>[
       BarSeries<ChartSampleData, String>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'Mike', y: 7.5),
-          ChartSampleData(x: 'Chris', y: 7),
-          ChartSampleData(x: 'Helana', y: 6),
-          ChartSampleData(x: 'Tom', y: 5),
-          ChartSampleData(x: 'Federer', y: 7),
-          ChartSampleData(x: 'Hussain', y: 7),
-        ],
+        dataSource: chartData,
         borderRadius: BorderRadius.circular(15),
         trackColor: const Color.fromRGBO(198, 201, 207, 1),
 
         /// If we enable this property as true,
         /// then we can show the track of series.
         isTrackVisible: true,
-        dataLabelSettings: const DataLabelSettings(
+        dataLabelSettings: DataLabelSettings(
             isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
       ),
     ];

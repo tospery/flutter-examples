@@ -18,8 +18,7 @@ class WaterFall extends SampleView {
 
 class _WaterFallState extends SampleViewState {
   _WaterFallState();
-  List<_ChartSampleData>? chartData;
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +28,17 @@ class _WaterFallState extends SampleViewState {
   /// Get the cartesian chart with histogram series
   SfCartesianChart _buildDefaultWaterfallChart() {
     return SfCartesianChart(
+      axisLabelFormatter: (AxisLabelRenderDetails details) {
+        return ChartAxisLabel(
+            details.axisName == 'Expenditure'
+                ? (details.value ~/ 1000).toString() + 'B'
+                : details.text,
+            null);
+      },
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: isCardView ? '' : 'Company revenue and profit'),
       primaryXAxis: CategoryAxis(
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           labelIntersectAction: isCardView
               ? AxisLabelIntersectAction.wrap
               : AxisLabelIntersectAction.rotate45),
@@ -41,12 +47,8 @@ class _WaterFallState extends SampleViewState {
           minimum: 0,
           maximum: 5000,
           interval: 1000,
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0),
-          axisLabelFormatter: (AxisLabelRenderDetails details) {
-            return ChartAxisLabel(
-                (details.value ~/ 1000).toString() + 'B', null);
-          }),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getWaterFallSeries(),
       tooltipBehavior: _tooltipBehavior,
       onTooltipRender: (TooltipArgs args) {
@@ -55,7 +57,7 @@ class _WaterFallState extends SampleViewState {
             (args.dataPoints![args.pointIndex!.toInt()].y / 1000).toString() +
             'B';
       },
-      onDataLabelRender: (DataLabelRenderArgs dataLabelArgs) {
+      onDataLabelRender: (dataLabelArgs) {
         if (dataLabelArgs.pointIndex == 0) {
           dataLabelArgs.text = '4.7B';
         } else if (dataLabelArgs.pointIndex == 1) {
@@ -79,60 +81,61 @@ class _WaterFallState extends SampleViewState {
 
   ///Get the histogram series
   List<WaterfallSeries<_ChartSampleData, dynamic>> _getWaterFallSeries() {
+    final List<_ChartSampleData> chartData = <_ChartSampleData>[
+      _ChartSampleData(
+          x: 'Income',
+          y: 4700,
+          intermediateSumPredicate: false,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Sales',
+          y: -1100,
+          intermediateSumPredicate: false,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Development',
+          y: -700,
+          intermediateSumPredicate: false,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Revenue',
+          y: 1200,
+          intermediateSumPredicate: false,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Balance',
+          intermediateSumPredicate: true,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Expense',
+          y: -400,
+          intermediateSumPredicate: false,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Tax',
+          y: -800,
+          intermediateSumPredicate: false,
+          totalSumPredicate: false),
+      _ChartSampleData(
+          x: 'Net Profit',
+          intermediateSumPredicate: false,
+          totalSumPredicate: true),
+    ];
     return <WaterfallSeries<_ChartSampleData, dynamic>>[
       WaterfallSeries<_ChartSampleData, dynamic>(
-          dataSource: <_ChartSampleData>[
-            _ChartSampleData(
-                x: 'Income',
-                y: 4700,
-                intermediateSumPredicate: false,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Sales',
-                y: -1100,
-                intermediateSumPredicate: false,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Development',
-                y: -700,
-                intermediateSumPredicate: false,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Revenue',
-                y: 1200,
-                intermediateSumPredicate: false,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Balance',
-                intermediateSumPredicate: true,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Expense',
-                y: -400,
-                intermediateSumPredicate: false,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Tax',
-                y: -800,
-                intermediateSumPredicate: false,
-                totalSumPredicate: false),
-            _ChartSampleData(
-                x: 'Net Profit',
-                intermediateSumPredicate: false,
-                totalSumPredicate: true),
-          ],
+          dataSource: chartData,
           xValueMapper: (_ChartSampleData sales, _) => sales.x,
           yValueMapper: (_ChartSampleData sales, _) => sales.y,
           intermediateSumPredicate: (_ChartSampleData sales, _) =>
               sales.intermediateSumPredicate,
           totalSumPredicate: (_ChartSampleData sales, _) =>
               sales.totalSumPredicate,
-          dataLabelSettings: const DataLabelSettings(
+          dataLabelSettings: DataLabelSettings(
               isVisible: true, labelAlignment: ChartDataLabelAlignment.middle),
-          color: const Color.fromRGBO(0, 189, 174, 1),
-          negativePointsColor: const Color.fromRGBO(229, 101, 144, 1),
-          intermediateSumColor: const Color.fromRGBO(79, 129, 188, 1),
-          totalSumColor: const Color.fromRGBO(79, 129, 188, 1))
+          color: Color.fromRGBO(0, 189, 174, 1),
+          negativePointsColor: Color.fromRGBO(229, 101, 144, 1),
+          intermediateSumColor: Color.fromRGBO(79, 129, 188, 1),
+          totalSumColor: Color.fromRGBO(79, 129, 188, 1))
     ];
   }
 

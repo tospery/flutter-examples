@@ -32,33 +32,33 @@ class _RadialEaseInCircExampleState extends SampleViewState {
         RadialAxis(
             radiusFactor: model.isWebFullView ? 0.85 : 0.95,
             showAxisLine: false,
-            showLastLabel: true,
             ticksPosition: ElementsPosition.outside,
             labelsPosition: ElementsPosition.outside,
             interval: 10,
-            axisLabelStyle: const GaugeTextStyle(),
-            majorTickStyle: const MajorTickStyle(
+            axisLabelStyle: GaugeTextStyle(fontSize: 12),
+            majorTickStyle: MajorTickStyle(
               length: 0.15,
               lengthUnit: GaugeSizeUnit.factor,
               thickness: 1,
             ),
             minorTicksPerInterval: 4,
-            minorTickStyle: const MinorTickStyle(
+            minorTickStyle: MinorTickStyle(
               length: 0.04,
               lengthUnit: GaugeSizeUnit.factor,
               thickness: 1,
             ),
-            pointers: const <GaugePointer>[
+            pointers: <GaugePointer>[
               RangePointer(
                   width: 15,
                   pointerOffset: 10,
                   value: 45,
-                  gradient: SweepGradient(
+                  animationDuration: 1000,
+                  gradient: const SweepGradient(
                       colors: <Color>[Color(0xFF3B3FF3), Color(0xFF46D0ED)],
                       stops: <double>[0.25, 0.75]),
                   animationType: AnimationType.easeInCirc,
                   enableAnimation: true,
-                  color: Color(0xFFF8B195))
+                  color: const Color(0xFFF8B195))
             ])
       ],
     );

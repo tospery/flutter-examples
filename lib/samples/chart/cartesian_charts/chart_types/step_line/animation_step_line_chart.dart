@@ -40,11 +40,10 @@ class _AnimationStepLineDefaultState extends SampleViewState {
   SfCartesianChart _buildAnimationStepLineChart() {
     return SfCartesianChart(
         plotAreaBorderWidth: 0,
-        primaryXAxis:
-            NumericAxis(majorGridLines: const MajorGridLines(width: 0)),
+        primaryXAxis: NumericAxis(majorGridLines: MajorGridLines(width: 0)),
         primaryYAxis: NumericAxis(
-            majorTickLines: const MajorTickLines(color: Colors.transparent),
-            axisLine: const AxisLine(width: 0),
+            majorTickLines: MajorTickLines(color: Colors.transparent),
+            axisLine: AxisLine(width: 0),
             minimum: 0,
             maximum: 100),
         series: _getDefaultStepLineSeries());
@@ -54,7 +53,7 @@ class _AnimationStepLineDefaultState extends SampleViewState {
   List<StepLineSeries<_ChartData, num>> _getDefaultStepLineSeries() {
     return <StepLineSeries<_ChartData, num>>[
       StepLineSeries<_ChartData, num>(
-          dataSource: _chartData!,
+          dataSource: _chartData,
           xValueMapper: (_ChartData sales, _) => sales.x,
           yValueMapper: (_ChartData sales, _) => sales.y)
     ];
@@ -64,7 +63,6 @@ class _AnimationStepLineDefaultState extends SampleViewState {
   void dispose() {
     super.dispose();
     timer?.cancel();
-    _chartData!.clear();
   }
 
   int _getRandomInt(int min, int max) {
@@ -75,14 +73,14 @@ class _AnimationStepLineDefaultState extends SampleViewState {
   void _getChartData() {
     _chartData = <_ChartData>[];
     for (int i = 0; i <= 10; i++) {
-      _chartData!.add(_ChartData(i, _getRandomInt(5, 95)));
+      _chartData.add(_ChartData(i, _getRandomInt(5, 95)));
     }
-    _chartData![10] = _ChartData(10, _chartData![9].y);
+    _chartData[10] = _ChartData(10, _chartData[9].y);
     timer?.cancel();
   }
 }
 
-List<_ChartData>? _chartData;
+late List<_ChartData> _chartData;
 
 class _ChartData {
   _ChartData(this.x, this.y);

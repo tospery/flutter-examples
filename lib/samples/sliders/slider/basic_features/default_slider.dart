@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -25,12 +23,38 @@ class DefaultSliderPage extends SampleView {
 
 class _DefaultSliderPageState extends SampleViewState {
   _DefaultSliderPageState();
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _DefaultSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 300, child: slider),
+          );
+  }
+}
+
+class _DefaultSlider extends SampleView {
+  @override
+  _DefaultSliderState createState() => _DefaultSliderState();
+}
+
+class _DefaultSliderState extends SampleViewState {
   final double _inactiveSliderValue = 50.0;
-  double _activeSliderValue = 50;
+  double _activeSliderValue = 50.0;
 
   SfSlider _inactiveSlider() {
     //ignore: missing_required_param
     return SfSlider(
+      min: 0.0,
       max: 100.0,
       value: _inactiveSliderValue,
       onChanged: null,
@@ -41,10 +65,11 @@ class _DefaultSliderPageState extends SampleViewState {
     return SfSliderTheme(
         data: SfSliderThemeData(tooltipBackgroundColor: model.backgroundColor),
         child: SfSlider(
+          min: 0.0,
           max: 100.0,
           onChanged: (dynamic values) {
             setState(() {
-              _activeSliderValue = values as double;
+              _activeSliderValue = values;
             });
           },
           value: _activeSliderValue,
@@ -82,13 +107,6 @@ class _DefaultSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 300
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 300, child: slider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

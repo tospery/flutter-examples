@@ -20,17 +20,16 @@ class SplineTypes extends SampleView {
 class _SplineTypesState extends SampleViewState {
   _SplineTypesState();
 
-  List<String>? _splineList;
+  final List<String> _splineList =
+      <String>['natural', 'monotonic', 'cardinal', 'clamped'].toList();
   late String _selectedSplineType;
-  SplineType? _spline;
-  TooltipBehavior? _tooltipBehavior;
+  late SplineType _spline;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
     _selectedSplineType = 'natural';
     _spline = SplineType.natural;
-    _splineList =
-        <String>['natural', 'monotonic', 'cardinal', 'clamped'].toList();
     _tooltipBehavior =
         TooltipBehavior(enable: true, header: '', canShowMarker: false);
     super.initState();
@@ -57,13 +56,12 @@ class _SplineTypesState extends SampleViewState {
             height: 50,
             alignment: Alignment.bottomLeft,
             child: DropdownButton<String>(
-                focusColor: Colors.transparent,
-                underline: Container(color: const Color(0xFFBDBDBD), height: 1),
+                underline: Container(color: Color(0xFFBDBDBD), height: 1),
                 value: _selectedSplineType,
-                items: _splineList!.map((String value) {
+                items: _splineList.map((String value) {
                   return DropdownMenuItem<String>(
                       value: (value != null) ? value : 'natural',
-                      child: Text(value,
+                      child: Text('$value',
                           style: TextStyle(color: model.textColor)));
                 }).toList(),
                 onChanged: (dynamic value) {
@@ -82,7 +80,7 @@ class _SplineTypesState extends SampleViewState {
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: isCardView ? '' : 'Export growth of Brazil'),
       primaryXAxis: NumericAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         interval: 1,
       ),
       primaryYAxis: NumericAxis(
@@ -90,7 +88,7 @@ class _SplineTypesState extends SampleViewState {
           minimum: -0.1,
           maximum: 0.2,
           interval: 0.1,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getSplineTypesSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -98,34 +96,35 @@ class _SplineTypesState extends SampleViewState {
 
   /// Returns the list of chart series which need to render on the spline chart.
   List<SplineSeries<_ChartData, num>> _getSplineTypesSeries() {
+    final List<_ChartData> chartData = <_ChartData>[
+      _ChartData(2011, 0.05),
+      _ChartData(2011.25, 0),
+      _ChartData(2011.50, 0.03),
+      _ChartData(2011.75, 0),
+      _ChartData(2012, 0.04),
+      _ChartData(2012.25, 0.02),
+      _ChartData(2012.50, -0.01),
+      _ChartData(2012.75, 0.01),
+      _ChartData(2013, -0.08),
+      _ChartData(2013.25, -0.02),
+      _ChartData(2013.50, 0.03),
+      _ChartData(2013.75, 0.05),
+      _ChartData(2014, 0.04),
+      _ChartData(2014.25, 0.02),
+      _ChartData(2014.50, 0.04),
+      _ChartData(2014.75, 0),
+      _ChartData(2015, 0.02),
+      _ChartData(2015.25, 0.10),
+      _ChartData(2015.50, 0.09),
+      _ChartData(2015.75, 0.11),
+      _ChartData(2016, 0.12),
+    ];
     return <SplineSeries<_ChartData, num>>[
       SplineSeries<_ChartData, num>(
 
           /// To set the spline type here.
           splineType: _spline,
-          dataSource: <_ChartData>[
-            _ChartData(2011, 0.05),
-            _ChartData(2011.25, 0),
-            _ChartData(2011.50, 0.03),
-            _ChartData(2011.75, 0),
-            _ChartData(2012, 0.04),
-            _ChartData(2012.25, 0.02),
-            _ChartData(2012.50, -0.01),
-            _ChartData(2012.75, 0.01),
-            _ChartData(2013, -0.08),
-            _ChartData(2013.25, -0.02),
-            _ChartData(2013.50, 0.03),
-            _ChartData(2013.75, 0.05),
-            _ChartData(2014, 0.04),
-            _ChartData(2014.25, 0.02),
-            _ChartData(2014.50, 0.04),
-            _ChartData(2014.75, 0),
-            _ChartData(2015, 0.02),
-            _ChartData(2015.25, 0.10),
-            _ChartData(2015.50, 0.09),
-            _ChartData(2015.75, 0.11),
-            _ChartData(2016, 0.12),
-          ],
+          dataSource: chartData,
           xValueMapper: (_ChartData sales, _) => sales.x,
           yValueMapper: (_ChartData sales, _) => sales.y,
           width: 2)
@@ -150,12 +149,6 @@ class _SplineTypesState extends SampleViewState {
     setState(() {
       /// update the spline type changes
     });
-  }
-
-  @override
-  void dispose() {
-    _splineList!.clear();
-    super.dispose();
   }
 }
 

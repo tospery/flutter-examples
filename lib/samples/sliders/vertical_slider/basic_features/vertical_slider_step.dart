@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -24,27 +22,52 @@ class VerticalStepSliderPage extends SampleView {
 
 class _VerticalStepSliderPageState extends SampleViewState {
   _VerticalStepSliderPageState();
-  DateTime _yearValue = DateTime(2014);
+
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _StepSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: slider),
+          );
+  }
+}
+
+class _StepSlider extends SampleView {
+  @override
+  _StepSliderState createState() => _StepSliderState();
+}
+
+class _StepSliderState extends SampleViewState {
+  DateTime _yearValue = DateTime(2015, 1, 01);
   double _stepSliderValue = 0;
-  bool _isInversed = false;
 
   SfSliderTheme _sliderWithStepDurationCustomization() {
     return SfSliderTheme(
         data: SfSliderThemeData(tooltipBackgroundColor: model.backgroundColor),
         child: SfSlider.vertical(
-          min: DateTime(2010),
-          max: DateTime(2018),
+          min: DateTime(2010, 01, 01),
+          max: DateTime(2020, 01, 01),
           showLabels: true,
           interval: 2,
-          isInversed: _isInversed,
           stepDuration: const SliderStepDuration(years: 2),
           dateFormat: DateFormat.y(),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.years,
           showTicks: true,
           value: _yearValue,
           onChanged: (dynamic values) {
             setState(() {
-              _yearValue = values as DateTime;
+              _yearValue = values;
             });
           },
           enableTooltip: true,
@@ -65,11 +88,10 @@ class _VerticalStepSliderPageState extends SampleViewState {
             max: 10.0,
             stepSize: 5,
             showTicks: true,
-            isInversed: _isInversed,
             value: _stepSliderValue,
             onChanged: (dynamic values) {
               setState(() {
-                _stepSliderValue = values as double;
+                _stepSliderValue = values;
               });
             },
             enableTooltip: true));
@@ -92,13 +114,13 @@ class _VerticalStepSliderPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _sliderWithStepCustomization()),
-              const Text('Numeric')
+              Text('Numeric')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _sliderWithStepDurationCustomization()),
-              const Text('DateTime')
+              Text('DateTime')
             ]),
           ],
         ));
@@ -106,33 +128,6 @@ class _VerticalStepSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 400, child: slider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: _isInversed,
-          title: const Text('Inversed', softWrap: false),
-          contentPadding: EdgeInsets.zero,
-          activeColor: model.backgroundColor,
-          onChanged: (bool? value) {
-            setState(() {
-              _isInversed = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

@@ -1,7 +1,6 @@
 ///Package imports
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 ///Chart import
@@ -33,7 +32,7 @@ class _RangeSelectorSelectionPageState extends SampleViewState
     with SingleTickerProviderStateMixin {
   _RangeSelectorSelectionPageState();
 
-  final DateTime min = DateTime(2019, 04), max = DateTime(2019, 04, 30, 24);
+  final DateTime min = DateTime(2019, 04, 01), max = DateTime(2019, 04, 30, 24);
   late RangeController rangeController;
   late TextEditingController textController;
   late List<_ChartData> data;
@@ -49,7 +48,7 @@ class _RangeSelectorSelectionPageState extends SampleViewState
       end: DateTime(2019, 04, 15),
     );
     data = <_ChartData>[
-      _ChartData(DateTime(2019, 04), 0.2),
+      _ChartData(DateTime(2019, 04, 01), 0.2),
       _ChartData(DateTime(2019, 04, 02), 0.3),
       _ChartData(DateTime(2019, 04, 03), 0.4),
       _ChartData(DateTime(2019, 04, 04), 0.6),
@@ -85,9 +84,6 @@ class _RangeSelectorSelectionPageState extends SampleViewState
   @override
   void dispose() {
     textController.dispose();
-    rangeController.dispose();
-    data.clear();
-    selectedItems.clear();
     super.dispose();
   }
 
@@ -122,8 +118,8 @@ class _RangeSelectorSelectionPageState extends SampleViewState
     }
 
     return Container(
-      margin: EdgeInsets.zero,
-      padding: EdgeInsets.zero,
+      margin: const EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       child: Stack(
         children: <Widget>[
           Container(
@@ -131,7 +127,7 @@ class _RangeSelectorSelectionPageState extends SampleViewState
             child: Center(
               child: SfRangeSelectorTheme(
                 data: SfRangeSelectorThemeData(
-                    brightness: themeData.colorScheme.brightness,
+                    brightness: themeData.brightness,
                     labelOffset: const Offset(0, 2),
                     thumbColor: Colors.white,
                     overlayColor: const Color.fromRGBO(0, 178, 206, 0.24),
@@ -141,11 +137,11 @@ class _RangeSelectorSelectionPageState extends SampleViewState
                     inactiveTrackColor: const Color.fromRGBO(194, 194, 194, 1),
                     activeLabelStyle: TextStyle(
                         fontSize: 12,
-                        color: themeData.textTheme.bodyLarge!.color!
+                        color: themeData.textTheme.bodyText1!.color!
                             .withOpacity(0.87)),
                     inactiveLabelStyle: TextStyle(
                         fontSize: 12,
-                        color: themeData.textTheme.bodyLarge!.color!
+                        color: themeData.textTheme.bodyText1!.color!
                             .withOpacity(0.87)),
                     inactiveRegionColor: Colors.transparent),
                 child: SfRangeSelector(
@@ -154,14 +150,13 @@ class _RangeSelectorSelectionPageState extends SampleViewState
                   dateIntervalType: DateIntervalType.days,
                   interval: 5.0,
                   controller: rangeController,
-                  stepDuration: const SliderStepDuration(days: 1),
                   dateFormat: DateFormat.MMMd(),
                   showTicks: true,
                   showLabels: true,
                   onChanged: (SfRangeValues values) {
                     _setTotalDataUsage(values);
                   },
-                  child: SizedBox(
+                  child: Container(
                     width: mediaQueryData.orientation == Orientation.landscape
                         ? model.isWebFullView
                             ? mediaQueryData.size.width * 0.5
@@ -172,15 +167,11 @@ class _RangeSelectorSelectionPageState extends SampleViewState
                       padding: const EdgeInsets.only(top: 20),
                       child: SfCartesianChart(
                         title: ChartTitle(text: 'Data Usage For April 2019'),
-                        margin: EdgeInsets.zero,
+                        margin: const EdgeInsets.all(0),
                         primaryXAxis: DateTimeAxis(
-                          isVisible: false,
-                          minimum: DateTime(2019, 04),
-                          maximum: DateTime(2019, 05),
-                          interval: 5,
-                          intervalType: DateTimeIntervalType.days,
-                          enableAutoIntervalOnZooming: false,
-                        ),
+                            isVisible: false,
+                            minimum: DateTime(2019, 04, 01),
+                            maximum: DateTime(2019, 04, 30, 24)),
                         primaryYAxis:
                             NumericAxis(isVisible: false, maximum: 26),
                         plotAreaBorderWidth: 0,
@@ -222,19 +213,18 @@ class _RangeSelectorSelectionPageState extends SampleViewState
                 ? EdgeInsets.only(bottom: mediaQueryData.size.height * 0.025)
                 : EdgeInsets.only(bottom: mediaQueryData.size.height * 0.1),
             child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                width: 250,
-                height: 20,
-                child: TextField(
-                  controller: textController,
-                  enabled: false,
-                  readOnly: true,
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(border: InputBorder.none),
-                ),
-              ),
-            ),
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                    width: 250,
+                    height: 20,
+                    child: TextField(
+                      controller: textController,
+                      enabled: false,
+                      readOnly: true,
+                      textAlign: TextAlign.center,
+                      decoration:
+                          const InputDecoration(border: InputBorder.none),
+                    ))),
           )
         ],
       ),

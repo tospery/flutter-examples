@@ -1,17 +1,20 @@
+///Dart import
+import 'dart:math' as math;
+
 /// Package imports
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
-
-///Core theme import
-import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/foundation.dart';
 
 /// Barcode import
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
+///Core theme import
+import 'package:syncfusion_flutter_core/theme.dart';
+
 /// Local import
+import '../../../../model/model.dart';
 import '../../../../model/sample_view.dart';
-import '../../datagridsource/orderinfo_datagridsource.dart';
 
 /// render data grid widget
 class StylingDataGrid extends SampleView {
@@ -32,7 +35,7 @@ class _StylingDataGridState extends SampleViewState {
   bool isLandscapeInMobileView = false;
 
   /// Required for SfDataGrid to obtain the row data.
-  late OrderInfoDataGridSource stylingDataGridSource;
+  late _StylingDataGridSource stylingDataGridSource;
 
   /// Determine to set the gridLineVisibility of SfDataGrid.
   late String gridLinesVisibility;
@@ -44,25 +47,25 @@ class _StylingDataGridState extends SampleViewState {
 
   /// GridLineVisibility strings for drop down widget.
   final List<String> _encoding = <String>[
-    'both',
-    'horizontal',
-    'none',
-    'vertical',
+    'Both',
+    'Horizontal',
+    'None',
+    'Vertical',
   ];
 
   void _onGridLinesVisibilityChanges(String item) {
     gridLinesVisibility = item;
     switch (gridLinesVisibility) {
-      case 'both':
+      case 'Both':
         gridLineVisibility = GridLinesVisibility.both;
         break;
-      case 'horizontal':
+      case 'Horizontal':
         gridLineVisibility = GridLinesVisibility.horizontal;
         break;
-      case 'none':
+      case 'None':
         gridLineVisibility = GridLinesVisibility.none;
         break;
-      case 'vertical':
+      case 'Vertical':
         gridLineVisibility = GridLinesVisibility.vertical;
         break;
     }
@@ -70,92 +73,91 @@ class _StylingDataGridState extends SampleViewState {
   }
 
   List<GridColumn> getColumns() {
-    const TextStyle textStyle =
-        TextStyle(color: Color.fromRGBO(255, 255, 255, 1));
+    final textStyle = TextStyle(color: Color.fromRGBO(255, 255, 255, 1));
     return isWebOrDesktop
         ? <GridColumn>[
-            GridColumn(
+            GridTextColumn(
               columnName: 'orderId',
               width: (isWebOrDesktop && model.isMobileResolution)
                   ? 110.0
                   : double.nan,
               label: Container(
                 alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
                   'Order ID',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'customerId',
               width: 120.0,
               label: Container(
                 alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
                   'Customer ID',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'name',
               width: (isWebOrDesktop && model.isMobileResolution)
                   ? 110.0
                   : double.nan,
               label: Container(
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
                   'Name',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'freight',
               width: (isWebOrDesktop && model.isMobileResolution)
                   ? 100.0
                   : double.nan,
               label: Container(
                 alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
                   'Freight',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'city',
               width: (isWebOrDesktop && model.isMobileResolution)
                   ? 100.0
                   : double.nan,
               label: Container(
                 alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
                   'City',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'price',
               width: (isWebOrDesktop && model.isMobileResolution)
                   ? 115.0
                   : double.nan,
               label: Container(
                 alignment: Alignment.centerRight,
-                padding: const EdgeInsets.all(8.0),
-                child: const Text(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
                   'Price',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
@@ -164,52 +166,52 @@ class _StylingDataGridState extends SampleViewState {
             )
           ]
         : <GridColumn>[
-            GridColumn(
+            GridTextColumn(
               columnName: 'orderId',
               label: Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 alignment: Alignment.centerRight,
-                child: const Text(
+                child: Text(
                   'Order ID',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               width: 100,
               columnName: 'customerId',
               columnWidthMode: isLandscapeInMobileView
                   ? ColumnWidthMode.fill
                   : ColumnWidthMode.none,
               label: Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 alignment: Alignment.centerRight,
-                child: const Text(
+                child: Text(
                   'Customer ID',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'name',
               label: Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 alignment: Alignment.centerLeft,
-                child: const Text(
+                child: Text(
                   'Name',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
-            GridColumn(
+            GridTextColumn(
               columnName: 'city',
               label: Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 alignment: Alignment.centerLeft,
-                child: const Text(
+                child: Text(
                   'City',
                   style: textStyle,
                   overflow: TextOverflow.ellipsis,
@@ -222,7 +224,7 @@ class _StylingDataGridState extends SampleViewState {
   SfDataGridTheme _buildDataGrid(GridLinesVisibility gridLineVisibility) {
     return SfDataGridTheme(
       data: SfDataGridThemeData(
-          brightness: model.themeData.colorScheme.brightness,
+          brightness: model.themeData.brightness,
           headerHoverColor: Colors.white.withOpacity(0.3),
           headerColor: model.backgroundColor),
       child: SfDataGrid(
@@ -237,10 +239,10 @@ class _StylingDataGridState extends SampleViewState {
   @override
   void initState() {
     super.initState();
-    isWebOrDesktop = model.isWeb || model.isDesktop;
-    stylingDataGridSource = OrderInfoDataGridSource(
-        model: model, isWebOrDesktop: isWebOrDesktop, orderDataCount: 100);
-    gridLinesVisibility = 'horizontal';
+    isWebOrDesktop = (model.isWeb || model.isDesktop);
+    stylingDataGridSource =
+        _StylingDataGridSource(model: model, isWebOrDesktop: isWebOrDesktop);
+    gridLinesVisibility = 'None';
     gridLineVisibility = GridLinesVisibility.horizontal;
     panelOpen = frontPanelVisible.value;
     frontPanelVisible.addListener(_subscribeToValueNotifier);
@@ -257,63 +259,52 @@ class _StylingDataGridState extends SampleViewState {
   Widget buildSettings(BuildContext context) {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
-      return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              model.isWebFullView
-                  ? 'Grid lines \nvisibility'
-                  : 'Grid lines visibility',
-              softWrap: false,
-              style: TextStyle(fontSize: 16.0, color: model.textColor),
-            ),
-            Theme(
-              data: ThemeData(canvasColor: model.bottomSheetBackgroundColor),
-              child: DropdownButton<String>(
-                  focusColor: Colors.transparent,
-                  value: gridLinesVisibility,
-                  items: _encoding.map((String value) {
-                    return DropdownMenuItem<String>(
-                        value: (value != null) ? value : 'none',
-                        child: Text(value,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: model.textColor)));
-                  }).toList(),
-                  onChanged: (dynamic value) {
-                    _onGridLinesVisibilityChanges(value);
-                    stateSetter(() {});
-                  }),
-            ),
-          ]);
+      return ListView(shrinkWrap: true, children: <Widget>[
+        ListTile(
+          title: Text(
+            'Grid lines visibility:',
+            style: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: model.textColor),
+          ),
+          trailing: Theme(
+            data: ThemeData(canvasColor: model.bottomSheetBackgroundColor),
+            child: DropdownButton<String>(
+                value: gridLinesVisibility,
+                items: _encoding.map((String value) {
+                  return DropdownMenuItem<String>(
+                      value: (value != null) ? value : 'None',
+                      child: Text('$value',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: model.textColor)));
+                }).toList(),
+                onChanged: (dynamic value) {
+                  _onGridLinesVisibilityChanges(value);
+                  stateSetter(() {});
+                }),
+          ),
+        ),
+      ]);
     });
   }
 
   BoxDecoration drawBorder() {
-    final BorderSide borderSide = BorderSide(
-        color: model.themeData.colorScheme.brightness == Brightness.light
+    final borderSide = BorderSide(
+        width: 1.0,
+        color: model.themeData.brightness == Brightness.light
             ? const Color.fromRGBO(0, 0, 0, 0.26)
             : const Color.fromRGBO(255, 255, 255, 0.26));
-
-    // Restricts the right side border when Datagrid has gridlinesVisibility
-    // to both and vertical to maintains the border thickness.
-    switch (gridLineVisibility) {
-      case GridLinesVisibility.none:
-      case GridLinesVisibility.horizontal:
-        return BoxDecoration(
-            border: Border(
-                left: borderSide, right: borderSide, bottom: borderSide));
-      case GridLinesVisibility.both:
-      case GridLinesVisibility.vertical:
-        return BoxDecoration(
-            border: Border(left: borderSide, bottom: borderSide));
-    }
+    return BoxDecoration(
+        border:
+            Border(left: borderSide, right: borderSide, bottom: borderSide));
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: model.themeData.colorScheme.brightness == Brightness.light
-            ? const Color(0xFFFAFAFA)
+        color: model.themeData.brightness == Brightness.light
+            ? Color(0xFFFAFAFA)
             : null,
         child: Card(
             margin: isWebOrDesktop
@@ -322,10 +313,205 @@ class _StylingDataGridState extends SampleViewState {
             clipBehavior: Clip.antiAlias,
             elevation: 1.0,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: DecoratedBox(
-                  decoration: drawBorder(),
-                  child: _buildDataGrid(gridLineVisibility)),
-            )));
+                padding: EdgeInsets.all(16.0),
+                child: Container(
+                    decoration: drawBorder(),
+                    child: _buildDataGrid(gridLineVisibility)))));
+  }
+}
+
+class _Employee {
+  _Employee(this.orderId, this.customerId, this.name, this.city, this.freight,
+      this.price);
+  final int orderId;
+  final int customerId;
+  final String name;
+  final String city;
+  final double freight;
+  final double price;
+}
+
+class _StylingDataGridSource extends DataGridSource {
+  _StylingDataGridSource({required this.model, required this.isWebOrDesktop}) {
+    employees = getEmployees(100);
+    buildDataGridRows();
+  }
+
+  final math.Random random = math.Random();
+  final SampleModel model;
+  List<_Employee> employees = [];
+  List<DataGridRow> dataGridRows = [];
+  final bool isWebOrDesktop;
+
+  /// Build DataGridRow collection
+
+  void buildDataGridRows() {
+    dataGridRows = isWebOrDesktop
+        ? employees.map<DataGridRow>((dataGridRow) {
+            return DataGridRow(cells: [
+              DataGridCell(columnName: 'orderId', value: dataGridRow.orderId),
+              DataGridCell(
+                  columnName: 'customerId', value: dataGridRow.customerId),
+              DataGridCell(columnName: 'name', value: dataGridRow.name),
+              DataGridCell(columnName: 'freight', value: dataGridRow.freight),
+              DataGridCell(columnName: 'city', value: dataGridRow.city),
+              DataGridCell(columnName: 'price', value: dataGridRow.price),
+            ]);
+          }).toList(growable: false)
+        : employees.map<DataGridRow>((dataGridRow) {
+            return DataGridRow(cells: [
+              DataGridCell(columnName: 'orderId', value: dataGridRow.orderId),
+              DataGridCell(
+                  columnName: 'customerId', value: dataGridRow.customerId),
+              DataGridCell(columnName: 'name', value: dataGridRow.name),
+              DataGridCell(columnName: 'city', value: dataGridRow.city),
+            ]);
+          }).toList(growable: false);
+  }
+
+  // Overrides
+
+  @override
+  List<DataGridRow> get rows => dataGridRows;
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    final rowIndex = dataGridRows.indexOf(row);
+    var backgroundColor = Colors.transparent;
+    if ((rowIndex % 2) == 0) {
+      backgroundColor = model.backgroundColor.withOpacity(0.07);
+    }
+
+    if (isWebOrDesktop) {
+      return DataGridRowAdapter(color: backgroundColor, cells: [
+        Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            row.getCells()[0].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              row.getCells()[1].value.toString(),
+              overflow: TextOverflow.ellipsis,
+            )),
+        Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              row.getCells()[2].value.toString(),
+              overflow: TextOverflow.ellipsis,
+            )),
+        Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                  .format(row.getCells()[3].value)
+                  .toString(),
+              overflow: TextOverflow.ellipsis,
+            )),
+        Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              row.getCells()[4].value.toString(),
+              overflow: TextOverflow.ellipsis,
+            )),
+        Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                  .format(row.getCells()[5].value)
+                  .toString(),
+              overflow: TextOverflow.ellipsis,
+            )),
+      ]);
+    } else {
+      return DataGridRowAdapter(color: backgroundColor, cells: [
+        Container(
+          padding: EdgeInsets.all(8),
+          alignment: Alignment.centerRight,
+          child: Text(
+            row.getCells()[0].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(8),
+          alignment: Alignment.centerRight,
+          child: Text(
+            row.getCells()[1].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            row.getCells()[2].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            row.getCells()[3].value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ]);
+    }
+  }
+
+  // _Employee data sets
+
+  final List<String> names = <String>[
+    'Folko',
+    'Warth',
+    'Alfki',
+    'Frans',
+    'Welli',
+    'Folig',
+    'Seves',
+    'Furib',
+    'Picco',
+    'Linod',
+    'Simob',
+    'Vaffe',
+    'Rascu',
+    'Blonp',
+    'Merep'
+  ];
+  final List<String> cities = <String>[
+    'Graz',
+    'Bruxelles',
+    'Rosario',
+    'Recife',
+    'Campinas',
+    'Montreal',
+    'Tsawassen',
+    'Resende',
+  ];
+
+  List<_Employee> getEmployees(int count) {
+    final List<_Employee> employeeData = <_Employee>[];
+    for (int i = 0; i < count; i++) {
+      employeeData.add(_Employee(
+        1000 + i,
+        1700 + i,
+        names[i < names.length ? i : random.nextInt(names.length - 1)],
+        cities[random.nextInt(cities.length - 1)],
+        random.nextInt(1000) + random.nextDouble(),
+        1500.0 + random.nextInt(100),
+      ));
+    }
+    return employeeData;
   }
 }

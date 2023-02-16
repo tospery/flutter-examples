@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -23,6 +22,33 @@ class VerticalThumbCustomizationSliderPage extends SampleView {
 
 class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
   _VerticalThumbCustomizationSliderPageState();
+
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _ThumbCustomizationSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: slider),
+          );
+  }
+}
+
+class _ThumbCustomizationSlider extends SampleView {
+  @override
+  _ThumbCustomizationSliderState createState() =>
+      _ThumbCustomizationSliderState();
+}
+
+class _ThumbCustomizationSliderState extends SampleViewState {
   double _thumbValue = 4.0;
   final double _thumbMin = 0.0;
   final double _thumbMax = 10.0;
@@ -44,7 +70,7 @@ class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
           value: _thumbValue,
           onChanged: (dynamic values) {
             setState(() {
-              _thumbValue = values as double;
+              _thumbValue = values;
             });
           },
         ));
@@ -52,10 +78,10 @@ class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
 
   Widget _thumbView() {
     if (_thumbValue == _thumbMin) {
-      return const Icon(Icons.keyboard_arrow_up_outlined,
+      return Icon(Icons.keyboard_arrow_up_outlined,
           color: Colors.white, size: 12.0);
     } else if (_thumbValue == _thumbMax) {
-      return const Icon(Icons.keyboard_arrow_down_outlined,
+      return Icon(Icons.keyboard_arrow_down_outlined,
           color: Colors.white, size: 12.0);
     } else {
       return Column(
@@ -73,8 +99,9 @@ class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
     return SfSliderTheme(
         data: SfSliderThemeData(thumbRadius: 14),
         child: SfSlider.vertical(
+          interval: 2.0,
+          min: 0.0,
           max: 10.0,
-          stepSize: 1,
           thumbIcon: Container(
               alignment: Alignment.center,
               child: Text(
@@ -85,7 +112,7 @@ class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
           value: _value,
           onChanged: (dynamic values) {
             setState(() {
-              _value = values as double;
+              _value = values;
             });
           },
         ));
@@ -108,13 +135,13 @@ class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _thumbCustomizationSlider()),
-              const Text('Text view')
+              Text('Text view')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _thumbIconSlider()),
-              const Text('Icon view'),
+              Text('Icon view'),
             ]),
           ],
         ));
@@ -122,13 +149,6 @@ class _VerticalThumbCustomizationSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 400, child: slider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

@@ -39,91 +39,91 @@ class _SignPdfState extends SampleViewState {
     return Scaffold(
         backgroundColor: model.cardThemeColor,
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                      'This sample shows how to digitally sign the PDF document with .pfx certificates. It also supports various digest algorithms and cryptographic standards.',
-                      style: TextStyle(fontSize: 16, color: model.textColor)),
-                  const SizedBox(height: 20, width: 30),
-                  Text('Cryptographic Standard',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: model.textColor,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10, width: 30),
-                  if (MediaQuery.of(context).size.width > 800)
-                    Row(children: getCryptographicChildWidgets(context))
-                  else
-                    Column(children: getCryptographicChildWidgets(context)),
-                  const SizedBox(height: 20, width: 30),
-                  Text('Digest Algorithm',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: model.textColor,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10, width: 30),
-                  if (MediaQuery.of(context).size.width > 800)
-                    Row(children: getDigestChildWidgets(context))
-                  else
-                    Column(children: getDigestChildWidgets(context)),
-                  const SizedBox(height: 10, width: 30),
-                  Align(
-                      child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          model.backgroundColor),
-                      padding: model.isMobile
-                          ? null
-                          : MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(
-                                  vertical: 15, horizontal: 15)),
-                    ),
-                    onPressed: _signPDF,
-                    child: const Text('Sign PDF',
-                        style: TextStyle(color: Colors.white)),
-                  ))
-                ]),
-          ),
-        ));
+            scrollDirection: Axis.vertical,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Container(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                          'This sample shows how to digitally sign the PDF document with .pfx certificates. It also supports various digest algorithms and cryptographic standards.',
+                          style:
+                              TextStyle(fontSize: 16, color: model.textColor)),
+                      const SizedBox(height: 20, width: 30),
+                      Text('Cryptographic Standard',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: model.textColor,
+                              fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 10, width: 30),
+                      (MediaQuery.of(context).size.width > 800)
+                          ? Row(children: getCryptographicChildWidgets(context))
+                          : Column(
+                              children: getCryptographicChildWidgets(context)),
+                      const SizedBox(height: 20, width: 30),
+                      Text('Digest Algorithm',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: model.textColor,
+                              fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 10, width: 30),
+                      (MediaQuery.of(context).size.width > 800)
+                          ? Row(children: getDigestChildWidgets(context))
+                          : Column(children: getDigestChildWidgets(context)),
+                      const SizedBox(height: 10, width: 30),
+                      Align(
+                          alignment: Alignment.center,
+                          child: TextButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  model.backgroundColor),
+                              padding: model.isMobile
+                                  ? null
+                                  : MaterialStateProperty.all(
+                                      EdgeInsets.symmetric(
+                                          vertical: 15, horizontal: 15)),
+                            ),
+                            onPressed: _signPDF,
+                            child: const Text('Sign PDF',
+                                style: TextStyle(color: Colors.white)),
+                          ))
+                    ]),
+              ),
+            )));
   }
 
   List<Widget> getDigestChildWidgets(BuildContext context) {
-    return <Widget>[
-      Row(children: <Widget>[
-        Radio<int>(
-            value: 0, groupValue: _groupValue, onChanged: _digestChanged),
+    return [
+      Row(children: [
+        Radio(value: 0, groupValue: _groupValue, onChanged: _digestChanged),
         Text('SHA1', style: TextStyle(fontSize: 16, color: model.textColor)),
       ]),
-      Row(children: <Widget>[
-        Radio<int>(
-            value: 1, groupValue: _groupValue, onChanged: _digestChanged),
+      Row(children: [
+        Radio(value: 1, groupValue: _groupValue, onChanged: _digestChanged),
         Text('SHA256', style: TextStyle(fontSize: 16, color: model.textColor)),
       ]),
-      Row(children: <Widget>[
-        Radio<int>(
-            value: 2, groupValue: _groupValue, onChanged: _digestChanged),
+      Row(children: [
+        Radio(value: 2, groupValue: _groupValue, onChanged: _digestChanged),
         Text('SHA384', style: TextStyle(fontSize: 16, color: model.textColor)),
       ]),
-      Row(children: <Widget>[
-        Radio<int>(
-            value: 3, groupValue: _groupValue, onChanged: _digestChanged),
+      Row(children: [
+        Radio(value: 3, groupValue: _groupValue, onChanged: _digestChanged),
         Text('SHA512', style: TextStyle(fontSize: 16, color: model.textColor)),
       ])
     ];
   }
 
   List<Widget> getCryptographicChildWidgets(BuildContext context) {
-    return <Widget>[
-      Row(children: <Widget>[
-        Radio<int>(
+    return [
+      Row(children: [
+        Radio(
             value: 0, groupValue: _cryptoGroupValue, onChanged: _cryptoChanged),
         Text('CMS', style: TextStyle(fontSize: 16, color: model.textColor)),
       ]),
-      Row(children: <Widget>[
-        Radio<int>(
+      Row(children: [
+        Radio(
             value: 1, groupValue: _cryptoGroupValue, onChanged: _cryptoChanged),
         Text('CAdES', style: TextStyle(fontSize: 16, color: model.textColor)),
       ])
@@ -166,7 +166,7 @@ class _SignPdfState extends SampleViewState {
           bounds: Rect.fromLTWH(0, 0, bounds.width, bounds.height));
       graphics.drawImage(
           PdfBitmap(await _readDocumentData('signature.png', true)),
-          const Rect.fromLTWH(2, 1, 30, 30));
+          Rect.fromLTWH(2, 1, 30, 30));
       //Get certificate subject name.
       final String subject = certificate.subjectName;
       graphics.drawString(
@@ -178,7 +178,7 @@ class _SignPdfState extends SampleViewState {
     }
 
     //Save the PDF document
-    final List<int> bytes = await document.save();
+    final List<int> bytes = document.save();
     //Dispose the document.
     document.dispose();
     //Save and launch file.

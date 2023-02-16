@@ -1,8 +1,9 @@
 /// Dart import
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+/// Package imports
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -22,8 +23,7 @@ class RangeArea extends SampleView {
 /// State class of the Range area chart.
 class _RangeAreaState extends SampleViewState {
   _RangeAreaState();
-
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior = TooltipBehavior(enable: true, decimalPlaces: 1);
@@ -43,12 +43,12 @@ class _RangeAreaState extends SampleViewState {
       primaryXAxis: DateTimeAxis(
           dateFormat: DateFormat.y(),
           interval: 1,
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           edgeLabelPlacement: EdgeLabelPlacement.shift),
       primaryYAxis: NumericAxis(
           labelFormat: '{value}°C',
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getRangeAreaSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -56,34 +56,35 @@ class _RangeAreaState extends SampleViewState {
 
   /// Gets the random data for the Rnage area chart series.
   List<ChartSampleData> _getData() {
-    List<ChartSampleData> chartData;
-    chartData = <ChartSampleData>[];
-    double value = 30;
+    List<ChartSampleData> _chartData;
+    _chartData = <ChartSampleData>[];
+    double _value = 30;
     for (int i = 0; i < 100; i++) {
-      final Random yValue = Random();
-      (yValue.nextDouble() > .5)
-          ? value += Random().nextDouble()
-          : value -= Random().nextDouble();
+      final Random _yValue = Random();
+      (_yValue.nextDouble() > .5)
+          ? _value += Random().nextDouble()
+          : _value -= Random().nextDouble();
 
-      chartData.add(ChartSampleData(
-          x: DateTime(2000, i + 2, i), high: value, low: value + 10));
+      _chartData.add(ChartSampleData(
+          x: DateTime(2000, i + 2, i), high: _value, low: _value + 10));
     }
-    return chartData;
+    return _chartData;
   }
 
   /// Returns the list of Chart series
   /// which need to render on the Range area chart.
   List<ChartSeries<ChartSampleData, DateTime>> _getRangeAreaSeries() {
+    final List<ChartSampleData> chartData = _getData();
     return <ChartSeries<ChartSampleData, DateTime>>[
       RangeAreaSeries<ChartSampleData, DateTime>(
-        dataSource: _getData(),
+        dataSource: chartData,
         name: 'London',
         borderWidth: 2,
         opacity: 0.5,
         borderColor: const Color.fromRGBO(50, 198, 255, 1),
         color: const Color.fromRGBO(50, 198, 255, 1),
         borderDrawMode: RangeAreaBorderMode.excludeSides,
-        xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         highValueMapper: (ChartSampleData sales, _) => sales.high,
         lowValueMapper: (ChartSampleData sales, _) => sales.low,
       )

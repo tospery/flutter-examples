@@ -2,6 +2,7 @@
 import 'dart:math';
 
 ///Package imports
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -61,9 +62,7 @@ class _LoadMoreCalendarState extends SampleViewState {
         /// The key set here to maintain the state,
         ///  when we change the parent of the widget
         key: _globalKey,
-        data: model.themeData.copyWith(
-            colorScheme: model.themeData.colorScheme
-                .copyWith(secondary: model.backgroundColor)),
+        data: model.themeData.copyWith(accentColor: model.backgroundColor),
         child: _getLoadMoreCalendar(_calendarController, _onViewChanged,
             _events, _scheduleViewBuilder));
 
@@ -75,7 +74,7 @@ class _LoadMoreCalendarState extends SampleViewState {
                   model.isWebFullView &&
                   screenHeight < 800
               ? Scrollbar(
-                  thumbVisibility: true,
+                  isAlwaysShown: true,
                   controller: _controller,
                   child: ListView(
                     controller: _controller,
@@ -104,7 +103,7 @@ class _LoadMoreCalendarState extends SampleViewState {
             _view == CalendarView.month) &&
         model.isWebFullView) {
       _view = _calendarController.view!;
-      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+      SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
         setState(() {
           /// Update the web UI when the calendar view changed from month view
           /// or to month view.
@@ -117,29 +116,29 @@ class _LoadMoreCalendarState extends SampleViewState {
 
   /// Creates the required appointment details as a list.
   void _addAppointmentDetails() {
-    final List<String> subjectCollection = <String>[];
-    subjectCollection.add('General Meeting');
-    subjectCollection.add('Plan Execution');
-    subjectCollection.add('Project Plan');
-    subjectCollection.add('Consulting');
-    subjectCollection.add('Support');
-    subjectCollection.add('Development Meeting');
-    subjectCollection.add('Scrum');
-    subjectCollection.add('Project Completion');
-    subjectCollection.add('Release updates');
-    subjectCollection.add('Performance Check');
+    final List<String> _subjectCollection = <String>[];
+    _subjectCollection.add('General Meeting');
+    _subjectCollection.add('Plan Execution');
+    _subjectCollection.add('Project Plan');
+    _subjectCollection.add('Consulting');
+    _subjectCollection.add('Support');
+    _subjectCollection.add('Development Meeting');
+    _subjectCollection.add('Scrum');
+    _subjectCollection.add('Project Completion');
+    _subjectCollection.add('Release updates');
+    _subjectCollection.add('Performance Check');
 
-    final List<Color> colorCollection = <Color>[];
-    colorCollection.add(const Color(0xFF0F8644));
-    colorCollection.add(const Color(0xFF8B1FA9));
-    colorCollection.add(const Color(0xFFD20100));
-    colorCollection.add(const Color(0xFFFC571D));
-    colorCollection.add(const Color(0xFF36B37B));
-    colorCollection.add(const Color(0xFF01A1EF));
-    colorCollection.add(const Color(0xFF3D4FB5));
-    colorCollection.add(const Color(0xFFE47C73));
-    colorCollection.add(const Color(0xFF636363));
-    colorCollection.add(const Color(0xFF0A8043));
+    final List<Color> _colorCollection = <Color>[];
+    _colorCollection.add(const Color(0xFF0F8644));
+    _colorCollection.add(const Color(0xFF8B1FA9));
+    _colorCollection.add(const Color(0xFFD20100));
+    _colorCollection.add(const Color(0xFFFC571D));
+    _colorCollection.add(const Color(0xFF36B37B));
+    _colorCollection.add(const Color(0xFF01A1EF));
+    _colorCollection.add(const Color(0xFF3D4FB5));
+    _colorCollection.add(const Color(0xFFE47C73));
+    _colorCollection.add(const Color(0xFF636363));
+    _colorCollection.add(const Color(0xFF0A8043));
 
     final Random random = Random();
     _dataCollection = <DateTime, List<_Meeting>>{};
@@ -154,14 +153,14 @@ class _LoadMoreCalendarState extends SampleViewState {
       final DateTime date = i;
       final int count = 1 + random.nextInt(3);
       for (int j = 0; j < count; j++) {
-        final DateTime startDate =
-            DateTime(date.year, date.month, date.day, 8 + random.nextInt(8));
+        final DateTime startDate = DateTime(
+            date.year, date.month, date.day, 8 + random.nextInt(8), 0, 0);
         final int duration = random.nextInt(3);
         final _Meeting meeting = _Meeting(
-            subjectCollection[random.nextInt(7)],
+            _subjectCollection[random.nextInt(7)],
             startDate,
             startDate.add(Duration(hours: duration == 0 ? 1 : duration)),
-            colorCollection[random.nextInt(9)],
+            _colorCollection[random.nextInt(9)],
             false);
 
         if (_dataCollection.containsKey(date)) {
@@ -169,7 +168,7 @@ class _LoadMoreCalendarState extends SampleViewState {
           meetings.add(meeting);
           _dataCollection[date] = meetings;
         } else {
-          _dataCollection[date] = <_Meeting>[meeting];
+          _dataCollection[date] = [meeting];
         }
       }
     }
@@ -195,7 +194,7 @@ class _LoadMoreCalendarState extends SampleViewState {
             (BuildContext context, LoadMoreCallback loadMoreAppointments) {
           return FutureBuilder<void>(
             future: loadMoreAppointments(),
-            builder: (BuildContext context, AsyncSnapshot<void> snapShot) {
+            builder: (context, snapShot) {
               return Container(
                   height: _calendarController.view == CalendarView.schedule
                       ? 50
@@ -203,15 +202,16 @@ class _LoadMoreCalendarState extends SampleViewState {
                   width: double.infinity,
                   alignment: Alignment.center,
                   child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color?>(
-                          model.backgroundColor)));
+                      valueColor:
+                          AlwaysStoppedAnimation(model.backgroundColor)));
             },
           );
         },
-        monthViewSettings: const MonthViewSettings(
-            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-        timeSlotViewSettings: const TimeSlotViewSettings(
-            minimumAppointmentDuration: Duration(minutes: 60)));
+        monthViewSettings: MonthViewSettings(
+            appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+            appointmentDisplayCount: 4),
+        timeSlotViewSettings: TimeSlotViewSettings(
+            minimumAppointmentDuration: const Duration(minutes: 60)));
   }
 }
 
@@ -249,7 +249,7 @@ Widget _scheduleViewBuilder(
     BuildContext buildContext, ScheduleViewMonthHeaderDetails details) {
   final String monthName = _getMonthDate(details.date.month);
   return Stack(
-    children: <Widget>[
+    children: [
       Image(
           image: ExactAssetImage('images/' + monthName + '.png'),
           fit: BoxFit.cover,
@@ -262,7 +262,7 @@ Widget _scheduleViewBuilder(
         bottom: 0,
         child: Text(
           monthName + ' ' + details.date.year.toString(),
-          style: const TextStyle(fontSize: 18),
+          style: TextStyle(fontSize: 18),
         ),
       )
     ],
@@ -307,7 +307,7 @@ class _MeetingDataSource extends CalendarDataSource {
 
   @override
   Future<void> handleLoadMore(DateTime startDate, DateTime endDate) async {
-    await Future<dynamic>.delayed(const Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
     final List<_Meeting> meetings = <_Meeting>[];
     DateTime date = DateTime(startDate.year, startDate.month, startDate.day);
     final DateTime appEndDate =
@@ -315,7 +315,7 @@ class _MeetingDataSource extends CalendarDataSource {
     while (date.isBefore(appEndDate)) {
       final List<_Meeting>? data = _dataCollection[date];
       if (data == null) {
-        date = date.add(const Duration(days: 1));
+        date = date.add(Duration(days: 1));
         continue;
       }
 
@@ -326,7 +326,7 @@ class _MeetingDataSource extends CalendarDataSource {
 
         meetings.add(meeting);
       }
-      date = date.add(const Duration(days: 1));
+      date = date.add(Duration(days: 1));
     }
 
     appointments.addAll(meetings);

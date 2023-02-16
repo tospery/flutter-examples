@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -26,34 +24,61 @@ class SliderSizeCustomizationPage extends SampleView {
 
 class _SliderSizeCustomizationPageState extends SampleViewState {
   _SliderSizeCustomizationPageState();
-  DateTime _yearValue = DateTime(2010);
+  late Widget slider;
+
+  @override
+  void initState() {
+    super.initState();
+    slider = _SfSliderSizeCustomization();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? slider
+        : SingleChildScrollView(
+            child: Container(height: 300, child: slider),
+          );
+  }
+}
+
+class _SfSliderSizeCustomization extends SampleView {
+  @override
+  _SfSliderSizeCustomizationState createState() =>
+      _SfSliderSizeCustomizationState();
+}
+
+class _SfSliderSizeCustomizationState extends SampleViewState {
+  DateTime _yearValue = DateTime(2010, 1, 01);
   double _value = 0.0;
 
-  SfSliderTheme _sliderWithdividerCustomization() {
+  SfSliderTheme _sliderWithdivisorCustomization() {
     return SfSliderTheme(
         data: SfSliderThemeData(
-            activeDividerRadius: 6.0,
-            inactiveDividerRadius: 3.0,
-            inactiveDividerColor: Colors.deepOrangeAccent.withOpacity(0.24),
-            activeDividerColor: Colors.deepOrangeAccent,
+            activeDivisorRadius: 6.0,
+            inactiveDivisorRadius: 3.0,
+            inactiveDivisorColor: Colors.deepOrangeAccent.withOpacity(0.24),
+            activeDivisorColor: Colors.deepOrangeAccent,
             activeTrackColor: Colors.deepOrangeAccent,
             thumbColor: Colors.deepOrangeAccent,
             tooltipBackgroundColor: Colors.deepOrangeAccent,
             inactiveTrackColor: Colors.deepOrangeAccent.withOpacity(0.24),
             overlayColor: Colors.deepOrangeAccent.withOpacity(0.12)),
         child: SfSlider(
-          min: DateTime(2000),
-          max: DateTime(2020),
+          min: DateTime(2000, 01, 01),
+          max: DateTime(2020, 01, 01),
           showLabels: true,
           interval: 5,
           stepDuration: const SliderStepDuration(years: 5),
           dateFormat: DateFormat.y(),
+          labelPlacement: LabelPlacement.onTicks,
           dateIntervalType: DateIntervalType.years,
-          showDividers: true,
+          showDivisors: true,
           value: _yearValue,
           onChanged: (dynamic values) {
             setState(() {
-              _yearValue = values as DateTime;
+              _yearValue = values;
             });
           },
           enableTooltip: true,
@@ -80,7 +105,7 @@ class _SliderSizeCustomizationPageState extends SampleViewState {
             value: _value,
             onChanged: (dynamic values) {
               setState(() {
-                _value = values as double;
+                _value = values;
               });
             },
             enableTooltip: true));
@@ -108,9 +133,9 @@ class _SliderSizeCustomizationPageState extends SampleViewState {
             columnSpacing10,
             _sliderWithTrackCustomization(),
             columnSpacing40,
-            title('Active and inactive divider radius'),
+            title('Active and inactive divisor radius'),
             columnSpacing10,
-            _sliderWithdividerCustomization(),
+            _sliderWithdivisorCustomization(),
             columnSpacing40,
           ],
         ));
@@ -118,13 +143,6 @@ class _SliderSizeCustomizationPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget slider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 300
-          ? slider
-          : SingleChildScrollView(child: SizedBox(height: 300, child: slider));
-    });
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

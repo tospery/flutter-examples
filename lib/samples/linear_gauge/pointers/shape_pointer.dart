@@ -1,6 +1,6 @@
 /// Flutter package imports
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 /// Gauge imports
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -31,16 +31,15 @@ class _ShapePointerState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: <Widget>[
-      Container(
-          margin: const EdgeInsets.all(32.0), child: _buildSegmentedView()),
+    return Column(children: [
+      Container(margin: EdgeInsets.all(32.0), child: _buildSegmentedView()),
       Expanded(
           child: Center(
               child: SingleChildScrollView(
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-            SizedBox(
+                      children: [
+            Container(
               width: getScreenWidth(context, _isHorizontalOrientation),
               child: _buildShapePointer(context),
             )
@@ -51,12 +50,12 @@ class _ShapePointerState extends SampleViewState {
   /// Returns the linear gauge with shape pointer.
   Widget _buildShapePointer(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 32.0),
+      padding: EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 32.0),
       child: _isHorizontalOrientation
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+              children: [
                 _buildHorizontalGauges(
                     'Inverted triangle', _buildInvertedTriangleShapePointer()),
                 _buildHorizontalGauges('Circle', _buildCircleShapePointer()),
@@ -68,12 +67,13 @@ class _ShapePointerState extends SampleViewState {
               ],
             )
           : Column(
-              children: <Widget>[
+              children: [
                 Wrap(
+                  direction: Axis.horizontal,
                   runSpacing: 30,
                   spacing: 16,
                   alignment: WrapAlignment.center,
-                  children: <Widget>[
+                  children: [
                     _buildVerticalGauges('Inverted triangle',
                         _buildInvertedTriangleShapePointer()),
                     _buildVerticalGauges('Circle', _buildCircleShapePointer()),
@@ -95,30 +95,26 @@ class _ShapePointerState extends SampleViewState {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: [
         Text(axisTrackName),
         linearGauge,
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
       ],
     );
   }
 
   /// Returns the vertical axis track.
   Widget _buildVerticalGauges(String axisTrackName, Widget linearGauge) {
-    return SizedBox(
+    return Container(
         width: 150,
         child: Column(
-          children: <Widget>[
-            Text(axisTrackName),
-            const SizedBox(height: 16),
-            linearGauge
-          ],
+          children: [Text(axisTrackName), SizedBox(height: 16), linearGauge],
         ));
   }
 
   /// Returns the inverted triangle shape pointer sample.
   Widget _buildInvertedTriangleShapePointer() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
           animateAxis: true,
@@ -128,14 +124,12 @@ class _ShapePointerState extends SampleViewState {
           markerPointers: <LinearShapePointer>[
             LinearShapePointer(
               value: _invertedTrianglePointerValue,
-              onChanged: (dynamic value) {
-                setState(() {
-                  _invertedTrianglePointerValue = value as double;
-                });
+              onValueChanged: (value) => {
+                setState(() => {_invertedTrianglePointerValue = value})
               },
             ),
           ],
-          barPointers: <LinearBarPointer>[
+          barPointers: [
             LinearBarPointer(value: _invertedTrianglePointerValue),
           ],
         ));
@@ -143,7 +137,7 @@ class _ShapePointerState extends SampleViewState {
 
   /// Returns the circle shape pointer sample.
   Widget _buildCircleShapePointer() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
             animateAxis: true,
@@ -153,21 +147,19 @@ class _ShapePointerState extends SampleViewState {
             markerPointers: <LinearShapePointer>[
               LinearShapePointer(
                   value: _circlePointerValue,
-                  onChanged: (dynamic value) {
-                    setState(() {
-                      _circlePointerValue = value as double;
-                    });
-                  },
+                  onValueChanged: (value) => {
+                        setState(() => {_circlePointerValue = value})
+                      },
                   shapeType: LinearShapePointerType.circle),
             ],
-            barPointers: <LinearBarPointer>[
+            barPointers: [
               LinearBarPointer(value: _circlePointerValue),
             ]));
   }
 
   /// Returns the diamond shape pointer sample.
   Widget _buildDiamondShapePointer() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
             animateAxis: true,
@@ -177,21 +169,19 @@ class _ShapePointerState extends SampleViewState {
             markerPointers: <LinearShapePointer>[
               LinearShapePointer(
                   value: _diamondPointerValue,
-                  onChanged: (dynamic value) {
-                    setState(() {
-                      _diamondPointerValue = value as double;
-                    });
-                  },
+                  onValueChanged: (value) => {
+                        setState(() => {_diamondPointerValue = value})
+                      },
                   shapeType: LinearShapePointerType.diamond),
             ],
-            barPointers: <LinearBarPointer>[
+            barPointers: [
               LinearBarPointer(value: _diamondPointerValue),
             ]));
   }
 
   /// Returns the rectangle shape pointer sample.
   Widget _buildRectangleShapePointer() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
             animateAxis: true,
@@ -201,22 +191,20 @@ class _ShapePointerState extends SampleViewState {
             markerPointers: <LinearShapePointer>[
               LinearShapePointer(
                 value: _rectanglePointerValue,
-                onChanged: (dynamic value) {
-                  setState(() {
-                    _rectanglePointerValue = value as double;
-                  });
+                onValueChanged: (value) => {
+                  setState(() => {_rectanglePointerValue = value})
                 },
                 shapeType: LinearShapePointerType.rectangle,
               ),
             ],
-            barPointers: <LinearBarPointer>[
+            barPointers: [
               LinearBarPointer(value: _rectanglePointerValue),
             ]));
   }
 
   /// Returns the multiple shape pointers sample.
   Widget _buildMultipleShapePointers() {
-    return SizedBox(
+    return Container(
         height: _isHorizontalOrientation ? 100 : 300,
         child: SfLinearGauge(
             animateAxis: true,
@@ -226,22 +214,18 @@ class _ShapePointerState extends SampleViewState {
             markerPointers: <LinearShapePointer>[
               LinearShapePointer(
                 value: _pointerValue,
-                onChanged: (dynamic value) {
-                  setState(() {
-                    _pointerValue = value as double;
-                  });
+                onValueChanged: (value) => {
+                  setState(() => {_pointerValue = value})
                 },
               ),
               LinearShapePointer(
                   value: _multiPointerValue,
-                  onChanged: (dynamic value) {
-                    setState(() {
-                      _multiPointerValue = value as double;
-                    });
-                  },
+                  onValueChanged: (value) => {
+                        setState(() => {_multiPointerValue = value})
+                      },
                   shapeType: LinearShapePointerType.diamond)
             ],
-            barPointers: <LinearBarPointer>[
+            barPointers: [
               LinearBarPointer(value: _pointerValue),
             ]));
   }
@@ -249,12 +233,12 @@ class _ShapePointerState extends SampleViewState {
   /// Returns the segmented view for linear gauge orientation.
   Widget _buildSegmentedView() {
     return Center(
-        child: CupertinoSegmentedControl<bool>(
+        child: CupertinoSegmentedControl(
             selectedColor: model.backgroundColor,
             borderColor: model.backgroundColor,
-            children: <bool, Widget>{
+            children: {
               true: Container(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Text(
                     'Horizontal',
                     style: TextStyle(
@@ -263,7 +247,7 @@ class _ShapePointerState extends SampleViewState {
                             : Colors.black),
                   )),
               false: Container(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Text(
                     'Vertical',
                     style: TextStyle(
@@ -272,9 +256,8 @@ class _ShapePointerState extends SampleViewState {
                             : Colors.white),
                   )),
             },
-            onValueChanged: (bool value) => setState(() {
-                  _isHorizontalOrientation = value;
-                }),
+            onValueChanged: (bool value) =>
+                setState(() => {_isHorizontalOrientation = value}),
             groupValue: _isHorizontalOrientation));
   }
 }

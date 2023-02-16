@@ -33,13 +33,14 @@ class _PyramidLegendState extends SampleViewState {
         text = args.dataPoints![args.pointIndex!.toInt()].y.toString();
         if (text.contains('.')) {
           data = text.split('.');
-          final String newTe = data[0] + ' years ' + data[1] + ' months';
+          final String newTe =
+              data[0].toString() + ' years ' + data[1].toString() + ' months';
           args.text = newTe;
         } else {
           args.text = text + ' years';
         }
       },
-      //  smartLabelMode: SmartLabelMode.none,
+      smartLabelMode: SmartLabelMode.none,
       title: ChartTitle(
           text: isCardView ? '' : 'Experience of employees in a team'),
       legend:
@@ -54,35 +55,35 @@ class _PyramidLegendState extends SampleViewState {
 
   ///Get the pyramid series
   PyramidSeries<ChartSampleData, String> _getPyramidSeries() {
+    final List<ChartSampleData> pieData = <ChartSampleData>[
+      ChartSampleData(x: 'Ray', y: 7.3),
+      ChartSampleData(
+        x: 'Michael',
+        y: 6.6,
+      ),
+      ChartSampleData(
+        x: 'John ',
+        y: 3,
+      ),
+      ChartSampleData(
+        x: 'Mercy',
+        y: 0.8,
+      ),
+      ChartSampleData(
+        x: 'Tina ',
+        y: 1.4,
+      ),
+      ChartSampleData(
+        x: 'Stephen',
+        y: 5.2,
+      ),
+    ];
     return PyramidSeries<ChartSampleData, String>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'Ray', y: 7.3),
-          ChartSampleData(
-            x: 'Michael',
-            y: 6.6,
-          ),
-          ChartSampleData(
-            x: 'John ',
-            y: 3,
-          ),
-          ChartSampleData(
-            x: 'Mercy',
-            y: 0.8,
-          ),
-          ChartSampleData(
-            x: 'Tina ',
-            y: 1.4,
-          ),
-          ChartSampleData(
-            x: 'Stephen',
-            y: 5.2,
-          ),
-        ],
-        xValueMapper: (ChartSampleData data, _) => data.x as String,
+        dataSource: pieData,
+        xValueMapper: (ChartSampleData data, _) => data.x,
         yValueMapper: (ChartSampleData data, _) => data.y,
         dataLabelSettings: DataLabelSettings(
-          isVisible: !isCardView,
-          //    labelPosition: ChartDataLabelPosition.inside
-        ));
+            isVisible: !isCardView,
+            labelPosition: ChartDataLabelPosition.inside));
   }
 }

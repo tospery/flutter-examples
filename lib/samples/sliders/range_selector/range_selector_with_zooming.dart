@@ -1,10 +1,9 @@
 ///Dart import
-// ignore_for_file: depend_on_referenced_packages
-
 import 'dart:math';
 
 ///Package imports
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 ///Chart import
@@ -36,7 +35,7 @@ class _RangeSelectorZoomingPageState extends SampleViewState
     with SingleTickerProviderStateMixin {
   _RangeSelectorZoomingPageState();
 
-  final DateTime min = DateTime(2017), max = DateTime(2018);
+  final DateTime min = DateTime(2017, 01, 01), max = DateTime(2018, 01, 01);
   final List<ChartSampleData> chartData = <ChartSampleData>[];
   late RangeController rangeController;
   late SfCartesianChart columnChart, splineChart;
@@ -52,33 +51,33 @@ class _RangeSelectorZoomingPageState extends SampleViewState
     );
     for (int i = 0; i < 366; i++) {
       chartData.add(ChartSampleData(
-          x: DateTime(2000).add(Duration(days: i)),
+          x: DateTime(2000, 01, 01).add(Duration(days: i)),
           y: Random().nextInt(190) + 50));
     }
     columnData = <ChartSampleData>[
-      ChartSampleData(x: DateTime(2000), y: 100),
+      ChartSampleData(x: DateTime(2000, 01, 01, 0), y: 100),
       ChartSampleData(x: DateTime(2000, 01, 15), y: 10),
-      ChartSampleData(x: DateTime(2000, 02), y: 40),
+      ChartSampleData(x: DateTime(2000, 02, 01), y: 40),
       ChartSampleData(x: DateTime(2000, 02, 15), y: 34),
-      ChartSampleData(x: DateTime(2000, 03), y: 80),
+      ChartSampleData(x: DateTime(2000, 03, 01), y: 80),
       ChartSampleData(x: DateTime(2000, 03, 15), y: 49),
-      ChartSampleData(x: DateTime(2000, 04), y: 56),
+      ChartSampleData(x: DateTime(2000, 04, 01), y: 56),
       ChartSampleData(x: DateTime(2000, 04, 15), y: 26),
-      ChartSampleData(x: DateTime(2000, 05), y: 8),
+      ChartSampleData(x: DateTime(2000, 05, 01), y: 8),
       ChartSampleData(x: DateTime(2000, 05, 15), y: 80),
-      ChartSampleData(x: DateTime(2000, 06), y: 42),
+      ChartSampleData(x: DateTime(2000, 06, 01), y: 42),
       ChartSampleData(x: DateTime(2000, 06, 15), y: 12),
-      ChartSampleData(x: DateTime(2000, 07), y: 28),
+      ChartSampleData(x: DateTime(2000, 07, 01), y: 28),
       ChartSampleData(x: DateTime(2000, 07, 15), y: 68),
-      ChartSampleData(x: DateTime(2000, 08), y: 94),
+      ChartSampleData(x: DateTime(2000, 08, 01), y: 94),
       ChartSampleData(x: DateTime(2000, 08, 15), y: 24),
-      ChartSampleData(x: DateTime(2000, 09), y: 72),
+      ChartSampleData(x: DateTime(2000, 09, 01), y: 72),
       ChartSampleData(x: DateTime(2000, 09, 15), y: 32),
-      ChartSampleData(x: DateTime(2000, 10), y: 48),
+      ChartSampleData(x: DateTime(2000, 10, 01), y: 48),
       ChartSampleData(x: DateTime(2000, 10, 15), y: 4),
-      ChartSampleData(x: DateTime(2000, 11), y: 64),
+      ChartSampleData(x: DateTime(2000, 11, 01), y: 64),
       ChartSampleData(x: DateTime(2000, 11, 15), y: 10),
-      ChartSampleData(x: DateTime(2000, 12), y: 85),
+      ChartSampleData(x: DateTime(2000, 12, 01), y: 85),
       ChartSampleData(x: DateTime(2000, 12, 15), y: 96),
     ];
     splineSeriesData = <ChartSampleData>[
@@ -596,8 +595,9 @@ class _RangeSelectorZoomingPageState extends SampleViewState
           x: DateTime.fromMillisecondsSinceEpoch(1514678400000), y: 0.8324)
     ];
     columnChart = SfCartesianChart(
-      margin: EdgeInsets.zero,
-      primaryXAxis: DateTimeAxis(isVisible: false, maximum: DateTime(2018)),
+      margin: const EdgeInsets.all(0),
+      primaryXAxis:
+          DateTimeAxis(isVisible: false, maximum: DateTime(2018, 1, 1)),
       primaryYAxis: NumericAxis(isVisible: false),
       plotAreaBorderWidth: 0,
       series: <SplineAreaSeries<ChartSampleData, DateTime>>[
@@ -607,7 +607,7 @@ class _RangeSelectorZoomingPageState extends SampleViewState
           color: const Color.fromRGBO(163, 226, 224, 1),
           borderDrawMode: BorderDrawMode.excludeBottom,
           borderWidth: 1,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
         )
       ],
@@ -615,39 +615,26 @@ class _RangeSelectorZoomingPageState extends SampleViewState
   }
 
   @override
-  void dispose() {
-    chartData.clear();
-    rangeController.dispose();
-    columnData.clear();
-    splineSeriesData.clear();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    final bool isLightTheme =
-        themeData.colorScheme.brightness == Brightness.light;
+    final bool isLightTheme = themeData.brightness == Brightness.light;
     final MediaQueryData mediaQueryData = MediaQuery.of(context);
     splineChart = SfCartesianChart(
-      title: ChartTitle(text: 'EUR Exchange Rate From USD 2017'),
+      title: ChartTitle(text: 'EUR Exchange Rate From USD'),
       plotAreaBorderWidth: 0,
       tooltipBehavior: TooltipBehavior(
           animationDuration: 0, shadowColor: Colors.transparent, enable: true),
       primaryXAxis: DateTimeAxis(
           labelStyle: const TextStyle(),
           isVisible: false,
-          minimum: DateTime.fromMillisecondsSinceEpoch(1483315200000),
-          maximum: DateTime.fromMillisecondsSinceEpoch(1514678400000),
-          visibleMinimum: rangeController.start,
-          visibleMaximum: rangeController.end,
+          minimum: DateTime.fromMillisecondsSinceEpoch(1498608000000),
+          maximum: DateTime.fromMillisecondsSinceEpoch(1508112000000),
           rangeController: rangeController),
       primaryYAxis: NumericAxis(
         labelPosition: ChartDataLabelPosition.inside,
         labelAlignment: LabelAlignment.end,
-        majorTickLines: const MajorTickLines(size: 0),
-        axisLine: const AxisLine(color: Colors.transparent),
-        anchorRangeToVisiblePoints: false,
+        majorTickLines: MajorTickLines(size: 0),
+        axisLine: AxisLine(color: Colors.transparent),
       ),
       series: <SplineSeries<ChartSampleData, DateTime>>[
         SplineSeries<ChartSampleData, DateTime>(
@@ -655,14 +642,14 @@ class _RangeSelectorZoomingPageState extends SampleViewState
           dataSource: splineSeriesData,
           color: const Color.fromRGBO(0, 193, 187, 1),
           animationDuration: 0,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
         )
       ],
     );
     final Widget page = Container(
-        margin: EdgeInsets.zero,
-        padding: EdgeInsets.zero,
+        margin: const EdgeInsets.all(0),
+        padding: const EdgeInsets.all(0),
         color:
             model.isWebFullView ? model.cardThemeColor : model.cardThemeColor,
         child: Center(
@@ -691,15 +678,15 @@ class _RangeSelectorZoomingPageState extends SampleViewState
                       activeTrackColor: const Color.fromRGBO(255, 125, 30, 1),
                       inactiveRegionColor: isLightTheme
                           ? Colors.white.withOpacity(0.75)
-                          : const Color.fromRGBO(33, 33, 33, 0.75),
+                          : Color.fromRGBO(33, 33, 33, 0.75),
                       thumbColor: Colors.white,
                       thumbStrokeColor: const Color.fromRGBO(255, 125, 30, 1),
                       thumbStrokeWidth: 2.0,
                       overlayRadius: 1,
                       overlayColor: Colors.transparent),
                   child: Container(
-                    margin: EdgeInsets.zero,
-                    padding: EdgeInsets.zero,
+                    margin: const EdgeInsets.all(0),
+                    padding: const EdgeInsets.all(0),
                     width: mediaQueryData.orientation == Orientation.landscape
                         ? model.isWebFullView
                             ? mediaQueryData.size.width * 0.7
@@ -719,6 +706,7 @@ class _RangeSelectorZoomingPageState extends SampleViewState
                           controller: rangeController,
                           showTicks: true,
                           showLabels: true,
+                          enableIntervalSelection: true,
                           dragMode: SliderDragMode.both,
                           labelFormatterCallback:
                               (dynamic actualLabel, String formattedText) {
@@ -732,8 +720,8 @@ class _RangeSelectorZoomingPageState extends SampleViewState
                           onChanged: (SfRangeValues values) {},
                           child: Container(
                             height: 75,
-                            padding: EdgeInsets.zero,
-                            margin: EdgeInsets.zero,
+                            padding: const EdgeInsets.all(0),
+                            margin: const EdgeInsets.all(0),
                             child: columnChart,
                           ),
                         ),
@@ -746,10 +734,8 @@ class _RangeSelectorZoomingPageState extends SampleViewState
     return Scaffold(
       body: mediaQueryData.orientation == Orientation.landscape &&
               !model.isWebFullView
-          ? Center(
-              child: SingleChildScrollView(
-                child: SizedBox(height: 400, child: page),
-              ),
+          ? SingleChildScrollView(
+              child: Container(height: 400, child: page),
             )
           : page,
     );
@@ -758,25 +744,27 @@ class _RangeSelectorZoomingPageState extends SampleViewState
   @override
   Widget buildSettings(BuildContext context) {
     return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: enableDeferredUpdate,
-          title: const Text(
-            'Enable deferred update',
-            softWrap: false,
-          ),
-          activeColor: model.backgroundColor,
-          contentPadding: EdgeInsets.zero,
-          onChanged: (bool? value) {
-            setState(
-              () {
-                enableDeferredUpdate = value!;
-                stateSetter(() {});
-              },
-            );
-          },
-        );
-      },
-    );
+        builder: (BuildContext context, StateSetter stateSetter) {
+      return Row(children: <Widget>[
+        Text('Enable deferred update  ',
+            style: TextStyle(
+              color: model.textColor,
+              fontSize: 16,
+            )),
+        Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Container(
+                width: 90,
+                child: CheckboxListTile(
+                    activeColor: model.backgroundColor,
+                    value: enableDeferredUpdate,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        enableDeferredUpdate = value!;
+                        stateSetter(() {});
+                      });
+                    }))),
+      ]);
+    });
   }
 }

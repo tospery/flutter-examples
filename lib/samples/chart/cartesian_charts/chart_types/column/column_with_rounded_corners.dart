@@ -18,7 +18,7 @@ class ColumnRounded extends SampleView {
 
 class _ColumnRoundedState extends SampleViewState {
   _ColumnRoundedState();
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior = TooltipBehavior(
@@ -42,10 +42,10 @@ class _ColumnRoundedState extends SampleViewState {
           text: isCardView ? '' : 'Land area of various cities (sq.km)'),
       primaryXAxis: CategoryAxis(
         labelStyle: const TextStyle(color: Colors.white),
-        axisLine: const AxisLine(width: 0),
+        axisLine: AxisLine(width: 0),
         labelPosition: ChartDataLabelPosition.inside,
-        majorTickLines: const MajorTickLines(width: 0),
-        majorGridLines: const MajorGridLines(width: 0),
+        majorTickLines: MajorTickLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(isVisible: false, minimum: 0, maximum: 9000),
       series: _getRoundedColumnSeries(),
@@ -55,23 +55,24 @@ class _ColumnRoundedState extends SampleViewState {
 
   /// Get rounded corner column series
   List<ColumnSeries<ChartSampleData, String>> _getRoundedColumnSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'New York', y: 8683),
+      ChartSampleData(x: 'Tokyo', y: 6993),
+      ChartSampleData(x: 'Chicago', y: 5498),
+      ChartSampleData(x: 'Atlanta', y: 5083),
+      ChartSampleData(x: 'Boston', y: 4497),
+    ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
         width: 0.9,
-        dataLabelSettings: const DataLabelSettings(
+        dataLabelSettings: DataLabelSettings(
             isVisible: true, labelAlignment: ChartDataLabelAlignment.top),
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'New York', y: 8683),
-          ChartSampleData(x: 'Tokyo', y: 6993),
-          ChartSampleData(x: 'Chicago', y: 5498),
-          ChartSampleData(x: 'Atlanta', y: 5083),
-          ChartSampleData(x: 'Boston', y: 4497),
-        ],
+        dataSource: chartData,
 
         /// If we set the border radius value for column series,
         /// then the series will appear as rounder corner.
         borderRadius: BorderRadius.circular(10),
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
       ),
     ];

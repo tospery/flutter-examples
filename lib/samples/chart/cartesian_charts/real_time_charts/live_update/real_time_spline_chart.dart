@@ -22,30 +22,27 @@ class LiveUpdate extends SampleView {
 
 class _LiveUpdateState extends SampleViewState {
   _LiveUpdateState() {
-    chartData1 = <ChartSampleData>[
-      ChartSampleData(x: 0, y: 0),
-      ChartSampleData(x: 1, y: -2),
-      ChartSampleData(x: 2, y: 2),
-      ChartSampleData(x: 3, y: 0)
-    ];
-    chartData2 = <ChartSampleData>[
-      ChartSampleData(x: 0, y: 0),
-      ChartSampleData(x: 1, y: 2),
-      ChartSampleData(x: 2, y: -2),
-      ChartSampleData(x: 3, y: 0)
-    ];
     timer = Timer.periodic(const Duration(milliseconds: 5), _updateData);
   }
   Timer? timer;
-  List<ChartSampleData>? chartData1;
-  List<ChartSampleData>? chartData2;
+  List<ChartSampleData> chartData1 = <ChartSampleData>[
+    ChartSampleData(x: 0, y: 0),
+    ChartSampleData(x: 1, y: -2),
+    ChartSampleData(x: 2, y: 2),
+    ChartSampleData(x: 3, y: 0)
+  ];
+  List<ChartSampleData> chartData2 = <ChartSampleData>[
+    ChartSampleData(x: 0, y: 0),
+    ChartSampleData(x: 1, y: 2),
+    ChartSampleData(x: 2, y: -2),
+    ChartSampleData(x: 3, y: 0)
+  ];
   bool canStopTimer = false;
-  int? wave1, wave2;
-  late int count;
+  late int wave1, wave2;
+  int count = 1;
 
   @override
   void initState() {
-    count = 1;
     chartData1 = <ChartSampleData>[
       ChartSampleData(x: 0, y: 0),
     ];
@@ -55,9 +52,9 @@ class _LiveUpdateState extends SampleViewState {
     super.initState();
     wave1 = 0;
     wave2 = 180;
-    if (chartData1!.isNotEmpty && chartData2!.isNotEmpty) {
-      chartData1!.clear();
-      chartData2!.clear();
+    if (chartData1.isNotEmpty && chartData2.isNotEmpty) {
+      chartData1.clear();
+      chartData2.clear();
     }
     _updateLiveData();
   }
@@ -77,10 +74,10 @@ class _LiveUpdateState extends SampleViewState {
   SfCartesianChart _buildLiveUpdateChart() {
     return SfCartesianChart(
       plotAreaBorderWidth: 0,
-      primaryXAxis: NumericAxis(majorGridLines: const MajorGridLines(width: 0)),
+      primaryXAxis: NumericAxis(majorGridLines: MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getLiveUpdateSeries(),
     );
   }
@@ -89,14 +86,14 @@ class _LiveUpdateState extends SampleViewState {
   List<SplineSeries<ChartSampleData, num>> _getLiveUpdateSeries() {
     return <SplineSeries<ChartSampleData, num>>[
       SplineSeries<ChartSampleData, num>(
-          dataSource: chartData1!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData1,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           width: 2),
       SplineSeries<ChartSampleData, num>(
-        dataSource: chartData2!,
+        dataSource: chartData2,
         width: 2,
-        xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
       )
     ];
@@ -105,35 +102,35 @@ class _LiveUpdateState extends SampleViewState {
   void _updateData(Timer timer) {
     if (mounted) {
       setState(() {
-        chartData1!.removeAt(0);
-        chartData1!.add(ChartSampleData(
+        chartData1.removeAt(0);
+        chartData1.add(ChartSampleData(
           x: wave1,
-          y: math.sin(wave1! * (math.pi / 180.0)),
+          y: math.sin(wave1 * (math.pi / 180.0)),
         ));
-        chartData2!.removeAt(0);
-        chartData2!.add(ChartSampleData(
+        chartData2.removeAt(0);
+        chartData2.add(ChartSampleData(
           x: wave1,
-          y: math.sin(wave2! * (math.pi / 180.0)),
+          y: math.sin(wave2 * (math.pi / 180.0)),
         ));
-        wave1 = wave1! + 1;
-        wave2 = wave2! + 1;
+        wave1++;
+        wave2++;
       });
     }
   }
 
   void _updateLiveData() {
     for (int i = 0; i < 180; i++) {
-      chartData1!
-          .add(ChartSampleData(x: i, y: math.sin(wave1! * (math.pi / 180.0))));
-      wave1 = wave1! + 1;
+      chartData1
+          .add(ChartSampleData(x: i, y: math.sin(wave1 * (math.pi / 180.0))));
+      wave1++;
     }
 
     for (int i = 0; i < 180; i++) {
-      chartData2!
-          .add(ChartSampleData(x: i, y: math.sin(wave2! * (math.pi / 180.0))));
-      wave2 = wave2! + 1;
+      chartData2
+          .add(ChartSampleData(x: i, y: math.sin(wave2 * (math.pi / 180.0))));
+      wave2++;
     }
 
-    wave1 = chartData1!.length;
+    wave1 = chartData1.length;
   }
 }

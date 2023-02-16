@@ -1,5 +1,9 @@
 ///Dart import
 import 'dart:async';
+
+///Package import
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,7 +15,6 @@ import '../model/model.dart';
 /// by typing the sample's title in the text editor present in the [SearchBar]
 class SearchBar extends StatefulWidget {
   /// Holds the search bar widet
-  // ignore: tighten_type_of_initializing_formals
   const SearchBar({Key? key, this.sampleListModel})
       : assert(sampleListModel != null),
         super(key: key);
@@ -20,53 +23,30 @@ class SearchBar extends StatefulWidget {
   final SampleModel? sampleListModel;
 
   @override
-  // ignore: no_logic_in_create_state
-  SearchBarState createState() => SearchBarState(sampleListModel);
+  _SearchBarState createState() => _SearchBarState(sampleListModel!);
 }
 
-/// Represents the search bar state
-class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
-  /// Creates the search bar state
-  SearchBarState(this.sampleListModel);
-
-  /// Creates the instance of sample model
+class _SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
+  _SearchBarState(this.sampleListModel);
   final SampleModel? sampleListModel;
 
-  /// Represents the list of duplicate control items
   late List<Control> duplicateControlItems;
 
-  /// Represents the list of duplicate sample items
   late List<SubItem> duplicateSampleItems;
 
-  /// Represents the list of items
   List<Control> items = <Control>[];
-
-  /// Represents the overlay state
   late OverlayState over;
-
-  /// Represents the serach icon instance
   Widget? searchIcon;
-
-  /// Represents the close icon instance
   Widget? closeIcon;
-
-  /// Specifies the value of focus node
-  final FocusNode isFocus = FocusNode();
-
-  /// Specifies whether the keyboard is in open state
+  final FocusNode _isFocus = FocusNode();
   bool isOpen = false;
-
-  /// Specifies the value of overlay entry
   late OverlayEntry _overlayEntry;
-
-  /// Specifies the hint value
   String hint = 'Search';
 
-  /// Specifies the list of overlay entries
   late List<OverlayEntry> overlayEntries;
 
   /// Holds the current sample index which selected by keyboard event
-  int? _selectionIndex;
+  late int? _selectionIndex;
 
   /// Holds setState of overlay widget
   late StateSetter _overlaySetState;
@@ -97,39 +77,39 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
             ? Colors.white.withOpacity(0.5)
             : Colors.grey);
     overlayEntries = <OverlayEntry>[];
-    over = Overlay.of(context);
+    over = Overlay.of(context)!;
     duplicateControlItems = sampleListModel!.searchControlItems;
     duplicateSampleItems = sampleListModel!.searchSampleItems;
     sampleListModel!.searchResults.clear();
     sampleListModel!.editingController.text = '';
-    isFocus.addListener(() {
-      closeIcon =
-          isFocus.hasFocus && sampleListModel!.editingController.text.isNotEmpty
-              ? IconButton(
-                  splashColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  icon: Icon(Icons.close,
-                      size: sampleListModel!.isWebFullView ? 20 : 24,
-                      color: sampleListModel!.isWebFullView
-                          ? Colors.white
-                          : Colors.grey),
-                  onPressed: () {
-                    sampleListModel!.editingController.text = '';
-                    isFocus.unfocus();
-                    filterSearchResults('');
-                    if (sampleListModel!.isMobileResolution) {
-                      sampleListModel!.sampleList.clear();
-                      setState(() {
-                        closeIcon = null;
-                      });
-                    } else {
-                      ///Remove the overlay on pressing close button
-                      _overlayEntry.opaque = false;
-                      _removeOverlayEntries();
-                    }
-                  })
-              : null;
-      if (isFocus.hasFocus && !sampleListModel!.isMobileResolution) {
+    _isFocus.addListener(() {
+      closeIcon = (_isFocus.hasFocus &&
+              sampleListModel!.editingController.text.isNotEmpty
+          ? IconButton(
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              icon: Icon(Icons.close,
+                  size: sampleListModel!.isWebFullView ? 20 : 24,
+                  color: sampleListModel!.isWebFullView
+                      ? Colors.white
+                      : Colors.grey),
+              onPressed: () {
+                sampleListModel!.editingController.text = '';
+                _isFocus.unfocus();
+                filterSearchResults('');
+                if (sampleListModel!.isMobileResolution) {
+                  sampleListModel!.sampleList.clear();
+                  setState(() {
+                    closeIcon = null;
+                  });
+                } else {
+                  ///Remove the overlay on pressing close button
+                  _overlayEntry.opaque = false;
+                  _removeOverlayEntries();
+                }
+              })
+          : null);
+      if (_isFocus.hasFocus && !sampleListModel!.isMobileResolution) {
         filterSearchResults(sampleListModel!.editingController.text);
       } else if (!sampleListModel!.isMobileResolution) {
         Timer(const Duration(milliseconds: 200), () {
@@ -138,7 +118,7 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
       }
       if (sampleListModel!.editingController.text.isEmpty) {
         setState(() {
-          searchIcon = isFocus.hasFocus ||
+          searchIcon = _isFocus.hasFocus ||
                   sampleListModel!.editingController.text.isNotEmpty
               ? null
               : Icon(Icons.search,
@@ -147,34 +127,33 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
                       : Colors.grey);
         });
       }
-      hint = isFocus.hasFocus ? '' : 'Search';
+      hint = _isFocus.hasFocus ? '' : 'Search';
     });
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
   }
 
   @override
   void dispose() {
     sampleListModel!.searchResults.clear();
     sampleListModel!.editingController.text = '';
-    isFocus.unfocus();
-    WidgetsBinding.instance.removeObserver(this);
+    _isFocus.unfocus();
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeMetrics() {
-    if (isFocus.hasFocus && sampleListModel!.editingController.text.isEmpty) {
+    if (_isFocus.hasFocus) {
       if (!isOpen) {
         isOpen = true;
-      } else if (isOpen && sampleListModel!.editingController.text.isNotEmpty) {
+      } else if (isOpen) {
         isOpen = false;
-        isFocus.unfocus();
+        _isFocus.unfocus();
       }
     }
   }
 
-  /// method to filter the serach results
   void filterSearchResults(String query) {
     _removeOverlayEntries();
     final List<Control> dummySearchControl = <Control>[];
@@ -193,9 +172,7 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
       final List<SubItem> dummySampleData = <SubItem>[];
       for (int i = 0; i < dummySearchSamplesList.length; i++) {
         final SubItem item = dummySearchSamplesList[i];
-        if ((item.control!.title! + ' - ' + item.title!)
-            .toLowerCase()
-            .contains(query.toLowerCase())) {
+        if (item.title!.toLowerCase().contains(query.toLowerCase())) {
           dummySampleData.add(item);
         }
       }
@@ -221,7 +198,6 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
     }
   }
 
-  /// Method to remove the overlay entries
   void _removeOverlayEntries() {
     if (overlayEntries != null && overlayEntries.isNotEmpty) {
       for (final OverlayEntry overlayEntry in overlayEntries) {
@@ -274,7 +250,7 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
         ///Escape key action
         _selectionIndex = null;
         sampleListModel!.editingController.text = '';
-        isFocus.unfocus();
+        _isFocus.unfocus();
         _overlayEntry.maintainState = false;
         _overlayEntry.opaque = false;
         _removeOverlayEntries();
@@ -283,24 +259,20 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   }
 
   /// Navigate to the selected sample
-  Future<void> _navigateToSample(int index) async {
+  void _navigateToSample(int index) {
     _overlayEntry.maintainState = false;
     sampleListModel!.editingController.text = '';
-    isFocus.unfocus();
+    _isFocus.unfocus();
     _overlayEntry.opaque = false;
     _removeOverlayEntries();
-    _selectionIndex = null;
     final dynamic renderSample = sampleListModel!
         .sampleWidget[sampleListModel!.searchResults[index].key];
     if (renderSample != null) {
-      if (sampleListModel!.isWebFullView) {
-        Navigator.popUntil(context, (Route<dynamic> route) => route.isFirst);
-        Navigator.pushNamed(
-            context, sampleListModel!.searchResults[index].breadCrumbText!);
-      } else {
-        onTapExpandSample(
-            context, sampleListModel!.searchResults[index], sampleListModel!);
-      }
+      sampleListModel!.isWebFullView
+          ? Navigator.pushNamed(
+              context, sampleListModel!.searchResults[index].breadCrumbText!)
+          : onTapExpandSample(
+              context, sampleListModel!.searchResults[index], sampleListModel!);
     }
   }
 
@@ -321,8 +293,7 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
     final Rect rect = _RectGetterFromListView.getRectFromKey(_globalKey)!;
     final List<int> items = <int>[];
     _keys.forEach((dynamic index, dynamic key) {
-      final Rect itemRect = _RectGetterFromListView.getRectFromKey(
-          key.currentContext == null ? _globalKey : key)!;
+      final Rect itemRect = _RectGetterFromListView.getRectFromKey(key)!;
       if (itemRect != null &&
           (itemRect.top >= rect.top && itemRect.bottom <= rect.bottom + 2)) {
         items.add(index);
@@ -332,7 +303,7 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
   }
 
   OverlayEntry _createOverlayEntry() {
-    final RenderBox renderBox = context.findRenderObject()! as RenderBox;
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final Size size = renderBox.size;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
     _selectionIndex = null;
@@ -343,97 +314,86 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
 
     _overlayHeight = ((height ~/ _itemHeight) * _itemHeight) + 6;
 
-    return OverlayEntry(builder: (BuildContext context) {
-      return StatefulBuilder(
-          builder: (BuildContext buildContext, StateSetter setState) {
-        _overlaySetState = setState;
-        return Positioned(
-          left: offset.dx,
-          top: offset.dy + size.height - 5,
-          width: size.width,
-          height: sampleListModel!.searchResults.isEmpty &&
-                  sampleListModel!.editingController.text.isNotEmpty &&
-                  isFocus.hasFocus
-              ? 0.1 * MediaQuery.of(context).size.height
-              : _overlayHeight.toDouble(),
-          child: Card(
-            color: sampleListModel!.cardColor,
-            child: sampleListModel!.editingController.text.isEmpty ||
-                    isFocus.hasFocus == false
-                ? null
-                : (sampleListModel!.searchResults.isEmpty
-                    ? ListTile(
-                        title: Text('No results found',
-                            style: TextStyle(
-                                color: sampleListModel!.textColor,
-                                fontSize: 13,
-                                fontFamily: 'Roboto-Regular')),
-                        onTap: () {},
-                      )
-                    : _RectGetterFromListView(
-                        key: _globalKey,
-                        child: ListView.builder(
-                            controller: _controller,
-                            padding: EdgeInsets.zero,
-                            itemCount: sampleListModel!.searchResults.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              _keys[index] =
-                                  _RectGetterFromListView.createGlobalKey();
-                              return _RectGetterFromListView(
-                                  key: _keys[index],
-                                  child: SizedBox(
-                                    height: _itemHeight.toDouble(),
-                                    child: Material(
-                                        color: index == _selectionIndex
-                                            ? Colors.grey.withOpacity(0.4)
-                                            : sampleListModel!.cardColor,
-                                        child: InkWell(
-                                          hoverColor:
-                                              Colors.grey.withOpacity(0.2),
-                                          onTap: () {
-                                            _navigateToSample(index);
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10),
-                                            child: RichText(
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              text: TextSpan(children: <
-                                                  InlineSpan>[
-                                                TextSpan(
-                                                  text: sampleListModel!
-                                                      .searchResults[index]
-                                                      .control!
-                                                      .title,
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: sampleListModel!
-                                                          .textColor,
-                                                      fontFamily:
-                                                          'Roboto-Bold'),
-                                                ),
-                                                TextSpan(
-                                                  text: ' - ' +
+    return OverlayEntry(
+        maintainState: false,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+              builder: (BuildContext buildContext, StateSetter setState) {
+            _overlaySetState = setState;
+            return Positioned(
+              left: offset.dx,
+              top: offset.dy + size.height - 5,
+              width: size.width,
+              height: sampleListModel!.searchResults.isEmpty &&
+                      sampleListModel!.editingController.text.isNotEmpty &&
+                      _isFocus.hasFocus
+                  ? 0.1 * MediaQuery.of(context).size.height
+                  : _overlayHeight.toDouble(),
+              child: CupertinoScrollbar(
+                child: Card(
+                  color: sampleListModel!.cardColor,
+                  child: sampleListModel!.editingController.text.isEmpty ||
+                          _isFocus.hasFocus == false
+                      ? null
+                      : (sampleListModel!.searchResults.isEmpty
+                          ? ListTile(
+                              title: Text('No results found',
+                                  style: TextStyle(
+                                      color: sampleListModel!.textColor,
+                                      fontSize: 13,
+                                      fontFamily: 'Roboto-Regular')),
+                              onTap: () {},
+                            )
+                          : _RectGetterFromListView(
+                              key: _globalKey,
+                              child: ListView.builder(
+                                  controller: _controller,
+                                  padding: const EdgeInsets.all(0),
+                                  itemCount:
+                                      sampleListModel!.searchResults.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    _keys[index] = _RectGetterFromListView
+                                        .createGlobalKey();
+                                    return _RectGetterFromListView(
+                                        key: _keys[index],
+                                        child: SizedBox(
+                                          height: _itemHeight.toDouble(),
+                                          child: Material(
+                                              color: index == _selectionIndex
+                                                  ? Colors.grey.withOpacity(0.4)
+                                                  : sampleListModel!.cardColor,
+                                              child: InkWell(
+                                                hoverColor: Colors.grey
+                                                    .withOpacity(0.2),
+                                                onTap: () {
+                                                  _selectionIndex = null;
+                                                  _navigateToSample(index);
+                                                },
+                                                child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    child: Text(
                                                       sampleListModel!
                                                           .searchResults[index]
                                                           .title!,
-                                                  style: TextStyle(
-                                                      fontSize: 13,
-                                                      color: sampleListModel!
-                                                          .textColor,
-                                                      fontFamily:
-                                                          'Roboto-Regular'),
-                                                )
-                                              ]),
-                                            ),
-                                          ),
-                                        )),
-                                  ));
-                            }))),
-          ),
-        );
-      });
-    });
+                                                      style: TextStyle(
+                                                          color:
+                                                              sampleListModel!
+                                                                  .textColor,
+                                                          fontSize: 13,
+                                                          fontFamily:
+                                                              'Roboto-Regular'),
+                                                    )),
+                                              )),
+                                        ));
+                                  }))),
+                ),
+              ),
+            );
+          });
+        });
   }
 
   @override
@@ -444,6 +404,7 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
             ? _performKeyBoardEvent(event)
             : null,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
@@ -455,81 +416,76 @@ class SearchBarState extends State<SearchBar> with WidgetsBindingObserver {
                       : Colors.white,
                   borderRadius: const BorderRadius.all(Radius.circular(5.0))),
               child: Padding(
-                  padding: EdgeInsets.only(
-                      left: (isFocus.hasFocus || searchIcon == null) ? 10 : 0),
-                  child: TextField(
-                    onSubmitted: (String value) {
-                      if (_selectionIndex != null) {
-                        _navigateToSample(_selectionIndex!);
-                      }
-                    },
-                    mouseCursor: MaterialStateMouseCursor.clickable,
-                    cursorColor: sampleListModel!.isWebFullView
-                        ? Colors.white
-                        : Colors.grey,
-                    focusNode: isFocus,
-                    onChanged: (String value) {
-                      closeIcon = isFocus.hasFocus &&
-                              (sampleListModel!
-                                  .editingController.text.isNotEmpty)
-                          ? IconButton(
-                              splashColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              icon: Icon(Icons.close,
-                                  size:
-                                      sampleListModel!.isWebFullView ? 20 : 24,
-                                  color: sampleListModel!.isWebFullView
-                                      ? Colors.white
-                                      : Colors.grey),
-                              onPressed: () {
-                                sampleListModel!.editingController.text = '';
-                                isFocus.unfocus();
-                                filterSearchResults('');
-                                if (sampleListModel!.isMobileResolution) {
-                                  sampleListModel!.sampleList.clear();
-                                  setState(() {
-                                    closeIcon = null;
-                                  });
-                                } else {
-                                  _overlayEntry.opaque = false;
-                                  _removeOverlayEntries();
-                                }
-                              })
-                          : null;
-                      setState(() {
-                        /// searched results changed
-                      });
-                      filterSearchResults(value);
-                    },
-                    onEditingComplete: () {
-                      isFocus.unfocus();
-                    },
-                    style: TextStyle(
-                        fontFamily: 'Roboto-Regular',
-                        color: sampleListModel!.isWebFullView
-                            ? Colors.white
-                            : Colors.grey,
-                        fontSize: 13),
-                    controller: sampleListModel!.editingController,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                        labelStyle: TextStyle(
-                            fontFamily: 'Roboto-Regular',
-                            color: sampleListModel!.isWebFullView
-                                ? Colors.white
-                                : Colors.grey,
-                            fontSize: 13),
-                        hintText: hint,
-                        border: InputBorder.none,
-                        hintStyle: TextStyle(
-                            fontSize: 13,
-                            fontFamily: 'Roboto-Regular',
-                            color: sampleListModel!.isWebFullView
-                                ? Colors.white.withOpacity(0.5)
-                                : Colors.grey),
-                        suffixIcon: closeIcon,
-                        prefixIcon: searchIcon),
-                  )),
+                padding: EdgeInsets.only(
+                    left: (_isFocus.hasFocus || searchIcon == null) ? 10 : 0),
+                child: Container(
+                    child: TextField(
+                  mouseCursor: MaterialStateMouseCursor.clickable,
+                  cursorColor: sampleListModel!.isWebFullView
+                      ? Colors.white
+                      : Colors.grey,
+                  focusNode: _isFocus,
+                  onChanged: (String value) {
+                    closeIcon = _isFocus.hasFocus &&
+                            (sampleListModel!.editingController.text.isNotEmpty)
+                        ? IconButton(
+                            splashColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            icon: Icon(Icons.close,
+                                size: sampleListModel!.isWebFullView ? 20 : 24,
+                                color: sampleListModel!.isWebFullView
+                                    ? Colors.white
+                                    : Colors.grey),
+                            onPressed: () {
+                              sampleListModel!.editingController.text = '';
+                              _isFocus.unfocus();
+                              filterSearchResults('');
+                              if (sampleListModel!.isMobileResolution) {
+                                sampleListModel!.sampleList.clear();
+                                setState(() {
+                                  closeIcon = null;
+                                });
+                              } else {
+                                _overlayEntry.opaque = false;
+                                _removeOverlayEntries();
+                              }
+                            })
+                        : null;
+                    setState(() {
+                      /// searched results changed
+                    });
+                    filterSearchResults(value);
+                  },
+                  onEditingComplete: () {
+                    _isFocus.unfocus();
+                  },
+                  style: TextStyle(
+                      fontFamily: 'Roboto-Regular',
+                      color: sampleListModel!.isWebFullView
+                          ? Colors.white
+                          : Colors.grey,
+                      fontSize: 13),
+                  controller: sampleListModel!.editingController,
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                      labelStyle: TextStyle(
+                          fontFamily: 'Roboto-Regular',
+                          color: sampleListModel!.isWebFullView
+                              ? Colors.white
+                              : Colors.grey,
+                          fontSize: 13),
+                      hintText: hint,
+                      border: InputBorder.none,
+                      hintStyle: TextStyle(
+                          fontSize: 13,
+                          fontFamily: 'Roboto-Regular',
+                          color: sampleListModel!.isWebFullView
+                              ? Colors.white.withOpacity(0.5)
+                              : Colors.grey),
+                      suffixIcon: closeIcon,
+                      prefixIcon: searchIcon),
+                )),
+              ),
             ),
           ],
         ));
@@ -545,8 +501,9 @@ class _RectGetterFromListView extends StatefulWidget {
 
   ///Get the rect of list view
   static Rect? getRectFromKey(
-      GlobalKey<_RectGetterFromListViewState> globalKey) {
-    final RenderObject object = globalKey.currentContext!.findRenderObject()!;
+      GlobalKey<_RectGetterFromListViewState> _globalKey) {
+    final RenderObject object =
+        _globalKey.currentContext?.findRenderObject() as RenderObject;
     final dynamic translation = object.getTransformTo(null).getTranslation();
     final Size size = object.semanticBounds.size;
 

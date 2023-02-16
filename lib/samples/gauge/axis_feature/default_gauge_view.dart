@@ -31,12 +31,11 @@ class _RadialGaugeDefaultState extends SampleViewState {
       axes: <RadialAxis>[
         RadialAxis(
             interval: 10,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.03,
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             showTicks: false,
-            showLastLabel: true,
             axisLabelStyle: GaugeTextStyle(
               fontSize: isCardView ? 12 : 14,
             ),
@@ -46,10 +45,14 @@ class _RadialGaugeDefaultState extends SampleViewState {
               NeedlePointer(
                   needleLength: 0.7,
                   value: 70,
+                  lengthUnit: GaugeSizeUnit.factor,
                   needleColor: _needleColor,
                   needleStartWidth: 0,
                   needleEndWidth: isCardView ? 3 : 4,
-                  knobStyle: KnobStyle(color: _needleColor, knobRadius: 0.05)),
+                  knobStyle: KnobStyle(
+                      sizeUnit: GaugeSizeUnit.factor,
+                      color: _needleColor,
+                      knobRadius: 0.05)),
             ])
       ],
     );

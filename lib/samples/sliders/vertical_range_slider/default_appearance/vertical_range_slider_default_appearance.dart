@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -25,17 +23,41 @@ class VerticalDefaultRangeSliderPage extends SampleView {
 
 class _VerticalDefaultRangeSliderPageState extends SampleViewState {
   _VerticalDefaultRangeSliderPageState();
-  final SfRangeValues _inactiveRangeSliderValue =
-      const SfRangeValues(20.0, 80.0);
-  SfRangeValues _activeRangeSliderValue = const SfRangeValues(20.0, 80.0);
-  bool _isInversed = false;
+
+  late Widget rangeSlider;
+
+  @override
+  void initState() {
+    super.initState();
+    rangeSlider = _DefaultRangeSlider();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? rangeSlider
+        : SingleChildScrollView(
+            child: Container(height: 400, child: rangeSlider),
+          );
+  }
+}
+
+class _DefaultRangeSlider extends SampleView {
+  @override
+  _DefaultRangeSliderState createState() => _DefaultRangeSliderState();
+}
+
+class _DefaultRangeSliderState extends SampleViewState {
+  final SfRangeValues _inactiveRangeSliderValue = SfRangeValues(20.0, 80.0);
+  SfRangeValues _activeRangeSliderValue = SfRangeValues(20.0, 80.0);
 
   SfRangeSlider _inactiveRangeSlider() {
     //ignore: missing_required_param
     return SfRangeSlider.vertical(
+      min: 0.0,
       max: 100.0,
       values: _inactiveRangeSliderValue,
-      isInversed: _isInversed,
       onChanged: null,
     );
   }
@@ -45,14 +67,14 @@ class _VerticalDefaultRangeSliderPageState extends SampleViewState {
         data: SfRangeSliderThemeData(
             tooltipBackgroundColor: model.backgroundColor),
         child: SfRangeSlider.vertical(
+          min: 0.0,
           max: 100.0,
           onChanged: (dynamic values) {
             setState(() {
-              _activeRangeSliderValue = values as SfRangeValues;
+              _activeRangeSliderValue = values;
             });
           },
           values: _activeRangeSliderValue,
-          isInversed: _isInversed,
           enableTooltip: true,
           numberFormat: NumberFormat('#'),
         ));
@@ -75,13 +97,13 @@ class _VerticalDefaultRangeSliderPageState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _activeRangeSliderSlider()),
-              const Text('Enabled')
+              Text('Enabled')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _inactiveRangeSlider()),
-              const Text('Disabled')
+              Text('Disabled')
             ]),
           ],
         ));
@@ -89,37 +111,6 @@ class _VerticalDefaultRangeSliderPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final Widget rangeSlider =
-          model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
-      return constraints.maxHeight > 350
-          ? rangeSlider
-          : SingleChildScrollView(
-              child: SizedBox(height: 400, child: rangeSlider));
-    });
-  }
-
-  @override
-  Widget buildSettings(BuildContext context) {
-    return StatefulBuilder(
-      builder: (BuildContext context, StateSetter stateSetter) {
-        return CheckboxListTile(
-          value: _isInversed,
-          title: const Text(
-            'Inversed',
-            softWrap: false,
-          ),
-          contentPadding: EdgeInsets.zero,
-          activeColor: model.backgroundColor,
-          onChanged: (bool? value) {
-            setState(() {
-              _isInversed = value!;
-              stateSetter(() {});
-            });
-          },
-        );
-      },
-    );
+    return model.isWebFullView ? _buildWebLayout() : _buildMobileLayout();
   }
 }

@@ -42,20 +42,20 @@ class _ThermometerState extends SampleViewState {
     final Brightness brightness = Theme.of(context).brightness;
 
     return Center(
-        child: SizedBox(
+        child: Container(
             height: isCardView
                 ? MediaQuery.of(context).size.height
                 : orientation == Orientation.portrait
                     ? MediaQuery.of(context).size.height / 2
                     : MediaQuery.of(context).size.height * 3 / 4,
             child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: Padding(
-                    padding: const EdgeInsets.only(bottom: 11),
+                    padding: EdgeInsets.only(bottom: 11),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
+                      children: [
                         /// Linear gauge to display celsius scale.
                         SfLinearGauge(
                             minimum: -20,
@@ -71,14 +71,14 @@ class _ThermometerState extends SampleViewState {
                             tickPosition: LinearElementPosition.outside,
                             labelPosition: LinearLabelPosition.outside,
                             orientation: LinearGaugeOrientation.vertical,
-                            markerPointers: <LinearMarkerPointer>[
+                            markerPointers: [
                               LinearWidgetPointer(
                                   markerAlignment: LinearMarkerAlignment.end,
                                   value: 50,
                                   enableAnimation: false,
                                   position: LinearElementPosition.outside,
                                   offset: 8,
-                                  child: SizedBox(
+                                  child: Container(
                                     height: 30,
                                     child: Text(
                                       '°C',
@@ -107,8 +107,8 @@ class _ThermometerState extends SampleViewState {
                                 borderWidth: 6,
                                 borderColor: Colors.transparent,
                                 color: _meterValue > _temperatureValue
-                                    ? const Color(0xffFF7B7B)
-                                    : const Color(0xff0074E3),
+                                    ? Color(0xffFF7B7B)
+                                    : Color(0xff0074E3),
                                 position: LinearElementPosition.cross,
                                 width: 24,
                                 height: 24,
@@ -129,19 +129,19 @@ class _ThermometerState extends SampleViewState {
                                             color: model.cardThemeColor),
                                       ),
                                       color: _meterValue > _temperatureValue
-                                          ? const Color(0xffFF7B7B)
-                                          : const Color(0xff0074E3),
+                                          ? Color(0xffFF7B7B)
+                                          : Color(0xff0074E3),
                                     ),
                                   )),
                               LinearWidgetPointer(
                                   value: _meterValue,
                                   enableAnimation: false,
                                   position: LinearElementPosition.outside,
-                                  onChanged: (dynamic value) {
-                                    setState(() {
-                                      _meterValue = value as double;
-                                    });
-                                  },
+                                  onValueChanged: (value) => {
+                                        setState(() {
+                                          _meterValue = value;
+                                        })
+                                      },
                                   child: Container(
                                       width: 16,
                                       height: 12,
@@ -150,8 +150,8 @@ class _ThermometerState extends SampleViewState {
                                       child: Image.asset(
                                         'images/triangle_pointer.png',
                                         color: _meterValue > _temperatureValue
-                                            ? const Color(0xffFF7B7B)
-                                            : const Color(0xff0074E3),
+                                            ? Color(0xffFF7B7B)
+                                            : Color(0xff0074E3),
                                       ))),
                               LinearShapePointer(
                                 value: _meterValue,
@@ -160,10 +160,10 @@ class _ThermometerState extends SampleViewState {
                                 enableAnimation: false,
                                 color: Colors.transparent,
                                 position: LinearElementPosition.cross,
-                                onChanged: (dynamic value) {
+                                onValueChanged: (value) => {
                                   setState(() {
-                                    _meterValue = value as double;
-                                  });
+                                    _meterValue = value;
+                                  })
                                 },
                               )
                             ],
@@ -174,8 +174,8 @@ class _ThermometerState extends SampleViewState {
                                 thickness: 6,
                                 edgeStyle: LinearEdgeStyle.endCurve,
                                 color: _meterValue > _temperatureValue
-                                    ? const Color(0xffFF7B7B)
-                                    : const Color(0xff0074E3),
+                                    ? Color(0xffFF7B7B)
+                                    : Color(0xff0074E3),
                               )
                             ]),
 
@@ -183,22 +183,23 @@ class _ThermometerState extends SampleViewState {
                         Container(
                             transform: Matrix4.translationValues(-6, 0, 0.0),
                             child: SfLinearGauge(
+                              minimum: 0,
                               maximum: 120,
                               showAxisTrack: false,
                               interval: 20,
                               minorTicksPerInterval: 0,
                               axisTrackExtent: 24,
                               axisTrackStyle:
-                                  const LinearAxisTrackStyle(thickness: 0),
+                                  LinearAxisTrackStyle(thickness: 0),
                               orientation: LinearGaugeOrientation.vertical,
-                              markerPointers: <LinearMarkerPointer>[
+                              markerPointers: [
                                 LinearWidgetPointer(
                                     markerAlignment: LinearMarkerAlignment.end,
                                     value: 120,
                                     position: LinearElementPosition.inside,
                                     offset: 6,
                                     enableAnimation: false,
-                                    child: SizedBox(
+                                    child: Container(
                                       height: 30,
                                       child: Text(
                                         '°F',

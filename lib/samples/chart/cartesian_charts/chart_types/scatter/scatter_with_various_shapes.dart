@@ -19,13 +19,46 @@ class ScatterShapes extends SampleView {
 /// State class of scatter chart with various shapes.
 class _ScatterShapesState extends SampleViewState {
   _ScatterShapesState();
-  List<ChartSampleData>? chartData;
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
         TooltipBehavior(enable: true, header: '', canShowMarker: false);
-    chartData = <ChartSampleData>[
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildShapesScatterChart();
+  }
+
+  /// Returns the scatter chart with various shapes.
+  SfCartesianChart _buildShapesScatterChart() {
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0,
+      title: ChartTitle(text: isCardView ? '' : 'Inflation Analysis'),
+      primaryXAxis: NumericAxis(
+        minimum: 1945,
+        maximum: 2005,
+        title: AxisTitle(text: isCardView ? '' : 'Year'),
+        labelIntersectAction: AxisLabelIntersectAction.multipleRows,
+        majorGridLines: MajorGridLines(width: 0),
+      ),
+      legend: Legend(isVisible: !isCardView),
+      primaryYAxis: NumericAxis(
+          title: AxisTitle(text: isCardView ? '' : 'Inflation Rate(%)'),
+          labelFormat: '{value}%',
+          axisLine: AxisLine(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
+      tooltipBehavior: _tooltipBehavior,
+      series: _getScatterShapesSeries(),
+    );
+  }
+
+  /// Returns the list of chart series with various marker shapes which need to
+  /// render on the scatter chart.
+  List<ScatterSeries<ChartSampleData, num>> _getScatterShapesSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
           x: 1950, y: 0.8, secondSeriesYValue: 1.4, thirdSeriesYValue: 2),
       ChartSampleData(
@@ -49,68 +82,28 @@ class _ScatterShapesState extends SampleViewState {
       ChartSampleData(
           x: 2000, y: 1.4, secondSeriesYValue: 2, thirdSeriesYValue: 2.4),
     ];
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildShapesScatterChart();
-  }
-
-  /// Returns the scatter chart with various shapes.
-  SfCartesianChart _buildShapesScatterChart() {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(text: isCardView ? '' : 'Inflation Analysis'),
-      primaryXAxis: NumericAxis(
-        minimum: 1945,
-        maximum: 2005,
-        title: AxisTitle(text: isCardView ? '' : 'Year'),
-        labelIntersectAction: AxisLabelIntersectAction.multipleRows,
-        majorGridLines: const MajorGridLines(width: 0),
-      ),
-      legend: Legend(isVisible: !isCardView),
-      primaryYAxis: NumericAxis(
-          title: AxisTitle(text: isCardView ? '' : 'Inflation Rate(%)'),
-          labelFormat: '{value}%',
-          axisLine: const AxisLine(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
-      tooltipBehavior: _tooltipBehavior,
-      series: _getScatterShapesSeries(),
-    );
-  }
-
-  /// Returns the list of chart series with various marker shapes which need to
-  /// render on the scatter chart.
-  List<ScatterSeries<ChartSampleData, num>> _getScatterShapesSeries() {
     return <ScatterSeries<ChartSampleData, num>>[
       ScatterSeries<ChartSampleData, num>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
-          markerSettings: const MarkerSettings(
+          markerSettings: MarkerSettings(
               width: 15, height: 15, shape: DataMarkerType.diamond),
           name: 'India'),
       ScatterSeries<ChartSampleData, num>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
-          markerSettings: const MarkerSettings(
+          markerSettings: MarkerSettings(
               width: 15, height: 15, shape: DataMarkerType.triangle),
           name: 'China'),
       ScatterSeries<ChartSampleData, num>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
-          markerSettings: const MarkerSettings(
+          markerSettings: MarkerSettings(
               width: 15, height: 15, shape: DataMarkerType.pentagon),
           name: 'Japan')
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
   }
 }

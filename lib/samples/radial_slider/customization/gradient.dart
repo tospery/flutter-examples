@@ -32,19 +32,19 @@ class _RadialSliderGradientState extends SampleViewState {
       child: SfRadialGauge(axes: <RadialAxis>[
         RadialAxis(
             radiusFactor: 0.85,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 thickness: 0, thicknessUnit: GaugeSizeUnit.factor),
             tickOffset: 0.20,
             labelOffset: 0.10,
             offsetUnit: GaugeSizeUnit.factor,
             minorTicksPerInterval: 5,
-            onLabelCreated: (AxisLabelCreatedArgs args) {
+            onLabelCreated: (args) {
               final double axisValue = double.parse(args.text);
               final double celsiusValue = (axisValue - 32) / 1.8;
               args.text = celsiusValue.toStringAsFixed(1);
             },
-            majorTickStyle: const MajorTickStyle(
-                length: 0.1, lengthUnit: GaugeSizeUnit.factor),
+            majorTickStyle:
+                MajorTickStyle(length: 0.1, lengthUnit: GaugeSizeUnit.factor),
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
                   widget: Text(
@@ -58,9 +58,10 @@ class _RadialSliderGradientState extends SampleViewState {
                   angle: 90)
             ]),
         RadialAxis(
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 thickness: 0.05, thicknessUnit: GaugeSizeUnit.factor),
             showTicks: false,
+            showLabels: true,
             labelOffset: 20,
             onAxisTapped: handlePointerValueChanged,
             pointers: <GaugePointer>[
@@ -78,7 +79,7 @@ class _RadialSliderGradientState extends SampleViewState {
                   sizeUnit: GaugeSizeUnit.factor),
               MarkerPointer(
                 value: _currentValue,
-                overlayColor: const Color.fromRGBO(202, 94, 230, 0.125),
+                overlayColor: Color.fromRGBO(202, 94, 230, 0.125),
                 onValueChanged: handlePointerValueChanged,
                 onValueChangeEnd: handlePointerValueChanged,
                 onValueChanging: handlePointerValueChanging,
@@ -114,17 +115,21 @@ class _RadialSliderGradientState extends SampleViewState {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   /// Dragged pointer new value is updated to pointer and
   /// annotation current value.
   void handlePointerValueChanged(double value) {
     setState(() {
       _currentValue = value.roundToDouble();
       _markerValue = _currentValue;
-      // ignore: no_leading_underscores_for_local_identifiers
-      final int _value = _currentValue.round();
+      final int _value = _currentValue.round().toInt();
       _annotationValue = '$_value';
-      final double celsiusValue = (_currentValue - 32) / 1.8;
-      _annotationValue2 = celsiusValue.toStringAsFixed(1);
+      final double _celsiusValue = (_currentValue - 32) / 1.8;
+      _annotationValue2 = '${_celsiusValue.toStringAsFixed(1)}';
     });
   }
 
@@ -142,5 +147,5 @@ class _RadialSliderGradientState extends SampleViewState {
   double _annotationFontSize = 25;
   final double _celsiusAnnotationFontSize = 18;
   String _annotationValue = '60';
-  String _annotationValue2 = 15.5556.toStringAsFixed(1);
+  String _annotationValue2 = '${15.5556.toStringAsFixed(1)}';
 }

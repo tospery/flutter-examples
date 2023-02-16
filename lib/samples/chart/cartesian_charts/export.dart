@@ -5,7 +5,6 @@ import 'dart:ui' as dart_ui;
 
 /// Package imports
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// Chart import
@@ -30,51 +29,33 @@ class Export extends SampleView {
 
 class _ExportState extends SampleViewState {
   _ExportState();
-  late GlobalKey<SfCartesianChartState> _chartKey;
+  final GlobalKey<SfCartesianChartState> _chartKey = GlobalKey();
   // ScaffoldState _scaffoldState;
 
-  late GlobalKey<ScaffoldState> scaffoldKey;
-  late List<ChartSampleData> chartData;
-
-  @override
-  void initState() {
-    _chartKey = GlobalKey();
-    scaffoldKey = GlobalKey<ScaffoldState>();
-    chartData = <ChartSampleData>[
-      ChartSampleData(x: "Jan '19", y: 184.9, yValue: 17),
-      ChartSampleData(x: "Feb '19", y: 160.3, yValue: 18),
-      ChartSampleData(x: "Mar '19", y: 70.6, yValue: 13),
-      ChartSampleData(x: "Apr '19", y: 201.4, yValue: 17),
-      ChartSampleData(x: "May '19", y: 86.7, yValue: 15),
-      ChartSampleData(x: "Jun '19", y: 151.5, yValue: 23),
-    ];
-    super.initState();
-  }
-
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        body: Column(children: <Widget>[
+        body: Column(children: [
           Expanded(child: _buildDefaultColumnChart()),
           Container(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: EdgeInsets.only(bottom: 10),
               child: Row(
-                children: <Widget>[
-                  const Spacer(),
+                children: [
+                  Spacer(),
                   Container(
-                      decoration: BoxDecoration(boxShadow: const <BoxShadow>[
+                      decoration: BoxDecoration(boxShadow: <BoxShadow>[
                         BoxShadow(
                           color: Colors.grey,
-                          offset: Offset(0, 4.0),
+                          offset: const Offset(0, 4.0),
                           blurRadius: 4.0,
                         ),
                       ], shape: BoxShape.circle, color: model.backgroundColor),
                       alignment: Alignment.center,
                       child: IconButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             behavior: SnackBarBehavior.floating,
                             shape: RoundedRectangleBorder(
                                 borderRadius:
@@ -85,22 +66,21 @@ class _ExportState extends SampleViewState {
                           ));
                           _renderImage();
                         },
-                        icon: const Icon(Icons.image, color: Colors.white),
+                        icon: Icon(Icons.image, color: Colors.white),
                       )),
                   Container(
-                      padding: const EdgeInsets.only(left: 10, right: 10),
-                      decoration: BoxDecoration(boxShadow: const <BoxShadow>[
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      decoration: BoxDecoration(boxShadow: <BoxShadow>[
                         BoxShadow(
                           color: Colors.grey,
-                          offset: Offset(0, 4.0),
+                          offset: const Offset(0, 4.0),
                           blurRadius: 4.0,
                         ),
                       ], shape: BoxShape.circle, color: model.backgroundColor),
                       alignment: Alignment.center,
                       child: IconButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             behavior: SnackBarBehavior.floating,
                             duration: Duration(milliseconds: 2000),
                             shape: RoundedRectangleBorder(
@@ -111,18 +91,11 @@ class _ExportState extends SampleViewState {
                           ));
                           _renderPdf();
                         },
-                        icon: const Icon(Icons.picture_as_pdf,
-                            color: Colors.white),
+                        icon: Icon(Icons.picture_as_pdf, color: Colors.white),
                       )),
                 ],
               ))
         ]));
-  }
-
-  @override
-  void dispose() {
-    chartData.clear();
-    super.dispose();
   }
 
   /// Get default column chart
@@ -136,19 +109,19 @@ class _ExportState extends SampleViewState {
       plotAreaBorderColor: Colors.grey.withOpacity(0.7),
       title: ChartTitle(text: 'Average rainfall amount (mm) and rainy days'),
       primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
-        majorGridLines: const MajorGridLines(width: 0),
+        majorGridLines: MajorGridLines(width: 0),
         minimum: 0,
         maximum: 250,
         interval: 50,
       ),
-      axes: <ChartAxis>[
+      axes: [
         NumericAxis(
             name: 'YAxis',
             opposedPosition: true,
-            majorGridLines: const MajorGridLines(width: 0),
+            majorGridLines: MajorGridLines(width: 0),
             minimum: 0,
             maximum: 30,
             interval: 5)
@@ -160,37 +133,43 @@ class _ExportState extends SampleViewState {
 
   /// Get default column series
   List<ChartSeries<ChartSampleData, String>> _getDefaultColumnSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'Jan \'19', y: 184.9, yValue: 17),
+      ChartSampleData(x: 'Feb \'19', y: 160.3, yValue: 18),
+      ChartSampleData(x: 'Mar \'19', y: 70.6, yValue: 13),
+      ChartSampleData(x: 'Apr \'19', y: 201.4, yValue: 17),
+      ChartSampleData(x: 'May \'19', y: 86.7, yValue: 15),
+      ChartSampleData(x: 'Jun \'19', y: 151.5, yValue: 23),
+    ];
     return <ChartSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
           name: 'Rainy days',
           dataSource: chartData,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.yValue,
           yAxisName: 'YAxis'),
       LineSeries<ChartSampleData, String>(
           name: 'Rainfall amount',
           dataSource: chartData,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
-          markerSettings: const MarkerSettings(isVisible: true)),
+          markerSettings: MarkerSettings(isVisible: true)),
     ];
   }
 
   Future<void> _renderImage() async {
-    final List<int> bytes = await _readImageData();
+    final bytes = await _readImageData();
     if (bytes != null) {
       final Directory documentDirectory =
           await getApplicationDocumentsDirectory();
       final String path = documentDirectory.path;
-      const String imageName = 'cartesianchart.png';
-      imageCache.clear();
+      final String imageName = 'cartesianchart.png';
+      imageCache!.clear();
       final File file = File('$path/$imageName');
       file.writeAsBytesSync(bytes);
-      if (!mounted) {
-        return;
-      }
-      await Navigator.of(context).push<dynamic>(
-        MaterialPageRoute<dynamic>(
+
+      await Navigator.of(context).push(
+        MaterialPageRoute(
           builder: (BuildContext context) {
             return Scaffold(
               appBar: AppBar(),
@@ -210,9 +189,6 @@ class _ExportState extends SampleViewState {
   Future<void> _renderPdf() async {
     final PdfDocument document = PdfDocument();
     final PdfBitmap bitmap = PdfBitmap(await _readImageData());
-    if (!mounted) {
-      return;
-    }
     document.pageSettings.orientation =
         MediaQuery.of(context).orientation == Orientation.landscape
             ? PdfPageOrientation.landscape
@@ -226,14 +202,14 @@ class _ExportState extends SampleViewState {
         bitmap, Rect.fromLTWH(0, 0, pageSize.width, pageSize.height));
 
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5))),
       duration: Duration(milliseconds: 200),
       content: Text('Chart has been exported as PDF document.'),
     ));
-    final List<int> bytes = document.saveSync();
+    final List<int> bytes = document.save();
     document.dispose();
     await FileSaveHelper.saveAndLaunchFile(bytes, 'cartesian_chart.pdf');
   }
@@ -241,8 +217,7 @@ class _ExportState extends SampleViewState {
   Future<List<int>> _readImageData() async {
     final dart_ui.Image data =
         await _chartKey.currentState!.toImage(pixelRatio: 3.0);
-    final ByteData? bytes =
-        await data.toByteData(format: dart_ui.ImageByteFormat.png);
+    final bytes = await data.toByteData(format: dart_ui.ImageByteFormat.png);
     return bytes!.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
   }
 }

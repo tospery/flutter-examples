@@ -28,43 +28,49 @@ class _AnnotationsPdfState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'This sample shows how to create annotations such as rectangle, ellipse, polygon, and line in a PDF document. ',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 10, width: 30),
-            Row(
-              children: <Widget>[
-                Checkbox(
-                    value: flatten,
-                    activeColor: model.backgroundColor,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        flatten = value!;
-                      });
-                    }),
-                Text('Flatten Annotation',
-                    style: TextStyle(fontSize: 16, color: model.textColor)),
-              ],
-            ),
-            const SizedBox(height: 10, width: 30),
-            Align(
-                child: TextButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(model.backgroundColor),
-                padding: model.isMobile
-                    ? null
-                    : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15)),
-              ),
-              onPressed: _generatePDF,
-              child: const Text('Generate PDF',
-                  style: TextStyle(color: Colors.white)),
-            ))
-          ],
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'This sample shows how to create annotations such as rectangle, ellipse, polygon, and line in a PDF document. ',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 10, width: 30),
+              Container(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Checkbox(
+                      value: flatten,
+                      activeColor: model.backgroundColor,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          flatten = value!;
+                        });
+                      }),
+                  Text('Flatten Annotation',
+                      style: TextStyle(fontSize: 16, color: model.textColor)),
+                ],
+              )),
+              const SizedBox(height: 10, width: 30),
+              Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          model.backgroundColor),
+                      padding: model.isMobile
+                          ? null
+                          : MaterialStateProperty.all(EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15)),
+                    ),
+                    onPressed: _generatePDF,
+                    child: const Text('Generate PDF',
+                        style: TextStyle(color: Colors.white)),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -78,10 +84,11 @@ class _AnnotationsPdfState extends SampleViewState {
     final PdfPage page = document.pages[0];
     //Create a line annotation.
     final PdfLineAnnotation lineAnnotation = PdfLineAnnotation(
-        <int>[60, 710, 187, 710], 'Introduction',
+        [60, 710, 187, 710], 'Introduction',
         color: PdfColor(0, 0, 255),
         author: 'John Milton',
         border: PdfAnnotationBorder(2),
+        lineCaption: false,
         setAppearance: true,
         lineIntent: PdfLineIntent.lineDimension);
     //Add the line annotation to the page.
@@ -89,7 +96,7 @@ class _AnnotationsPdfState extends SampleViewState {
 
     //Create a ellipse Annotation.
     final PdfEllipseAnnotation ellipseAnnotation = PdfEllipseAnnotation(
-        const Rect.fromLTRB(475, 771, 549, 815), 'Page Number',
+        Rect.fromLTRB(475, 771, 549, 815), 'Page Number',
         author: 'John Milton',
         border: PdfAnnotationBorder(2),
         color: PdfColor(255, 0, 0),
@@ -99,7 +106,7 @@ class _AnnotationsPdfState extends SampleViewState {
 
     //Create a rectangle annotation.
     final PdfRectangleAnnotation rectangleAnnotation = PdfRectangleAnnotation(
-        const Rect.fromLTRB(57, 250, 565, 349), 'Usage',
+        Rect.fromLTRB(57, 250, 565, 349), 'Usage',
         color: PdfColor(255, 170, 0),
         border: PdfAnnotationBorder(2),
         author: 'John Milton',
@@ -108,22 +115,9 @@ class _AnnotationsPdfState extends SampleViewState {
     page.annotations.add(rectangleAnnotation);
 
     //Create a polygon annotation.
-    final PdfPolygonAnnotation polygonAnnotation = PdfPolygonAnnotation(<int>[
-      129,
-      356,
-      486,
-      356,
-      532,
-      333,
-      486,
-      310,
-      129,
-      310,
-      83,
-      333,
-      129,
-      356
-    ], 'Chapter 1 Conceptual Overview',
+    final PdfPolygonAnnotation polygonAnnotation = PdfPolygonAnnotation(
+        [129, 356, 486, 356, 532, 333, 486, 310, 129, 310, 83, 333, 129, 356],
+        'Chapter 1 Conceptual Overview',
         color: PdfColor(255, 0, 0),
         border: PdfAnnotationBorder(2),
         author: 'John Milton',
@@ -137,7 +131,7 @@ class _AnnotationsPdfState extends SampleViewState {
     }
 
     //Save and dispose the document.
-    final List<int> bytes = await document.save();
+    final List<int> bytes = document.save();
     document.dispose();
     //Launch file.
     await FileSaveHelper.saveAndLaunchFile(bytes, 'Annotations.pdf');

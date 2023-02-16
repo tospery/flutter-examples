@@ -33,8 +33,10 @@ class _RangePointerExampleState extends SampleViewState {
             showTicks: false,
             startAngle: 270,
             endAngle: 270,
+            minimum: 0,
+            maximum: 100,
             radiusFactor: 0.8,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
                 thicknessUnit: GaugeSizeUnit.factor, thickness: 0.15),
             annotations: <GaugeAnnotation>[
               GaugeAnnotation(
@@ -42,36 +44,41 @@ class _RangePointerExampleState extends SampleViewState {
                   widget: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(
-                        '50',
-                        style: TextStyle(
-                            fontFamily: 'Times',
-                            fontSize: isCardView ? 18 : 22,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic),
+                      Container(
+                        child: Text(
+                          '50',
+                          style: TextStyle(
+                              fontFamily: 'Times',
+                              fontSize: isCardView ? 18 : 22,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.italic),
+                        ),
                       ),
-                      Text(
-                        ' / 100',
-                        style: TextStyle(
-                            fontFamily: 'Times',
-                            fontSize: isCardView ? 18 : 22,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.italic),
-                      ),
+                      Container(
+                        child: Text(
+                          ' / 100',
+                          style: TextStyle(
+                              fontFamily: 'Times',
+                              fontSize: isCardView ? 18 : 22,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.italic),
+                        ),
+                      )
                     ],
                   )),
             ],
-            pointers: const <GaugePointer>[
+            pointers: <GaugePointer>[
               RangePointer(
                   value: 50,
                   cornerStyle: CornerStyle.bothCurve,
                   enableAnimation: true,
                   animationDuration: 1200,
+                  animationType: AnimationType.ease,
                   sizeUnit: GaugeSizeUnit.factor,
-                  gradient: SweepGradient(
+                  gradient: const SweepGradient(
                       colors: <Color>[Color(0xFF6A6EF6), Color(0xFFDB82F5)],
                       stops: <double>[0.25, 0.75]),
-                  color: Color(0xFF00A8B5),
+                  color: const Color(0xFF00A8B5),
                   width: 0.15),
             ]),
       ],

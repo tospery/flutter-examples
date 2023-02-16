@@ -29,7 +29,7 @@ List<double> _yPointValues = <double>[];
 
 class _LineDefaultState extends SampleViewState {
   _LineDefaultState();
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
@@ -59,7 +59,7 @@ class _LineDefaultState extends SampleViewState {
           minimum: 1,
           maximum: 3.5,
           interval: 0.5,
-          majorGridLines: const MajorGridLines(color: Colors.transparent)),
+          majorGridLines: MajorGridLines(color: Colors.transparent)),
       series: <ChartSeries<_ChartData, DateTime>>[
         LineSeries<_ChartData, DateTime>(
           animationDuration: 0,
@@ -72,14 +72,13 @@ class _LineDefaultState extends SampleViewState {
           yValueMapper: (_ChartData sales, _) => sales.y,
           enableTooltip: false,
           width: 2,
-          color: model.themeData.colorScheme.brightness == Brightness.dark
+          color: model.themeData.brightness == Brightness.dark
               ? Colors.grey
               : Colors.black,
         ),
         LineSeries<_ChartData, DateTime>(
             onCreateRenderer: (ChartSeries<dynamic, dynamic> series) {
-              return _CustomLineSeriesRenderer(
-                  series as LineSeries<_ChartData, DateTime>);
+              return _CustomLineSeriesRenderer(series as LineSeries);
             },
             animationDuration: 2500,
             dataSource: <_ChartData>[
@@ -89,7 +88,7 @@ class _LineDefaultState extends SampleViewState {
               _ChartData(DateTime(2018, 10), 2.5),
               _ChartData(DateTime(2018, 11), 2.2),
               _ChartData(DateTime(2018, 12), 1.9),
-              _ChartData(DateTime(2019), 1.6),
+              _ChartData(DateTime(2019, 1), 1.6),
               _ChartData(DateTime(2019, 2), 1.5),
               _ChartData(DateTime(2019, 3), 1.9),
               _ChartData(DateTime(2019, 4), 2),
@@ -97,19 +96,10 @@ class _LineDefaultState extends SampleViewState {
             xValueMapper: (_ChartData sales, _) => sales.x,
             yValueMapper: (_ChartData sales, _) => sales.y,
             width: 2,
-            markerSettings: const MarkerSettings(isVisible: true)),
+            markerSettings: MarkerSettings(isVisible: true)),
       ],
       tooltipBehavior: _tooltipBehavior,
     );
-  }
-
-  @override
-  void dispose() {
-    _xValues.clear();
-    _yValues.clear();
-    _xPointValues.clear();
-    _yPointValues.clear();
-    super.dispose();
   }
 }
 

@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 class CustomDirectionalButtons extends StatefulWidget {
   /// direction arrows surronding in text widget
   const CustomDirectionalButtons({
-    double this.minValue = 0,
-    required double this.maxValue,
-    required double this.initialValue,
-    required ValueChanged<double> this.onChanged,
-    double this.step = 1,
-    bool this.needNull = false,
-    bool this.loop = false,
+    Key? key,
+    this.minValue = 0,
+    this.maxValue,
+    this.initialValue,
+    this.onChanged,
+    this.step = 1,
+    this.loop = false,
     this.horizontal = true,
     this.style,
-    double this.padding = 0.0,
-    Color this.iconColor = Colors.black,
+    this.padding = 0.0,
+    this.iconColor = Colors.black,
   })  : assert(minValue != null),
         assert(maxValue != null),
         assert(initialValue != null),
@@ -61,16 +61,13 @@ class CustomDirectionalButtons extends StatefulWidget {
   /// Color of the icon button
   final Color? iconColor;
 
-  /// Add null instead of 0.
-  final bool? needNull;
-
   @override
   State<StatefulWidget> createState() => _CustomButton();
 }
 
 /// Contains the direction (increse/decrease)
 enum _CountDirection {
-  /// To increase the counter
+  /// To ncrease the counter
   Up,
 
   /// To decrese the counter
@@ -89,13 +86,8 @@ class _CustomButton extends State<CustomDirectionalButtons> {
   /// Calculate next value for the CustomDirectionalButtons
   void _count(_CountDirection countDirection) {
     if (countDirection == _CountDirection.Up) {
-      // To set the next value after null.
-      if (_counter.isNaN) {
-        setState(() => _counter = 0 + widget.step!);
-      }
-
       /// Make sure you can't go over `maxValue` unless `loop == true`
-      else if (_counter + widget.step! > widget.maxValue!) {
+      if (_counter + widget.step! > widget.maxValue!) {
         if (widget.loop!) {
           setState(() {
             /// Calculate the correct value if you go over maxValue in a loop
@@ -105,12 +97,7 @@ class _CustomButton extends State<CustomDirectionalButtons> {
           });
         }
       } else {
-        if ((widget.initialValue!.isNaN || widget.needNull!) &&
-            (_counter + widget.step! == 0)) {
-          setState(() => _counter = double.nan);
-        } else {
-          setState(() => _counter += widget.step!);
-        }
+        setState(() => _counter += widget.step!);
       }
     } else {
       if (_counter - widget.step! < widget.minValue!) {
@@ -122,14 +109,7 @@ class _CustomButton extends State<CustomDirectionalButtons> {
           });
         }
       } else {
-        if ((widget.initialValue!.isNaN || widget.needNull!) &&
-            _counter - widget.step! == 0) {
-          setState(() => _counter = double.nan);
-        } else if (_counter.isNaN) {
-          setState(() => _counter = 0 - widget.step!);
-        } else {
-          setState(() => _counter -= widget.step!);
-        }
+        setState(() => _counter -= widget.step!);
       }
     }
 
@@ -139,17 +119,9 @@ class _CustomButton extends State<CustomDirectionalButtons> {
   Widget _getCount() {
     return Text(
         widget.initialValue! % 1 == 0 && widget.step! % 1 == 0
-            ? ((_counter.isNaN)
-                ? 'null'
-                : ((widget.needNull!)
-                    ? (_counter.toInt()).toString()
-                    : _counter.toStringAsFixed(0)))
-            : (_counter.isNaN)
-                ? 'null'
-                : (widget.needNull!)
-                    ? (_counter.toInt()).toString()
-                    : _counter.toStringAsFixed(1),
-        style: widget.style ?? Theme.of(context).textTheme.headlineSmall);
+            ? _counter.toStringAsFixed(0)
+            : _counter.toStringAsFixed(1),
+        style: widget.style ?? Theme.of(context).textTheme.headline5);
   }
 
   /// Return different widgets for a horizontal and vertical BuildPicker
@@ -159,7 +131,7 @@ class _CustomButton extends State<CustomDirectionalButtons> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               IconButton(
-                icon: const Icon(Icons.arrow_drop_up),
+                icon: Icon(Icons.arrow_drop_up),
                 padding: EdgeInsets.only(bottom: widget.padding!),
                 alignment: Alignment.bottomCenter,
                 color: widget.iconColor,
@@ -171,7 +143,7 @@ class _CustomButton extends State<CustomDirectionalButtons> {
               ),
               _getCount(),
               IconButton(
-                  icon: const Icon(Icons.arrow_drop_down),
+                  icon: Icon(Icons.arrow_drop_down),
                   padding: EdgeInsets.only(top: widget.padding!),
                   alignment: Alignment.topCenter,
                   color: widget.iconColor,
@@ -183,10 +155,12 @@ class _CustomButton extends State<CustomDirectionalButtons> {
             ],
           )
         : Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               IconButton(
-                  icon: const Icon(Icons.arrow_left),
+                  icon: Icon(Icons.arrow_left),
                   padding: EdgeInsets.only(right: widget.padding!),
+                  alignment: Alignment.center,
                   color: widget.iconColor,
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -195,8 +169,9 @@ class _CustomButton extends State<CustomDirectionalButtons> {
                   }),
               _getCount(),
               IconButton(
-                icon: const Icon(Icons.arrow_right),
+                icon: Icon(Icons.arrow_right),
                 padding: EdgeInsets.only(left: widget.padding!),
+                alignment: Alignment.center,
                 color: widget.iconColor,
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,

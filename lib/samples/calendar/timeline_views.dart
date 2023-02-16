@@ -53,9 +53,8 @@ class _TimelineViewsCalendarState extends SampleViewState {
           child: Container(
               color: model.cardThemeColor,
               child: Theme(
-                  data: model.themeData.copyWith(
-                      colorScheme: model.themeData.colorScheme
-                          .copyWith(secondary: model.backgroundColor)),
+                  data: model.themeData
+                      .copyWith(accentColor: model.backgroundColor),
                   child: _getTimelineViewsCalendar(
                       _calendarController, _events, _onViewChanged))),
         )
@@ -78,7 +77,7 @@ class _TimelineViewsCalendarState extends SampleViewState {
       }
     }
 
-    SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+    SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
       setState(() {
         if (_calendarController.view == CalendarView.timelineMonth) {
           _blackoutDates = blockedDates;
@@ -100,8 +99,8 @@ class _TimelineViewsCalendarState extends SampleViewState {
       final int count =
           model.isWebFullView ? 1 + random.nextInt(2) : 1 + random.nextInt(3);
       for (int j = 0; j < count; j++) {
-        final DateTime startDate =
-            DateTime(date.year, date.month, date.day, 8 + random.nextInt(8));
+        final DateTime startDate = DateTime(
+            date.year, date.month, date.day, 8 + random.nextInt(8), 0, 0);
         appointment.add(_Meeting(
             _subjectCollection[random.nextInt(7)],
             '',
@@ -153,12 +152,12 @@ class _TimelineViewsCalendarState extends SampleViewState {
 
   /// Returns the calendar widget based on the properties passed.
   SfCalendar _getTimelineViewsCalendar(
-      [CalendarController? calendarController,
-      CalendarDataSource? calendarDataSource,
+      [CalendarController? _calendarController,
+      CalendarDataSource? _calendarDataSource,
       ViewChangedCallback? viewChangedCallback]) {
     return SfCalendar(
-        controller: calendarController,
-        dataSource: calendarDataSource,
+        controller: _calendarController,
+        dataSource: _calendarDataSource,
         allowedViews: _allowedViews,
         showNavigationArrow: model.isWebFullView,
         showDatePickerButton: true,
@@ -167,8 +166,8 @@ class _TimelineViewsCalendarState extends SampleViewState {
         blackoutDatesTextStyle: TextStyle(
             decoration: model.isWebFullView ? null : TextDecoration.lineThrough,
             color: Colors.red),
-        timeSlotViewSettings: const TimeSlotViewSettings(
-            minimumAppointmentDuration: Duration(minutes: 60)));
+        timeSlotViewSettings: TimeSlotViewSettings(
+            minimumAppointmentDuration: const Duration(minutes: 60)));
   }
 }
 

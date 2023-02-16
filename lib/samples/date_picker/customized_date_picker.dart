@@ -58,7 +58,7 @@ class _CustomizedDatePickerState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    final Widget datePicker = Card(
+    final Widget _datePicker = Card(
       elevation: 10,
       margin: model.isWebFullView
           ? const EdgeInsets.fromLTRB(30, 60, 30, 0)
@@ -70,7 +70,7 @@ class _CustomizedDatePickerState extends SampleViewState {
     );
     return Scaffold(
       backgroundColor: model.themeData == null ||
-              model.themeData.colorScheme.brightness == Brightness.light
+              model.themeData.brightness == Brightness.light
           ? null
           : const Color(0x00171a21),
       body: Column(children: <Widget>[
@@ -78,9 +78,10 @@ class _CustomizedDatePickerState extends SampleViewState {
             flex: model.isWebFullView ? 9 : 8,
             child: model.isWebFullView
                 ? Center(
-                    child: SizedBox(width: 400, height: 600, child: datePicker))
+                    child:
+                        Container(width: 400, height: 600, child: _datePicker))
                 : ListView(children: <Widget>[
-                    SizedBox(height: 450, child: datePicker)
+                    Container(height: 450, child: _datePicker)
                   ])),
         Expanded(
             flex: model.isWebFullView
@@ -125,6 +126,7 @@ class _CustomizedDatePickerState extends SampleViewState {
           )),
       monthCellStyle: DateRangePickerMonthCellStyle(
           cellDecoration: _MonthCellDecoration(
+              borderColor: null,
               backgroundColor: monthCellBackground,
               showIndicator: false,
               indicatorColor: indicatorColor),
@@ -134,6 +136,7 @@ class _CustomizedDatePickerState extends SampleViewState {
               showIndicator: false,
               indicatorColor: indicatorColor),
           specialDatesDecoration: _MonthCellDecoration(
+              borderColor: null,
               backgroundColor: monthCellBackground,
               showIndicator: true,
               indicatorColor: indicatorColor),
@@ -164,6 +167,7 @@ class _CustomizedDatePickerState extends SampleViewState {
                 color: cellTextColor,
                 fontWeight: FontWeight.w600)),
         dayFormat: 'EEE',
+        showTrailingAndLeadingDates: false,
         specialDates: specialDates,
       ),
     );

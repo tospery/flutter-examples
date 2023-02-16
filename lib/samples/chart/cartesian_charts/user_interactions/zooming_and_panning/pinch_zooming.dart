@@ -21,23 +21,17 @@ class DefaultPanning extends SampleView {
 /// State class of the chart with pinch zooming.
 class _DefaultPanningState extends SampleViewState {
   _DefaultPanningState();
-  late List<String> _zoomModeTypeList;
-  late String _selectedModeType;
-  late ZoomMode _zoomModeType;
+  final List<String> _zoomModeTypeList = <String>['x', 'y', 'xy'].toList();
+  late String _selectedModeType = 'x';
+  late ZoomMode _zoomModeType = ZoomMode.x;
   late bool _enableAnchor;
-  late GlobalKey<State> chartKey;
-  late num left, top;
-  late List<ChartSampleData> randomData;
+  GlobalKey<State> chartKey = GlobalKey<State>();
+  num left = 0, top = 0;
   @override
   void initState() {
-    _zoomModeTypeList = <String>['x', 'y', 'xy'].toList();
     _selectedModeType = 'x';
     _zoomModeType = ZoomMode.x;
-    chartKey = GlobalKey<State>();
     _enableAnchor = true;
-    left = 0;
-    top = 0;
-    getDateTimeData();
     super.initState();
   }
 
@@ -55,33 +49,33 @@ class _DefaultPanningState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              Text('Zoom mode ',
-                  style: TextStyle(
-                    color: model.textColor,
-                    fontSize: 16,
-                  )),
-              Container(
-                padding: const EdgeInsets.fromLTRB(70, 0, 40, 0),
-                height: 50,
-                child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
-                    value: _selectedModeType,
-                    items: _zoomModeTypeList.map((String value) {
-                      return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'x',
-                          child: Text(value,
-                              style: TextStyle(color: model.textColor)));
-                    }).toList(),
-                    onChanged: (String? value) {
-                      _onZoomTypeChange(value.toString());
-                      stateSetter(() {});
-                    }),
-              ),
-            ],
+          Container(
+            child: Row(
+              children: <Widget>[
+                Text('Zoom mode ',
+                    style: TextStyle(
+                      color: model.textColor,
+                      fontSize: 16,
+                    )),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(70, 0, 40, 0),
+                  height: 50,
+                  child: DropdownButton<String>(
+                      underline: Container(color: Color(0xFFBDBDBD), height: 1),
+                      value: _selectedModeType,
+                      items: _zoomModeTypeList.map((String value) {
+                        return DropdownMenuItem<String>(
+                            value: (value != null) ? value : 'x',
+                            child: Text('$value',
+                                style: TextStyle(color: model.textColor)));
+                      }).toList(),
+                      onChanged: (String? value) {
+                        _onZoomTypeChange(value.toString());
+                        stateSetter(() {});
+                      }),
+                ),
+              ],
+            ),
           ),
           Visibility(
             visible: _selectedModeType == 'x' ? true : false,
@@ -92,7 +86,7 @@ class _DefaultPanningState extends SampleViewState {
                       color: model.textColor,
                       fontSize: 16,
                     )),
-                SizedBox(
+                Container(
                     width: 90,
                     child: CheckboxListTile(
                         activeColor: model.backgroundColor,
@@ -118,11 +112,11 @@ class _DefaultPanningState extends SampleViewState {
         key: chartKey,
         plotAreaBorderWidth: 0,
         primaryXAxis: DateTimeAxis(
-            name: 'X-Axis', majorGridLines: const MajorGridLines(width: 0)),
+            name: 'X-Axis', majorGridLines: MajorGridLines(width: 0)),
         primaryYAxis: NumericAxis(
-            axisLine: const AxisLine(width: 0),
+            axisLine: AxisLine(width: 0),
             anchorRangeToVisiblePoints: _enableAnchor,
-            majorTickLines: const MajorTickLines(size: 0)),
+            majorTickLines: MajorTickLines(size: 0)),
         series: getDefaultPanningSeries(),
         zoomPanBehavior: ZoomPanBehavior(
 
@@ -136,24 +130,35 @@ class _DefaultPanningState extends SampleViewState {
   /// Returns the list of chart series
   /// which need to render on the chart with pinch zooming.
   List<AreaSeries<ChartSampleData, DateTime>> getDefaultPanningSeries() {
+    final List<Color> color = <Color>[];
+    color.add(Colors.teal[50]!);
+    color.add(Colors.teal[200]!);
+    color.add(Colors.teal);
+
+    final List<double> stops = <double>[];
+    stops.add(0.0);
+    stops.add(0.4);
+    stops.add(1.0);
+
+    final LinearGradient gradientColors = LinearGradient(
+        colors: color,
+        stops: stops,
+        begin: Alignment.bottomCenter,
+        end: Alignment.topCenter);
     return <AreaSeries<ChartSampleData, DateTime>>[
       AreaSeries<ChartSampleData, DateTime>(
-          dataSource: randomData,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          dataSource: getDateTimeData(),
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
-          gradient: LinearGradient(
-              colors: <Color>[Colors.teal[50]!, Colors.teal[200]!, Colors.teal],
-              stops: const <double>[0.0, 0.4, 1.0],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter))
+          gradient: gradientColors)
     ];
   }
 
   /// Method to get chart data points.
-  void getDateTimeData() {
-    randomData = <ChartSampleData>[
+  List<ChartSampleData> getDateTimeData() {
+    final List<ChartSampleData> randomData = <ChartSampleData>[
       ChartSampleData(x: DateTime(1950, 3, 31), y: 80.7),
-      ChartSampleData(x: DateTime(1950, 5), y: 80.2),
+      ChartSampleData(x: DateTime(1950, 5, 1), y: 80.2),
       ChartSampleData(x: DateTime(1950, 6, 2), y: 79.3),
       ChartSampleData(x: DateTime(1950, 7, 3), y: 78.6),
       ChartSampleData(x: DateTime(1950, 8, 4), y: 79.5),
@@ -183,8 +188,8 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1952, 08, 28), y: 79.6),
       ChartSampleData(x: DateTime(1952, 09, 29), y: 80.4),
       ChartSampleData(x: DateTime(1952, 10, 30), y: 80.9),
-      ChartSampleData(x: DateTime(1952, 12), y: 81.1),
-      ChartSampleData(x: DateTime(1953), y: 80.3),
+      ChartSampleData(x: DateTime(1952, 12, 01), y: 81.1),
+      ChartSampleData(x: DateTime(1953, 01, 01), y: 80.3),
       ChartSampleData(x: DateTime(1953, 02, 02), y: 81.0),
       ChartSampleData(x: DateTime(1953, 03, 06), y: 81.1),
       ChartSampleData(x: DateTime(1953, 04, 04), y: 81.2),
@@ -214,8 +219,8 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1955, 04, 28), y: 78.3),
       ChartSampleData(x: DateTime(1955, 05, 30), y: 77.4),
       ChartSampleData(x: DateTime(1955, 06, 30), y: 78.0),
-      ChartSampleData(x: DateTime(1955, 08), y: 77.0),
-      ChartSampleData(x: DateTime(1955, 09), y: 77.6),
+      ChartSampleData(x: DateTime(1955, 08, 01), y: 77.0),
+      ChartSampleData(x: DateTime(1955, 09, 01), y: 77.6),
       ChartSampleData(x: DateTime(1955, 10, 03), y: 76.7),
       ChartSampleData(x: DateTime(1955, 11, 04), y: 76.5),
       ChartSampleData(x: DateTime(1955, 12, 05), y: 75.8),
@@ -304,7 +309,7 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1963, 01, 27), y: 80.1),
       ChartSampleData(x: DateTime(1963, 02, 27), y: 80.4),
       ChartSampleData(x: DateTime(1963, 03, 31), y: 80.5),
-      ChartSampleData(x: DateTime(1963, 05), y: 80.0),
+      ChartSampleData(x: DateTime(1963, 05, 01), y: 80.0),
       ChartSampleData(x: DateTime(1963, 06, 02), y: 80.4),
       ChartSampleData(x: DateTime(1963, 07, 04), y: 80.3),
       ChartSampleData(x: DateTime(1963, 08, 02), y: 81.3),
@@ -366,8 +371,8 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1968, 05, 29), y: 75.9),
       ChartSampleData(x: DateTime(1968, 06, 29), y: 76.3),
       ChartSampleData(x: DateTime(1968, 07, 31), y: 75.5),
-      ChartSampleData(x: DateTime(1968, 09), y: 75.3),
-      ChartSampleData(x: DateTime(1968, 10), y: 75.0),
+      ChartSampleData(x: DateTime(1968, 09, 01), y: 75.3),
+      ChartSampleData(x: DateTime(1968, 10, 01), y: 75.0),
       ChartSampleData(x: DateTime(1968, 11, 02), y: 75.3),
       ChartSampleData(x: DateTime(1968, 12, 03), y: 74.8),
       ChartSampleData(x: DateTime(1969, 01, 04), y: 74.4),
@@ -396,7 +401,7 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1970, 12, 27), y: 77.2),
       ChartSampleData(x: DateTime(1971, 01, 28), y: 77.2),
       ChartSampleData(x: DateTime(1971, 02, 28), y: 76.2),
-      ChartSampleData(x: DateTime(1971, 04), y: 76.3),
+      ChartSampleData(x: DateTime(1971, 04, 01), y: 76.3),
       ChartSampleData(x: DateTime(1971, 05, 03), y: 75.6),
       ChartSampleData(x: DateTime(1971, 06, 03), y: 75.1),
       ChartSampleData(x: DateTime(1971, 07, 05), y: 74.5),
@@ -426,10 +431,10 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1973, 07, 29), y: 81.2),
       ChartSampleData(x: DateTime(1973, 08, 29), y: 81.1),
       ChartSampleData(x: DateTime(1973, 09, 30), y: 81.3),
-      ChartSampleData(x: DateTime(1973, 11), y: 81.3),
+      ChartSampleData(x: DateTime(1973, 11, 01), y: 81.3),
       ChartSampleData(x: DateTime(1973, 11, 30), y: 80.6),
-      ChartSampleData(x: DateTime(1974), y: 81.0),
-      ChartSampleData(x: DateTime(1974, 02), y: 81.6),
+      ChartSampleData(x: DateTime(1974, 01, 01), y: 81.0),
+      ChartSampleData(x: DateTime(1974, 02, 01), y: 81.6),
       ChartSampleData(x: DateTime(1974, 03, 05), y: 80.9),
       ChartSampleData(x: DateTime(1974, 04, 05), y: 80.0),
       ChartSampleData(x: DateTime(1974, 05, 07), y: 80.8),
@@ -457,8 +462,8 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1976, 03, 28), y: 78.0),
       ChartSampleData(x: DateTime(1976, 04, 28), y: 78.0),
       ChartSampleData(x: DateTime(1976, 05, 30), y: 78.6),
-      ChartSampleData(x: DateTime(1976, 07), y: 79.5),
-      ChartSampleData(x: DateTime(1976, 08), y: 79.1),
+      ChartSampleData(x: DateTime(1976, 07, 01), y: 79.5),
+      ChartSampleData(x: DateTime(1976, 08, 01), y: 79.1),
       ChartSampleData(x: DateTime(1976, 09, 02), y: 79.9),
       ChartSampleData(x: DateTime(1976, 10, 03), y: 79.9),
       ChartSampleData(x: DateTime(1976, 11, 04), y: 79.0),
@@ -479,6 +484,7 @@ class _DefaultPanningState extends SampleViewState {
       ChartSampleData(x: DateTime(1978, 02, 18), y: 82.0),
       ChartSampleData(x: DateTime(1978, 03, 21), y: 82.0),
     ];
+    return randomData;
   }
 
   /// Method to update the selected zoom type in the chart on change.

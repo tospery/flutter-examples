@@ -3,11 +3,10 @@ import 'dart:math' as math;
 
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -18,8 +17,6 @@ import '../../../../../model/sample_view.dart';
 
 ///Renders range slider with customized tick
 class VerticalTickCustomizedRangeSlider extends SampleView {
-  /// Creates range slider with customized tick
-  const VerticalTickCustomizedRangeSlider(Key key) : super(key: key);
   @override
   _VerticalTickCustomizedRangeSliderState createState() =>
       _VerticalTickCustomizedRangeSliderState();
@@ -42,9 +39,10 @@ class _VerticalTickCustomizedRangeSliderState extends SampleViewState {
           activeMinorTickColor: _activeColor,
           thumbColor: _activeColor,
           overlayColor: _activeColor.withOpacity(0.24),
-          tickOffset: Offset.zero,
+          tickOffset: const Offset(0, 0),
           tooltipBackgroundColor: _activeColor),
       child: SfRangeSlider.vertical(
+        min: 0.0,
         max: 100.0,
         values: _values,
         onChanged: (SfRangeValues values) {
@@ -79,11 +77,11 @@ class _TickShape extends SfTickShape {
         ? offset.dy < thumbCenter!.dy
         : offset.dy > startThumbCenter!.dy || offset.dy < endThumbCenter.dy;
     final Color begin = isTickRightOfThumb
-        ? themeData.disabledInactiveTickColor!
-        : themeData.disabledActiveTickColor!;
+        ? themeData.disabledInactiveTickColor
+        : themeData.disabledActiveTickColor;
     final Color end = isTickRightOfThumb
-        ? themeData.inactiveTickColor!
-        : themeData.activeTickColor!;
+        ? themeData.inactiveTickColor
+        : themeData.activeTickColor;
     final Paint paint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = tickSize.height
@@ -124,11 +122,11 @@ class _MinorTickShape extends SfTickShape {
         ? offset.dy < thumbCenter!.dy
         : offset.dy > startThumbCenter!.dy || offset.dy < endThumbCenter.dy;
     final Color begin = isMinorTickRightOfThumb
-        ? themeData.disabledInactiveMinorTickColor!
-        : themeData.disabledActiveMinorTickColor!;
+        ? themeData.disabledInactiveMinorTickColor
+        : themeData.disabledActiveMinorTickColor;
     final Color end = isMinorTickRightOfThumb
-        ? themeData.inactiveMinorTickColor!
-        : themeData.activeMinorTickColor!;
+        ? themeData.inactiveMinorTickColor
+        : themeData.activeMinorTickColor;
     final Paint paint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = minorTickSize.height

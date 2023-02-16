@@ -38,6 +38,8 @@ class _GaugeTemperatureMonitorExampleState extends SampleViewState {
       enableLoadingAnimation: true,
       axes: <RadialAxis>[
         RadialAxis(
+            startAngle: 130,
+            endAngle: 50,
             minimum: -50,
             maximum: 150,
             interval: isCardView ? 20 : _interval,
@@ -82,25 +84,30 @@ class _GaugeTemperatureMonitorExampleState extends SampleViewState {
                   endWidth: 0.265,
                   color: const Color.fromRGBO(238, 79, 34, 0.65)),
             ],
-            annotations: const <GaugeAnnotation>[
+            annotations: <GaugeAnnotation>[
               GaugeAnnotation(
                   angle: 90,
                   positionFactor: 0.35,
-                  widget: Text('Temp.°C',
-                      style:
-                          TextStyle(color: Color(0xFFF8B195), fontSize: 16))),
+                  widget: Container(
+                      child: const Text('Temp.°C',
+                          style: TextStyle(
+                              color: Color(0xFFF8B195), fontSize: 16)))),
               GaugeAnnotation(
-                angle: 90,
-                positionFactor: 0.8,
-                widget: Text(
-                  '  22.5  ',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                ),
-              )
+                  angle: 90,
+                  positionFactor: 0.8,
+                  widget: Container(
+                    child: const Text(
+                      '  22.5  ',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  ))
             ],
             pointers: <GaugePointer>[
               NeedlePointer(
                 value: 22.5,
+                needleLength: 0.6,
+                lengthUnit: GaugeSizeUnit.factor,
                 needleStartWidth: isCardView ? 0 : 1,
                 needleEndWidth: isCardView ? 5 : 8,
                 animationType: AnimationType.easeOutBack,
@@ -108,20 +115,22 @@ class _GaugeTemperatureMonitorExampleState extends SampleViewState {
                 animationDuration: 1200,
                 knobStyle: KnobStyle(
                     knobRadius: isCardView ? 0.06 : 0.09,
+                    sizeUnit: GaugeSizeUnit.factor,
                     borderColor: const Color(0xFFF8B195),
                     color: Colors.white,
                     borderWidth: isCardView ? 0.035 : 0.05),
                 tailStyle: TailStyle(
                     color: const Color(0xFFF8B195),
                     width: isCardView ? 4 : 8,
+                    lengthUnit: GaugeSizeUnit.factor,
                     length: isCardView ? 0.15 : 0.2),
                 needleColor: const Color(0xFFF8B195),
               )
             ],
             axisLabelStyle: GaugeTextStyle(fontSize: isCardView ? 10 : 12),
-            majorTickStyle: const MajorTickStyle(
-                length: 0.25, lengthUnit: GaugeSizeUnit.factor),
-            minorTickStyle: const MinorTickStyle(
+            majorTickStyle: MajorTickStyle(
+                length: 0.25, lengthUnit: GaugeSizeUnit.factor, thickness: 1.5),
+            minorTickStyle: MinorTickStyle(
                 length: 0.13, lengthUnit: GaugeSizeUnit.factor, thickness: 1))
       ],
     );

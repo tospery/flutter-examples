@@ -35,14 +35,14 @@ class _RadialImageAnnotationState extends SampleViewState {
             endAngle: 360,
             showTicks: false,
             showLabels: false,
-            axisLineStyle: const AxisLineStyle(thickness: 20),
-            pointers: const <GaugePointer>[
+            axisLineStyle: AxisLineStyle(thickness: 20),
+            pointers: <GaugePointer>[
               RangePointer(
                   value: 73,
                   width: 20,
-                  color: Color(0xFFFFCD60),
+                  color: const Color(0xFFFFCD60),
                   enableAnimation: true,
-                  gradient: SweepGradient(
+                  gradient: const SweepGradient(
                       colors: <Color>[Color(0xFFFCE38A), Color(0xFFF38181)],
                       stops: <double>[0.25, 0.75]),
                   cornerStyle: CornerStyle.bothCurve)
@@ -64,11 +64,13 @@ class _RadialImageAnnotationState extends SampleViewState {
                           )),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 2, 0, 0),
-                        child: Text('73°F',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: isCardView ? 15.00 : 25)),
-                      ),
+                        child: Container(
+                          child: Text('73°F',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: isCardView ? 15.00 : 25)),
+                        ),
+                      )
                     ],
                   ),
                   angle: 270,

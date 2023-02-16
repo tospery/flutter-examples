@@ -4,7 +4,6 @@ import 'dart:ui';
 
 /// Package imports
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -35,39 +34,34 @@ class _SplineVerticalState extends SampleViewState {
     return SfCartesianChart(
       title: ChartTitle(text: isCardView ? '' : 'Product sales prediction'),
       plotAreaBorderWidth: 0,
-      primaryXAxis: DateTimeAxis(
-        majorGridLines: const MajorGridLines(width: 0),
-        intervalType: DateTimeIntervalType.years,
-        interval: model.isWebFullView ? 1 : 2,
-        edgeLabelPlacement: EdgeLabelPlacement.shift,
-        dateFormat: DateFormat.y(),
+      primaryXAxis: NumericAxis(
+        majorGridLines: MajorGridLines(width: 0),
       ),
       primaryYAxis: NumericAxis(
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           minimum: 1.2,
           maximum: 2.4,
           interval: 0.2),
-      series: <ChartSeries<ChartSampleData, DateTime>>[
-        SplineSeries<ChartSampleData, DateTime>(
+      series: <ChartSeries<ChartSampleData, num>>[
+        SplineSeries<ChartSampleData, num>(
             onCreateRenderer: (ChartSeries<dynamic, dynamic> series) {
-              return _CustomSplineSeriesRenderer(
-                  series as SplineSeries<ChartSampleData, DateTime>);
+              return _CustomSplineSeriesRenderer(series as SplineSeries);
             },
             dataSource: <ChartSampleData>[
-              ChartSampleData(x: DateTime(2016), y: 2),
-              ChartSampleData(x: DateTime(2017), y: 1.5),
-              ChartSampleData(x: DateTime(2018), y: 2),
-              ChartSampleData(x: DateTime(2019), y: 1.75),
-              ChartSampleData(x: DateTime(2020), y: 1.5),
-              ChartSampleData(x: DateTime(2021), y: 2),
-              ChartSampleData(x: DateTime(2022), y: 1.5),
-              ChartSampleData(x: DateTime(2023), y: 2.2),
-              ChartSampleData(x: DateTime(2024), y: 1.9),
+              ChartSampleData(x: 2016, y: 2),
+              ChartSampleData(x: 2017, y: 1.5),
+              ChartSampleData(x: 2018, y: 2),
+              ChartSampleData(x: 2019, y: 1.75),
+              ChartSampleData(x: 2020, y: 1.5),
+              ChartSampleData(x: 2021, y: 2),
+              ChartSampleData(x: 2022, y: 1.5),
+              ChartSampleData(x: 2023, y: 2.2),
+              ChartSampleData(x: 2024, y: 1.9),
             ],
-            xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+            xValueMapper: (ChartSampleData sales, _) => sales.x,
             yValueMapper: (ChartSampleData sales, _) => sales.y,
             width: 2,
-            dashArray: const <double>[10, 5]),
+            dashArray: <double>[10, 5]),
       ],
     );
   }
@@ -89,8 +83,8 @@ class _CustomSplineSeriesRenderer extends SplineSeriesRenderer {
 
 late List<double> _yVal;
 late List<double> _xVal;
-late double? _textXOffset, _textYOffset;
-late double? _text1XOffset, _text1YOffset;
+double? _textXOffset, _textYOffset;
+double? _text1XOffset, _text1YOffset;
 
 /// custom spline painter class for customized spline series.
 class _SplineCustomPainter extends SplineSegment {
@@ -193,13 +187,13 @@ class _SplineCustomPainter extends SplineSegment {
 
 void _drawDashedLine(Canvas canvas, CartesianSeries<dynamic, dynamic> series,
     Paint paint, Path path, bool isSeries) {
-  bool even = false;
+  bool _even = false;
   for (int i = 1; i < series.dashArray.length; i = i + 2) {
     if (series.dashArray[i] == 0) {
-      even = true;
+      _even = true;
     }
   }
-  if (even == false) {
+  if (_even == false) {
     paint.isAntiAlias = true;
     canvas.drawPath(
         _dashPath(
@@ -220,22 +214,22 @@ Path? _dashPath(
   if (source == null) {
     return null;
   }
-  const double intialValue = 0.0;
-  final Path path = Path();
+  const double _intialValue = 0.0;
+  final Path _path = Path();
   for (final PathMetric measurePath in source.computeMetrics()) {
-    double distance = intialValue;
-    bool draw = true;
-    while (distance < measurePath.length) {
+    double _distance = _intialValue;
+    bool _draw = true;
+    while (_distance < measurePath.length) {
       final double length = dashArray.next;
-      if (draw) {
-        path.addPath(
-            measurePath.extractPath(distance, distance + length), Offset.zero);
+      if (_draw) {
+        _path.addPath(measurePath.extractPath(_distance, _distance + length),
+            Offset.zero);
       }
-      distance += length;
-      draw = !draw;
+      _distance += length;
+      _draw = !_draw;
     }
   }
-  return path;
+  return _path;
 }
 
 class _CircularIntervalList<T> {

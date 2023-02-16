@@ -1,5 +1,6 @@
 /// Package imports
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 /// Chart import
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -19,15 +20,23 @@ class RadialBarCustomized extends SampleView {
 /// State class of radial bar customization.
 class _RadialBarCustomizedState extends SampleViewState {
   _RadialBarCustomizedState();
-  TooltipBehavior? _tooltipBehavior;
-  List<ChartSampleData>? dataSources;
-  List<CircularChartAnnotation>? _annotationSources;
-  List<Color>? colors;
+  late TooltipBehavior _tooltipBehavior;
+
   @override
   void initState() {
     _tooltipBehavior =
         TooltipBehavior(enable: true, format: 'point.x : point.y%');
-    dataSources = <ChartSampleData>[
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildCustomizedRadialBarChart();
+  }
+
+  /// Return the circular chart with radial customization.
+  SfCircularChart _buildCustomizedRadialBarChart() {
+    final List<ChartSampleData> dataSources = <ChartSampleData>[
       ChartSampleData(
           x: 'Vehicle',
           y: 62.70,
@@ -49,63 +58,64 @@ class _RadialBarCustomizedState extends SampleViewState {
           text: '100%',
           pointColor: const Color.fromRGBO(235, 96, 143, 1.0))
     ];
-    _annotationSources = <CircularChartAnnotation>[
+
+    final List<CircularChartAnnotation> _annotationSources =
+        <CircularChartAnnotation>[
       CircularChartAnnotation(
         angle: 0,
         radius: '0%',
-        widget: Image.asset(
-          'images/car_legend.png',
-          width: 20,
-          height: 20,
-          color: const Color.fromRGBO(69, 186, 161, 1.0),
-        ),
-      ),
-      CircularChartAnnotation(
-        angle: 0,
-        radius: '0%',
-        widget: Image.asset(
-          'images/book.png',
-          width: 20,
-          height: 20,
-          color: const Color.fromRGBO(230, 135, 111, 1.0),
-        ),
-      ),
-      CircularChartAnnotation(
-        angle: 0,
-        radius: '0%',
-        widget: Image.asset('images/home.png',
+        widget: Container(
+          child: Image.asset(
+            'images/car_legend.png',
             width: 20,
             height: 20,
-            color: const Color.fromRGBO(145, 132, 202, 1.0)),
+            color: const Color.fromRGBO(69, 186, 161, 1.0),
+          ),
+        ),
       ),
       CircularChartAnnotation(
         angle: 0,
         radius: '0%',
-        widget: Image.asset(
-          'images/personal_loan.png',
-          width: 20,
-          height: 20,
-          color: const Color.fromRGBO(235, 96, 143, 1.0),
+        widget: Container(
+          child: Image.asset(
+            'images/book.png',
+            width: 20,
+            height: 20,
+            color: const Color.fromRGBO(230, 135, 111, 1.0),
+          ),
+        ),
+      ),
+      CircularChartAnnotation(
+        angle: 0,
+        radius: '0%',
+        widget: Container(
+          child: Image.asset('images/home.png',
+              width: 20,
+              height: 20,
+              color: const Color.fromRGBO(145, 132, 202, 1.0)),
+        ),
+      ),
+      CircularChartAnnotation(
+        angle: 0,
+        radius: '0%',
+        widget: Container(
+          child: Image.asset(
+            'images/personal_loan.png',
+            width: 20,
+            height: 20,
+            color: const Color.fromRGBO(235, 96, 143, 1.0),
+          ),
         ),
       ),
     ];
-    colors = const <Color>[
+
+    const List<Color> colors = <Color>[
       Color.fromRGBO(69, 186, 161, 1.0),
       Color.fromRGBO(230, 135, 111, 1.0),
       Color.fromRGBO(145, 132, 202, 1.0),
       Color.fromRGBO(235, 96, 143, 1.0)
     ];
 
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildCustomizedRadialBarChart();
-  }
-
-  /// Return the circular chart with radial customization.
-  SfCircularChart _buildCustomizedRadialBarChart() {
     return SfCircularChart(
       title: ChartTitle(text: isCardView ? '' : 'Percentage of loan closure'),
       legend: Legend(
@@ -113,26 +123,25 @@ class _RadialBarCustomizedState extends SampleViewState {
         overflowMode: LegendItemOverflowMode.wrap,
         legendItemBuilder:
             (String name, dynamic series, dynamic point, int index) {
-          return SizedBox(
+          return Container(
               height: 60,
               width: 150,
               child: Row(children: <Widget>[
-                SizedBox(
+                Container(
                     height: 75,
                     width: 65,
                     child: SfCircularChart(
                       annotations: <CircularChartAnnotation>[
-                        _annotationSources![index],
+                        _annotationSources[index],
                       ],
                       series: <RadialBarSeries<ChartSampleData, String>>[
                         RadialBarSeries<ChartSampleData, String>(
                             animationDuration: 0,
-                            dataSource: <ChartSampleData>[dataSources![index]],
+                            dataSource: <ChartSampleData>[dataSources[index]],
                             maximumValue: 100,
                             radius: '100%',
                             cornerStyle: CornerStyle.bothCurve,
-                            xValueMapper: (ChartSampleData data, _) =>
-                                point.x as String,
+                            xValueMapper: (ChartSampleData data, _) => point.x,
                             yValueMapper: (ChartSampleData data, _) => data.y,
                             pointColorMapper: (ChartSampleData data, _) =>
                                 data.pointColor,
@@ -141,12 +150,12 @@ class _RadialBarCustomizedState extends SampleViewState {
                                 data.text),
                       ],
                     )),
-                SizedBox(
+                Container(
                     width: 72,
                     child: Text(
                       point.x,
                       style: TextStyle(
-                          color: colors![index], fontWeight: FontWeight.bold),
+                          color: colors[index], fontWeight: FontWeight.bold),
                     )),
               ]));
         },
@@ -159,10 +168,12 @@ class _RadialBarCustomizedState extends SampleViewState {
           radius: '0%',
           height: '90%',
           width: '90%',
-          widget: Image.asset(
-            'images/person.png',
-            height: 100.0,
-            width: 100.0,
+          widget: Container(
+            child: Image.asset(
+              'images/person.png',
+              height: 100.0,
+              width: 100.0,
+            ),
           ),
         ),
       ],
@@ -172,37 +183,38 @@ class _RadialBarCustomizedState extends SampleViewState {
   /// Returns radial bar which need to be customized.
   List<RadialBarSeries<ChartSampleData, String>>
       _getRadialBarCustomizedSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(
+          x: 'Vehicle',
+          y: 62.70,
+          text: '100%',
+          pointColor: const Color.fromRGBO(69, 186, 161, 1.0)),
+      ChartSampleData(
+          x: 'Education',
+          y: 29.20,
+          text: '100%',
+          pointColor: const Color.fromRGBO(230, 135, 111, 1.0)),
+      ChartSampleData(
+          x: 'Home',
+          y: 85.20,
+          text: '100%',
+          pointColor: const Color.fromRGBO(145, 132, 202, 1.0)),
+      ChartSampleData(
+          x: 'Personal',
+          y: 45.70,
+          text: '100%',
+          pointColor: const Color.fromRGBO(235, 96, 143, 1.0))
+    ];
     return <RadialBarSeries<ChartSampleData, String>>[
       RadialBarSeries<ChartSampleData, String>(
         animationDuration: 0,
         maximumValue: 100,
         gap: '10%',
         radius: '100%',
-        dataSource: <ChartSampleData>[
-          ChartSampleData(
-              x: 'Vehicle',
-              y: 62.70,
-              text: '100%',
-              pointColor: const Color.fromRGBO(69, 186, 161, 1.0)),
-          ChartSampleData(
-              x: 'Education',
-              y: 29.20,
-              text: '100%',
-              pointColor: const Color.fromRGBO(230, 135, 111, 1.0)),
-          ChartSampleData(
-              x: 'Home',
-              y: 85.20,
-              text: '100%',
-              pointColor: const Color.fromRGBO(145, 132, 202, 1.0)),
-          ChartSampleData(
-              x: 'Personal',
-              y: 45.70,
-              text: '100%',
-              pointColor: const Color.fromRGBO(235, 96, 143, 1.0))
-        ],
+        dataSource: chartData,
         cornerStyle: CornerStyle.bothCurve,
         innerRadius: '50%',
-        xValueMapper: (ChartSampleData data, _) => data.x as String,
+        xValueMapper: (ChartSampleData data, _) => data.x,
         yValueMapper: (ChartSampleData data, _) => data.y,
         pointRadiusMapper: (ChartSampleData data, _) => data.text,
 
@@ -212,12 +224,5 @@ class _RadialBarCustomizedState extends SampleViewState {
         legendIconType: LegendIconType.circle,
       ),
     ];
-  }
-
-  @override
-  void dispose() {
-    dataSources!.clear();
-    _annotationSources!.clear();
-    super.dispose();
   }
 }

@@ -45,6 +45,7 @@ class _RadialEaseExampleState extends SampleViewState {
             onLabelCreated: _handleLabelCreated,
             showAxisLine: false,
             radiusFactor: model.isWebFullView ? 0.8 : 0.9,
+            minimum: 0,
             maximum: 15,
             axisLabelStyle: GaugeTextStyle(
                 fontSize: isCardView ? 10 : 12, fontWeight: FontWeight.w500),
@@ -64,20 +65,20 @@ class _RadialEaseExampleState extends SampleViewState {
                           fit: BoxFit.fitHeight,
                         ),
                       ))),
-              const GaugeAnnotation(
-                  widget: Text(
-                'Distance',
-                style: TextStyle(fontSize: 20),
+              GaugeAnnotation(
+                  widget: Container(
+                child: const Text('Distance', style: TextStyle(fontSize: 20)),
               ))
             ],
             pointers: <GaugePointer>[
-              const RangePointer(
+              RangePointer(
                 value: 11.5,
                 width: 0.1,
-                color: Color(0xFFF67280),
+                color: const Color(0xFFF67280),
                 enableAnimation: true,
                 sizeUnit: GaugeSizeUnit.factor,
-                gradient: SweepGradient(
+                animationType: AnimationType.ease,
+                gradient: const SweepGradient(
                     colors: <Color>[Color(0xFFFFB397), Color(0xFFF46AA0)],
                     stops: <double>[0.25, 0.75]),
               ),
@@ -85,6 +86,7 @@ class _RadialEaseExampleState extends SampleViewState {
                 value: 11.5,
                 markerType: MarkerType.image,
                 enableAnimation: true,
+                animationType: AnimationType.ease,
                 imageUrl: 'images/ball_progressbar.png',
                 markerHeight: isCardView
                     ? 30

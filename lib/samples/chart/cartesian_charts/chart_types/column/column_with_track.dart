@@ -18,8 +18,7 @@ class ColumnTracker extends SampleView {
 
 class _ColumnTrackerState extends SampleViewState {
   _ColumnTrackerState();
-
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior = TooltipBehavior(
@@ -41,14 +40,13 @@ class _ColumnTrackerState extends SampleViewState {
       plotAreaBorderWidth: 0,
       title: ChartTitle(text: isCardView ? '' : 'Marks of a student'),
       legend: Legend(isVisible: !isCardView),
-      primaryXAxis:
-          CategoryAxis(majorGridLines: const MajorGridLines(width: 0)),
+      primaryXAxis: CategoryAxis(majorGridLines: MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
           minimum: 0,
           maximum: 100,
-          axisLine: const AxisLine(width: 0),
-          majorGridLines: const MajorGridLines(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          axisLine: AxisLine(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getTracker(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -56,27 +54,28 @@ class _ColumnTrackerState extends SampleViewState {
 
   /// Get column series with tracker
   List<ColumnSeries<ChartSampleData, String>> _getTracker() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'Subject 1', y: 71),
+      ChartSampleData(x: 'Subject 2', y: 84),
+      ChartSampleData(x: 'Subject 3', y: 48),
+      ChartSampleData(x: 'Subject 4', y: 80),
+      ChartSampleData(x: 'Subject 5', y: 76),
+    ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: 'Subject 1', y: 71),
-            ChartSampleData(x: 'Subject 2', y: 84),
-            ChartSampleData(x: 'Subject 3', y: 48),
-            ChartSampleData(x: 'Subject 4', y: 80),
-            ChartSampleData(x: 'Subject 5', y: 76),
-          ],
+          dataSource: chartData,
 
           /// We can enable the track for column here.
           isTrackVisible: true,
           trackColor: const Color.fromRGBO(198, 201, 207, 1),
           borderRadius: BorderRadius.circular(15),
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           name: 'Marks',
-          dataLabelSettings: const DataLabelSettings(
+          dataLabelSettings: DataLabelSettings(
               isVisible: true,
               labelAlignment: ChartDataLabelAlignment.top,
-              textStyle: TextStyle(fontSize: 10, color: Colors.white)))
+              textStyle: const TextStyle(fontSize: 10, color: Colors.white)))
     ];
   }
 }

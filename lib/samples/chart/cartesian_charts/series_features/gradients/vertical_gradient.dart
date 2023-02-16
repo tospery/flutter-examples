@@ -25,8 +25,7 @@ class _ChartData {
 /// State class of vertical gradient.
 class _VerticalGradientState extends SampleViewState {
   _VerticalGradientState();
-
-  TrackballBehavior? _trackballBehavior;
+  late TrackballBehavior _trackballBehavior;
   @override
   void initState() {
     _trackballBehavior = TrackballBehavior(
@@ -41,6 +40,24 @@ class _VerticalGradientState extends SampleViewState {
 
   /// Returns the list of spline area series with vertical gradient.
   List<ChartSeries<_ChartData, String>> _getGradientAreaSeries() {
+    final List<_ChartData> chartData = <_ChartData>[
+      _ChartData(x: '1997', y: 22.44),
+      _ChartData(x: '1998', y: 25.18),
+      _ChartData(x: '1999', y: 24.15),
+      _ChartData(x: '2000', y: 25.83),
+      _ChartData(x: '2001', y: 25.69),
+      _ChartData(x: '2002', y: 24.75),
+      _ChartData(x: '2003', y: 27.38),
+      _ChartData(x: '2004', y: 25.31)
+    ];
+    final List<Color> color = <Color>[];
+    color.add(const Color(0xFF6A31D5));
+    color.add(const Color(0xFFB650C8));
+
+    final List<double> stops = <double>[];
+    stops.add(0.1);
+    stops.add(0.4);
+
     return <ChartSeries<_ChartData, String>>[
       SplineAreaSeries<_ChartData, String>(
 
@@ -54,16 +71,8 @@ class _VerticalGradientState extends SampleViewState {
           ], begin: Alignment.bottomCenter, end: Alignment.topCenter),
           borderWidth: 2,
           borderColor: const Color.fromRGBO(0, 156, 144, 1),
-          dataSource: <_ChartData>[
-            _ChartData(x: '1997', y: 22.44),
-            _ChartData(x: '1998', y: 25.18),
-            _ChartData(x: '1999', y: 24.15),
-            _ChartData(x: '2000', y: 25.83),
-            _ChartData(x: '2001', y: 25.69),
-            _ChartData(x: '2002', y: 24.75),
-            _ChartData(x: '2003', y: 27.38),
-            _ChartData(x: '2004', y: 25.31)
-          ],
+          borderDrawMode: BorderDrawMode.top,
+          dataSource: chartData,
           name: 'Country 1',
           xValueMapper: (_ChartData sales, _) => sales.x,
           yValueMapper: (_ChartData sales, _) => sales.y),
@@ -78,6 +87,7 @@ class _VerticalGradientState extends SampleViewState {
           borderWidth: 2,
           name: 'Country 2',
           borderColor: const Color.fromRGBO(0, 63, 136, 1),
+          borderDrawMode: BorderDrawMode.top,
           dataSource: <_ChartData>[
             _ChartData(x: '1997', y: 17.5),
             _ChartData(x: '1998', y: 21.5),
@@ -101,13 +111,13 @@ class _VerticalGradientState extends SampleViewState {
           labelPlacement: LabelPlacement.onTicks,
           interval: model.isWebFullView ? 1 : null,
           labelRotation: -45,
-          majorGridLines: const MajorGridLines(width: 0)),
+          majorGridLines: MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
         minimum: 16,
         maximum: 28,
         interval: 4,
         labelFormat: '{value}%',
-        axisLine: const AxisLine(width: 0),
+        axisLine: AxisLine(width: 0),
       ),
       trackballBehavior: _trackballBehavior,
       series: _getGradientAreaSeries(),

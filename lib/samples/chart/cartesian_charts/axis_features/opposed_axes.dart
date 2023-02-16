@@ -20,7 +20,7 @@ class NumericOpposed extends SampleView {
 /// State class of the column chart with opposed numeric axes.
 class _NumericOpposedState extends SampleViewState {
   _NumericOpposedState();
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _NumericOpposedState extends SampleViewState {
       primaryXAxis: NumericAxis(
           minimum: 1974,
           maximum: 2022,
-          majorGridLines: const MajorGridLines(width: 0),
+          majorGridLines: MajorGridLines(width: 0),
           opposedPosition: true,
           edgeLabelPlacement: EdgeLabelPlacement.shift),
       primaryYAxis: NumericAxis(
@@ -53,7 +53,7 @@ class _NumericOpposedState extends SampleViewState {
           minimum: 8000,
           interval: 2000,
           maximum: 20000,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getOpposedNumericAxisSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -61,20 +61,21 @@ class _NumericOpposedState extends SampleViewState {
 
   /// Returns the list of chart series which need to render on the column chart.
   List<ColumnSeries<ChartSampleData, num>> _getOpposedNumericAxisSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 1978, y: 14981),
+      ChartSampleData(x: 1983, y: 12107.1),
+      ChartSampleData(x: 1988, y: 15443.2),
+      ChartSampleData(x: 1993, y: 13882.7),
+      ChartSampleData(x: 1998, y: 15543),
+      ChartSampleData(x: 2003, y: 16639.1),
+      ChartSampleData(x: 2008, y: 13198.8),
+      ChartSampleData(x: 2013, y: 15530.1),
+      ChartSampleData(x: 2018, y: 17213.5),
+    ];
     return <ColumnSeries<ChartSampleData, num>>[
       ColumnSeries<ChartSampleData, num>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 1978, y: 14981),
-          ChartSampleData(x: 1983, y: 12107.1),
-          ChartSampleData(x: 1988, y: 15443.2),
-          ChartSampleData(x: 1993, y: 13882.7),
-          ChartSampleData(x: 1998, y: 15543),
-          ChartSampleData(x: 2003, y: 16639.1),
-          ChartSampleData(x: 2008, y: 13198.8),
-          ChartSampleData(x: 2013, y: 15530.1),
-          ChartSampleData(x: 2018, y: 17213.5),
-        ],
-        xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+        dataSource: chartData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
       )
     ];

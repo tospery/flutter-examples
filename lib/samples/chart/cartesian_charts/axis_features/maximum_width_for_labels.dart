@@ -14,25 +14,30 @@ class ChartMaximumLabelWidth extends SampleView {
   const ChartMaximumLabelWidth(Key key) : super(key: key);
 
   @override
-  ChartMaximumLabelWidthState createState() => ChartMaximumLabelWidthState();
+  _ChartMaximumLabelWidthState createState() => _ChartMaximumLabelWidthState();
 }
 
 /// State class the chart with sorting options.
-class ChartMaximumLabelWidthState extends SampleViewState {
-  ///  Creates an instance of ChartMaximumLabelWidth state
-  ChartMaximumLabelWidthState();
-  late double _xMaximumLabelWidth;
-  late double _xLabelsExtent;
-  late bool _isEnableLabelExtend;
-  late String _selectedType;
-  TooltipBehavior? _tooltipBehavior;
+class _ChartMaximumLabelWidthState extends SampleViewState {
+  _ChartMaximumLabelWidthState();
+  double _xMaximumLabelWidth = 80;
+  double _xLabelsExtent = 80;
+  bool _isEnableLabelExtend = false;
+  // ignore: unused_field
+  bool _isEnableMaximumLabelWidth = true;
+  // ignore: unused_field
+  late List<bool> _isSelected;
+  String _selectedType = 'Maximum label width';
+  //ignore: unused_field
+  final List<String> _typeList = <String>[
+    'Maximum label width',
+    'Labels extent'
+  ];
+  late TooltipBehavior _tooltipBehavior;
 
   @override
   void initState() {
-    _xMaximumLabelWidth = 80;
-    _xLabelsExtent = 80;
-    _isEnableLabelExtend = false;
-    _selectedType = 'Maximum label width';
+    _isSelected = [true, false];
     _tooltipBehavior =
         TooltipBehavior(enable: true, canShowMarker: false, header: '');
     super.initState();
@@ -50,42 +55,45 @@ class ChartMaximumLabelWidthState extends SampleViewState {
       return ListView(
         shrinkWrap: true,
         children: <Widget>[
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-                child: Text('Maximum label\nwidth',
-                    style: TextStyle(color: model.textColor)),
-              ),
-              Container(
-                padding: !model.isWebFullView
-                    ? const EdgeInsets.fromLTRB(32, 0, 0, 0)
-                    : const EdgeInsets.fromLTRB(42, 0, 0, 0),
-                child: CustomDirectionalButtons(
-                  maxValue: 120,
-                  minValue: 1,
-                  initialValue: _xMaximumLabelWidth,
-                  onChanged: (double val) {
-                    setState(() {
-                      _xMaximumLabelWidth = val;
-                    });
-                  },
-                  step: 10,
-                  loop: true,
-                  padding: 5.0,
-                  iconColor: model.textColor,
-                  style: TextStyle(fontSize: 16.0, color: model.textColor),
+          Container(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                  child: Text('Maximum label\nwidth',
+                      style: TextStyle(color: model.textColor)),
                 ),
-              )
-            ],
+                Container(
+                  padding: !model.isWebFullView
+                      ? EdgeInsets.fromLTRB(32, 0, 0, 0)
+                      : EdgeInsets.fromLTRB(42, 0, 0, 0),
+                  child: CustomDirectionalButtons(
+                    maxValue: 120,
+                    minValue: 1,
+                    initialValue: _xMaximumLabelWidth,
+                    onChanged: (double val) {
+                      setState(() {
+                        _xMaximumLabelWidth = val;
+                      });
+                    },
+                    step: 10,
+                    loop: true,
+                    padding: 5.0,
+                    iconColor: model.textColor,
+                    style: TextStyle(fontSize: 16.0, color: model.textColor),
+                  ),
+                )
+              ],
+            ),
           ),
-          SizedBox(
+          Container(
               child: Row(
-            children: <Widget>[
+            children: [
               Text('Enable label extent',
                   style: TextStyle(color: model.textColor)),
-              SizedBox(
+              Container(
                   width: 75,
                   child: CheckboxListTile(
                       activeColor: model.backgroundColor,
@@ -98,33 +106,38 @@ class ChartMaximumLabelWidthState extends SampleViewState {
                       }))
             ],
           )),
-          Visibility(
-              visible: _isEnableLabelExtend,
-              child: Row(
-                children: <Widget>[
-                  Text('Labels extent',
-                      style: TextStyle(color: model.textColor)),
-                  Container(
-                    padding: !model.isWebFullView
-                        ? const EdgeInsets.fromLTRB(40, 0, 0, 0)
-                        : const EdgeInsets.fromLTRB(50, 0, 0, 0),
-                    child: CustomDirectionalButtons(
-                      maxValue: 200,
-                      minValue: 1,
-                      initialValue: _xLabelsExtent,
-                      onChanged: (double val) {
-                        setState(() {
-                          _xLabelsExtent = val;
-                        });
-                      },
-                      step: 10,
-                      loop: true,
-                      iconColor: model.textColor,
-                      style: TextStyle(fontSize: 16.0, color: model.textColor),
+          Container(
+            child: Visibility(
+                visible: _isEnableLabelExtend,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text('Labels extent',
+                        style: TextStyle(color: model.textColor)),
+                    Container(
+                      padding: !model.isWebFullView
+                          ? EdgeInsets.fromLTRB(40, 0, 0, 0)
+                          : EdgeInsets.fromLTRB(50, 0, 0, 0),
+                      child: CustomDirectionalButtons(
+                        maxValue: 200,
+                        minValue: 1,
+                        initialValue: _xLabelsExtent,
+                        onChanged: (double val) {
+                          setState(() {
+                            _xLabelsExtent = val;
+                          });
+                        },
+                        step: 10,
+                        loop: true,
+                        iconColor: model.textColor,
+                        style:
+                            TextStyle(fontSize: 16.0, color: model.textColor),
+                      ),
                     ),
-                  ),
-                ],
-              )),
+                  ],
+                )),
+          ),
         ],
       );
     });
@@ -147,13 +160,13 @@ class ChartMaximumLabelWidthState extends SampleViewState {
       primaryXAxis: CategoryAxis(
           labelsExtent: _isEnableLabelExtend ? _xLabelsExtent : null,
           maximumLabelWidth: _xMaximumLabelWidth,
-          majorGridLines: const MajorGridLines(width: 0)),
+          majorGridLines: MajorGridLines(width: 0)),
       primaryYAxis: NumericAxis(
           title: AxisTitle(text: isCardView ? '' : 'Height (meters)'),
           minimum: 500,
           maximum: 900,
           interval: 100,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       series: _getDefaultSortingSeries(),
       tooltipBehavior: _tooltipBehavior,
     );
@@ -162,31 +175,33 @@ class ChartMaximumLabelWidthState extends SampleViewState {
   /// Returns the list of chart series which need to
   /// render on the chart with sorting options.
   List<CartesianSeries<ChartSampleData, String>> _getDefaultSortingSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: 'Goldin Finance 117', y: 597),
+      ChartSampleData(x: 'Ping An Finance Center', y: 599),
+      ChartSampleData(x: 'Makkah Clock Royal Tower', y: 601),
+      ChartSampleData(x: 'Shanghai Tower', y: 632),
+      ChartSampleData(x: 'Burj Khalifa', y: 828)
+    ];
     return <BarSeries<ChartSampleData, String>>[
       BarSeries<ChartSampleData, String>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'Goldin Finance 117', y: 597),
-          ChartSampleData(x: 'Ping An Finance Center', y: 599),
-          ChartSampleData(x: 'Makkah Clock Royal Tower', y: 601),
-          ChartSampleData(x: 'Shanghai Tower', y: 632),
-          ChartSampleData(x: 'Burj Khalifa', y: 828)
-        ],
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        dataSource: chartData,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
         dataLabelSettings:
-            const DataLabelSettings(isVisible: true, offset: Offset(-5, 0)),
+            DataLabelSettings(isVisible: true, offset: Offset(-5, 0)),
       )
     ];
   }
 
-  /// Method called when the type is changed
   void onTypeChange(String item) {
     _selectedType = item;
     if (_selectedType == 'Maximum label width') {
+      _isEnableMaximumLabelWidth = true;
       _isEnableLabelExtend = false;
     }
     if (_selectedType == 'Labels extent') {
       _isEnableLabelExtend = true;
+      _isEnableMaximumLabelWidth = false;
     }
     setState(() {});
   }

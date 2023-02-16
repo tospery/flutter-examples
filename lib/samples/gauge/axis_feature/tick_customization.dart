@@ -37,7 +37,7 @@ class _RadialTickCustomizationState extends SampleViewState {
             endAngle: 270,
             canRotateLabels: true,
             labelsPosition: ElementsPosition.outside,
-            axisLabelStyle: const GaugeTextStyle(),
+            axisLabelStyle: GaugeTextStyle(fontSize: 12),
             majorTickStyle: MajorTickStyle(
                 length: 0.15,
                 lengthUnit: GaugeSizeUnit.factor,
@@ -54,10 +54,12 @@ class _RadialTickCustomizationState extends SampleViewState {
                 dashArray: model.isWebFullView ? null : <double>[2, 1]),
             pointers: <GaugePointer>[
               NeedlePointer(
-                  enableAnimation: !model.isWebFullView,
+                  enableAnimation: model.isWebFullView ? false : true,
+                  animationType: AnimationType.ease,
                   animationDuration: 1300,
                   value: 75,
                   needleColor: _tickCustomizationNeedleColor,
+                  lengthUnit: GaugeSizeUnit.factor,
                   needleStartWidth: 0,
                   needleEndWidth: 3,
                   needleLength: 0.8,

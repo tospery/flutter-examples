@@ -19,14 +19,43 @@ class StackedLineChart extends SampleView {
 /// State class of the stacked line chart.
 class _StackedLineChartState extends SampleViewState {
   _StackedLineChartState();
-  List<ChartSampleData>? chartData;
-
-  TrackballBehavior? _trackballBehavior;
+  late TrackballBehavior _trackballBehavior;
   @override
   void initState() {
     _trackballBehavior = TrackballBehavior(
         enable: true, activationMode: ActivationMode.singleTap);
-    chartData = <ChartSampleData>[
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildStackedLineChart();
+  }
+
+  /// Returns the cartesian stacked line chart.
+  SfCartesianChart _buildStackedLineChart() {
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0,
+      title: ChartTitle(text: isCardView ? '' : 'Monthly expense of a family'),
+      legend: Legend(isVisible: !isCardView),
+      primaryXAxis: CategoryAxis(
+        majorGridLines: MajorGridLines(width: 0),
+        labelRotation: isCardView ? 0 : -45,
+      ),
+      primaryYAxis: NumericAxis(
+          maximum: 200,
+          axisLine: AxisLine(width: 0),
+          labelFormat: '\${value}',
+          majorTickLines: MajorTickLines(size: 0)),
+      series: _getStackedLineSeries(),
+      trackballBehavior: _trackballBehavior,
+    );
+  }
+
+  /// Returns the list of chart seris which need to render
+  /// on the stacked line chart.
+  List<StackedLineSeries<ChartSampleData, String>> _getStackedLineSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
           x: 'Food',
           y: 55,
@@ -64,68 +93,31 @@ class _StackedLineChartState extends SampleViewState {
           secondSeriesYValue: 33,
           thirdSeriesYValue: 56),
     ];
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildStackedLineChart();
-  }
-
-  /// Returns the cartesian stacked line chart.
-  SfCartesianChart _buildStackedLineChart() {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(text: isCardView ? '' : 'Monthly expense of a family'),
-      legend: Legend(isVisible: !isCardView),
-      primaryXAxis: CategoryAxis(
-        majorGridLines: const MajorGridLines(width: 0),
-        labelRotation: isCardView ? 0 : -45,
-      ),
-      primaryYAxis: NumericAxis(
-          maximum: 200,
-          axisLine: const AxisLine(width: 0),
-          labelFormat: r'${value}',
-          majorTickLines: const MajorTickLines(size: 0)),
-      series: _getStackedLineSeries(),
-      trackballBehavior: _trackballBehavior,
-    );
-  }
-
-  /// Returns the list of chart seris which need to render
-  /// on the stacked line chart.
-  List<StackedLineSeries<ChartSampleData, String>> _getStackedLineSeries() {
     return <StackedLineSeries<ChartSampleData, String>>[
       StackedLineSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           name: 'Father',
-          markerSettings: const MarkerSettings(isVisible: true)),
+          markerSettings: MarkerSettings(isVisible: true)),
       StackedLineSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.yValue,
           name: 'Mother',
-          markerSettings: const MarkerSettings(isVisible: true)),
+          markerSettings: MarkerSettings(isVisible: true)),
       StackedLineSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
           name: 'Son',
-          markerSettings: const MarkerSettings(isVisible: true)),
+          markerSettings: MarkerSettings(isVisible: true)),
       StackedLineSeries<ChartSampleData, String>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
           name: 'Daughter',
-          markerSettings: const MarkerSettings(isVisible: true))
+          markerSettings: MarkerSettings(isVisible: true))
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
   }
 }

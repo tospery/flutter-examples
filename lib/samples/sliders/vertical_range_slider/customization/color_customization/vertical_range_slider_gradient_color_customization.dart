@@ -1,8 +1,8 @@
 ///Package imports
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -13,9 +13,6 @@ import '../../../../../model/sample_view.dart';
 
 /// Renders range slider with gradient track
 class VerticalGradientTrackRangeSlider extends SampleView {
-  ///Creates range slider with gradient track
-  const VerticalGradientTrackRangeSlider(Key key) : super(key: key);
-
   @override
   _VerticalGradientTrackRangeSliderState createState() =>
       _VerticalGradientTrackRangeSliderState();
@@ -50,6 +47,7 @@ class _VerticalGradientTrackRangeSliderState extends SampleViewState {
         trackCornerRadius: 4.0,
       ),
       child: SfRangeSlider.vertical(
+        min: 0.0,
         max: 6.0,
         values: _blueGradientSliderValues,
         onChanged: (SfRangeValues values) {
@@ -69,18 +67,18 @@ class _VerticalGradientTrackRangeSliderState extends SampleViewState {
   SfRangeSliderTheme _rangeSliderWithThumbCustomization() {
     return SfRangeSliderTheme(
       data: SfRangeSliderThemeData(
-          inactiveDividerColor: Colors.white,
-          activeDividerColor: Colors.white,
-          activeDividerStrokeWidth: 2,
-          activeDividerStrokeColor: _inactiveColor,
-          inactiveDividerStrokeWidth: 2,
-          inactiveDividerStrokeColor: Colors.tealAccent,
-          activeDividerRadius: 5.0,
-          inactiveDividerRadius: 5.0,
+          inactiveDivisorColor: Colors.white,
+          activeDivisorColor: Colors.white,
+          activeDivisorStrokeWidth: 2,
+          activeDivisorStrokeColor: _inactiveColor,
+          inactiveDivisorStrokeWidth: 2,
+          inactiveDivisorStrokeColor: Colors.tealAccent,
+          activeDivisorRadius: 5.0,
+          inactiveDivisorRadius: 5.0,
           activeTrackColor: Colors.tealAccent,
           inactiveTrackColor: _inactiveColor,
           overlayColor: Colors.tealAccent.withOpacity(0.12),
-          labelOffset: const Offset(10, 0),
+          labelOffset: Offset(10, 0),
           thumbColor: Colors.white,
           thumbStrokeWidth: 2.0,
           thumbStrokeColor: Colors.tealAccent),
@@ -89,7 +87,7 @@ class _VerticalGradientTrackRangeSliderState extends SampleViewState {
         max: 90.0,
         interval: 20.0,
         showLabels: true,
-        showDividers: true,
+        showDivisors: true,
         values: _sliderValues,
         onChanged: (SfRangeValues values) {
           setState(() {
@@ -108,17 +106,17 @@ class _VerticalGradientTrackRangeSliderState extends SampleViewState {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _TrackColorCustomizedRangeSlider()),
-              const Text('Track')
+              Text('Track')
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _rangeSliderWithThumbCustomization()),
-              const Text('Stroke'),
+              Text('Stroke'),
             ]),
-            Column(children: <Widget>[
+            Column(children: [
               Expanded(child: _blueGradientRangeSlider()),
-              const Text('Gradient'),
+              Text('Gradient'),
             ])
           ],
         ));
@@ -248,7 +246,11 @@ class _TrackShape extends SfTrackShape {
           actualTrackRect.right, startThumbCenter.dy);
       paint.shader = gradient.createShader(trackRect);
       paint.color = themeData.activeTrackColor!;
-      final RRect centerRRect = RRect.fromRectAndCorners(trackRect);
+      final RRect centerRRect = RRect.fromRectAndCorners(trackRect,
+          topLeft: Radius.zero,
+          topRight: Radius.zero,
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero);
       context.canvas.drawRRect(centerRRect, paint);
 
       // Drawing inactive track.
@@ -257,7 +259,10 @@ class _TrackShape extends SfTrackShape {
       trackRect = Rect.fromLTRB(actualTrackRect.left, actualTrackRect.top,
           actualTrackRect.right, endThumbCenter.dy);
       final RRect rightRRect = RRect.fromRectAndCorners(trackRect,
-          topLeft: radius, topRight: radius);
+          topLeft: radius,
+          topRight: radius,
+          bottomLeft: Radius.zero,
+          bottomRight: Radius.zero);
       context.canvas.drawRRect(rightRRect, paint);
     }
   }

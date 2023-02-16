@@ -2,21 +2,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-/// core import
-// ignore: depend_on_referenced_packages
-import 'package:syncfusion_flutter_core/core.dart';
-
 ///Date picker imports
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+/// core import
+import 'package:syncfusion_flutter_core/core.dart';
 
 ///Local import
 import '../../model/model.dart';
 import '../../model/sample_view.dart';
 import 'popup_picker.dart';
 
-/// Render getting started date picker widget
+/// Render getting started datepicker widget
 class HijriDatePicker extends SampleView {
-  /// Creates date picker widget with customized options
+  /// Creates datepicker widget with customized options
   const HijriDatePicker(Key key) : super(key: key);
 
   @override
@@ -28,37 +27,28 @@ class _HijriDatePickerState extends SampleViewState {
 
   final HijriDatePickerController _controller = HijriDatePickerController();
   DateRangePickerSelectionMode _selectionMode =
-      DateRangePickerSelectionMode.extendableRange;
-  ExtendableRangeSelectionDirection _selectionDirection =
-      ExtendableRangeSelectionDirection.both;
+      DateRangePickerSelectionMode.range;
   bool _enablePastDates = true;
   bool _enableSwipingSelection = true;
   bool _enableViewNavigation = true;
   bool _showActionButtons = true;
   bool _isWeb = false;
-  bool _showWeekNumber = false;
-  bool _showTodayButton = true;
   late Orientation _deviceOrientation;
 
-  String _selectionModeString = 'extendableRange';
+  String _selectionModeString = 'Range';
   final List<String> _selectionModeList = <String>[
-    'single',
-    'multiple',
-    'range',
-    'multiRange',
-    'extendableRange'
+    'Single',
+    'Multiple',
+    'Range',
+    'Multi Range',
   ].toList();
 
-  String _viewModeString = 'month';
+  String _viewModeString = 'Month';
   final List<String> _viewModeList = <String>[
-    'month',
-    'year',
-    'decade',
+    'Month',
+    'Year',
+    'Decade',
   ].toList();
-
-  String _selectionDirectionString = 'both';
-  final List<String> _selectionDirectionList =
-      <String>['forward', 'backward', 'both', 'none'].toList();
 
   @override
   void initState() {
@@ -114,8 +104,7 @@ class _HijriDatePickerState extends SampleViewState {
   Widget build(BuildContext context) {
     final bool enableMultiView = _isWeb &&
         (_selectionMode == DateRangePickerSelectionMode.range ||
-            _selectionMode == DateRangePickerSelectionMode.multiRange ||
-            _selectionMode == DateRangePickerSelectionMode.extendableRange);
+            _selectionMode == DateRangePickerSelectionMode.multiRange);
     final Widget cardView = Card(
         elevation: 10,
         margin: model.isWebFullView
@@ -125,9 +114,8 @@ class _HijriDatePickerState extends SampleViewState {
           padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
           color: model.cardThemeColor,
           child: Theme(
-              data: model.themeData.copyWith(
-                  colorScheme: model.themeData.colorScheme
-                      .copyWith(secondary: model.backgroundColor)),
+              data:
+                  model.themeData.copyWith(accentColor: model.backgroundColor),
               child: _getGettingStartedDatePicker(
                   _controller,
                   _selectionMode,
@@ -138,14 +126,11 @@ class _HijriDatePickerState extends SampleViewState {
                   HijriDateTime.now().subtract(const Duration(days: 200)),
                   HijriDateTime.now().add(const Duration(days: 200)),
                   enableMultiView,
-                  _showWeekNumber,
-                  _showTodayButton,
-                  _selectionDirection,
                   context)),
         ));
     return Scaffold(
       backgroundColor: model.themeData == null ||
-              model.themeData.colorScheme.brightness == Brightness.light
+              model.themeData.brightness == Brightness.light
           ? null
           : const Color(0x00171a21),
       body: Column(children: <Widget>[
@@ -153,12 +138,12 @@ class _HijriDatePickerState extends SampleViewState {
             flex: model.isWebFullView ? 9 : 8,
             child: model.isWebFullView
                 ? Center(
-                    child: SizedBox(
-                        width: !enableMultiView ? 550 : 700,
+                    child: Container(
+                        width: !enableMultiView ? 400 : 700,
                         height: 600,
                         child: cardView))
                 : ListView(padding: EdgeInsets.zero, children: <Widget>[
-                    SizedBox(
+                    Container(
                       height: 450,
                       child: cardView,
                     )
@@ -179,28 +164,12 @@ class _HijriDatePickerState extends SampleViewState {
   /// selected in the dropdown menu set to the view property of the controller.
   void onPickerViewChange(String value) {
     _viewModeString = value;
-    if (value == 'month') {
+    if (value == 'Month') {
       _controller.view = HijriDatePickerView.month;
-    } else if (value == 'year') {
+    } else if (value == 'Year') {
       _controller.view = HijriDatePickerView.year;
-    } else if (value == 'decade') {
+    } else if (value == 'Decade') {
       _controller.view = HijriDatePickerView.decade;
-    }
-    setState(() {
-      /// update the date range picker view changes
-    });
-  }
-
-  void onSelectionDirectionChanged(String value) {
-    _selectionDirectionString = value;
-    if (value == 'none') {
-      _selectionDirection = ExtendableRangeSelectionDirection.none;
-    } else if (value == 'forward') {
-      _selectionDirection = ExtendableRangeSelectionDirection.forward;
-    } else if (value == 'backward') {
-      _selectionDirection = ExtendableRangeSelectionDirection.backward;
-    } else if (value == 'both') {
-      _selectionDirection = ExtendableRangeSelectionDirection.both;
     }
     setState(() {
       /// update the date range picker view changes
@@ -212,16 +181,14 @@ class _HijriDatePickerState extends SampleViewState {
   /// which is set to the selection mode property of date range picker.
   void onSelectionModeChange(String value) {
     _selectionModeString = value;
-    if (value == 'single') {
+    if (value == 'Single') {
       _selectionMode = DateRangePickerSelectionMode.single;
-    } else if (value == 'multiple') {
+    } else if (value == 'Multiple') {
       _selectionMode = DateRangePickerSelectionMode.multiple;
-    } else if (value == 'range') {
+    } else if (value == 'Range') {
       _selectionMode = DateRangePickerSelectionMode.range;
-    } else if (value == 'multiRange') {
+    } else if (value == 'Multi Range') {
       _selectionMode = DateRangePickerSelectionMode.multiRange;
-    } else if (value == 'extendableRange') {
-      _selectionMode = DateRangePickerSelectionMode.extendableRange;
     }
     setState(() {
       /// update the date range picker selection mode changes
@@ -240,10 +207,6 @@ class _HijriDatePickerState extends SampleViewState {
       _enableViewNavigation = value;
     } else if (property == 'ShowActionButtons') {
       _showActionButtons = value;
-    } else if (property == 'showWeekNumber') {
-      _showWeekNumber = value;
-    } else if (property == 'ShowTodayButton') {
-      _showTodayButton = value;
     }
 
     setState(() {
@@ -256,42 +219,27 @@ class _HijriDatePickerState extends SampleViewState {
     return StatefulBuilder(
         builder: (BuildContext context, StateSetter stateSetter) {
       final List<Widget> propertyOptions = <Widget>[];
-      if (!model.isMobile) {
-        _controller.addPropertyChangedListener((String value) {
-          if (value == 'view') {
-            if (_controller.view == HijriDatePickerView.month) {
-              _viewModeString = 'month';
-            } else if (_controller.view == HijriDatePickerView.year) {
-              _viewModeString = 'year';
-            } else if (_controller.view == HijriDatePickerView.decade) {
-              _viewModeString = 'decade';
-            }
-            stateSetter(() {});
-          }
-        });
-      }
-
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: model.isWebFullView ? 4 : 5,
+                flex: 6,
                 child: Text('Picker view',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-              flex: model.isWebFullView ? 6 : 5,
+              flex: 4,
               child: Container(
                 alignment: Alignment.bottomLeft,
                 child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
+                    underline: Container(color: Color(0xFFBDBDBD), height: 1),
                     value: _viewModeString,
                     items: _viewModeList.map((String value) {
                       return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'month',
-                          child: Text(value,
+                          value: (value != null) ? value : 'Month',
+                          child: Text('$value',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: model.textColor)));
                     }).toList(),
@@ -304,29 +252,28 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: model.isWebFullView ? 4 : 5,
+                flex: 6,
                 child: Text('Selection mode',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-              flex: model.isWebFullView ? 6 : 5,
+              flex: 4,
               child: Container(
-                padding: EdgeInsets.zero,
+                padding: const EdgeInsets.all(0),
                 alignment: Alignment.bottomLeft,
                 child: DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    underline:
-                        Container(color: const Color(0xFFBDBDBD), height: 1),
+                    underline: Container(color: Color(0xFFBDBDBD), height: 1),
                     value: _selectionModeString,
                     items: _selectionModeList.map((String value) {
                       return DropdownMenuItem<String>(
-                          value: (value != null) ? value : 'extendableRange',
-                          child: Text(value,
+                          value: (value != null) ? value : 'Range',
+                          child: Text('$value',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: model.textColor)));
                     }).toList(),
@@ -339,54 +286,20 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-      propertyOptions.add(_selectionModeString == 'extendableRange'
-          ? SizedBox(
-              height: 50,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      flex: model.isWebFullView ? 4 : 5,
-                      child: Text('Selection Direction',
-                          style: TextStyle(
-                              fontSize: 16.0, color: model.textColor))),
-                  Expanded(
-                    flex: model.isWebFullView ? 6 : 5,
-                    child: Container(
-                      alignment: Alignment.bottomLeft,
-                      child: DropdownButton<String>(
-                          focusColor: Colors.transparent,
-                          underline: Container(
-                              color: const Color(0xFFBDBDBD), height: 1),
-                          value: _selectionDirectionString,
-                          items: _selectionDirectionList.map((String value) {
-                            return DropdownMenuItem<String>(
-                                value: (value != null) ? value : 'both',
-                                child: Text(value,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: model.textColor)));
-                          }).toList(),
-                          onChanged: (dynamic value) {
-                            onSelectionDirectionChanged(value);
-                            stateSetter(() {});
-                          }),
-                    ),
-                  )
-                ],
-              ),
-            )
-          : Container());
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: model.isWebFullView ? 4 : 5,
+                flex: 6,
                 child: Text('Display date',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-                flex: model.isWebFullView ? 6 : 5,
+                flex: 4,
                 child: Container(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(0),
                   alignment: Alignment.centerLeft,
                   child: Theme(
                       data: model.themeData.copyWith(
@@ -401,18 +314,20 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: 7,
+                flex: 6,
                 child: Text('Show action buttons',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-                flex: 3,
+                flex: 4,
                 child: Container(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(0),
                   child: Theme(
                     data: Theme.of(context).copyWith(
                         canvasColor: model.bottomSheetBackgroundColor),
@@ -435,52 +350,20 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: 7,
-                child: Text('Show today button',
-                    style: TextStyle(fontSize: 16.0, color: model.textColor))),
-            Expanded(
-                flex: 3,
-                child: Container(
-                  padding: EdgeInsets.zero,
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                        canvasColor: model.bottomSheetBackgroundColor),
-                    child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Transform.scale(
-                            scale: 0.8,
-                            child: CupertinoSwitch(
-                              value: _showTodayButton,
-                              onChanged: (bool value) {
-                                setState(() {
-                                  onBoolValueChange('ShowTodayButton', value);
-                                  stateSetter(() {});
-                                });
-                              },
-                              activeColor: model.backgroundColor,
-                            ))),
-                  ),
-                ))
-          ],
-        ),
-      ));
-      propertyOptions.add(SizedBox(
-        height: 50,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-                flex: 7,
+                flex: 6,
                 child: Text('Enable view navigation',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-                flex: 3,
+                flex: 4,
                 child: Container(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(0),
                   child: Theme(
                     data: Theme.of(context).copyWith(
                         canvasColor: model.bottomSheetBackgroundColor),
@@ -504,18 +387,20 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: 7,
+                flex: 6,
                 child: Text('Enable past dates',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-                flex: 3,
+                flex: 4,
                 child: Container(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(0),
                   child: Theme(
                     data: Theme.of(context).copyWith(
                         canvasColor: model.bottomSheetBackgroundColor),
@@ -536,18 +421,20 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-      propertyOptions.add(SizedBox(
+      propertyOptions.add(Container(
         height: 50,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
-                flex: 7,
+                flex: 6,
                 child: Text('Enable swipe selection',
                     style: TextStyle(fontSize: 16.0, color: model.textColor))),
             Expanded(
-                flex: 3,
+                flex: 4,
                 child: Container(
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.all(0),
                   child: Theme(
                     data: Theme.of(context).copyWith(
                         canvasColor: model.bottomSheetBackgroundColor),
@@ -571,43 +458,9 @@ class _HijriDatePickerState extends SampleViewState {
           ],
         ),
       ));
-      propertyOptions.add(SizedBox(
-        height: 50,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-                flex: 7,
-                child: Text('Show week number',
-                    style: TextStyle(fontSize: 16.0, color: model.textColor))),
-            Expanded(
-                flex: 3,
-                child: Container(
-                  padding: EdgeInsets.zero,
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                        canvasColor: model.bottomSheetBackgroundColor),
-                    child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Transform.scale(
-                            scale: 0.8,
-                            child: CupertinoSwitch(
-                              value: _showWeekNumber,
-                              onChanged: (dynamic value) {
-                                setState(() {
-                                  onBoolValueChange('showWeekNumber', value);
-                                  stateSetter(() {});
-                                });
-                              },
-                              activeColor: model.backgroundColor,
-                            ))),
-                  ),
-                ))
-          ],
-        ),
-      ));
 
       return Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 5),
+          padding: const EdgeInsets.fromLTRB(15, 10, 0, 5),
           child: model.isWebFullView
               ? Column(
                   children: propertyOptions,
@@ -622,10 +475,7 @@ class _HijriDatePickerState extends SampleViewState {
   /// to the display date property of controller.
   void _onDisplayDateChanged(DateRangePickerSelectionChangedArgs details) {
     setState(() {
-      final dynamic date = details.value;
-      if (date is HijriDateTime) {
-        _controller.displayDate = date;
-      }
+      _controller.displayDate = details.value;
     });
   }
 }
@@ -670,16 +520,16 @@ class _DateRangePickerOptionState extends State<_DateRangePickerOption> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final ThemeData _theme = Theme.of(context);
     return Container(
         color: Colors.transparent,
         child: GestureDetector(
             onTap: () async {
-              final HijriDateTime? result = await showDialog<HijriDateTime>(
+              final HijriDateTime? result = await showDialog<dynamic>(
                   context: context,
                   builder: (BuildContext context) {
                     return Theme(
-                        data: theme,
+                        data: _theme,
                         child: DateRangePicker(
                           _date,
                           null,
@@ -704,7 +554,7 @@ class _DateRangePickerOptionState extends State<_DateRangePickerOption> {
                     _date.year.toString(),
                 style: TextStyle(
                     fontSize: 15,
-                    color: theme.textTheme.titleSmall?.color,
+                    color: _theme.textTheme.subtitle2?.color,
                     fontWeight: FontWeight.w600))));
   }
 }
@@ -714,27 +564,22 @@ SfHijriDateRangePicker _getGettingStartedDatePicker(
     HijriDatePickerController controller,
     DateRangePickerSelectionMode mode,
     bool enablePastDates,
-    bool enableSwipingSelection,
-    bool enableViewNavigation,
+    bool _enableSwipingSelection,
+    bool _enableViewNavigation,
     bool showActionButtons,
     HijriDateTime minDate,
     HijriDateTime maxDate,
     bool enableMultiView,
-    bool showWeekNumber,
-    bool showTodayButton,
-    ExtendableRangeSelectionDirection selectionDirection,
     BuildContext context) {
   return SfHijriDateRangePicker(
     enablePastDates: enablePastDates,
     minDate: minDate,
     maxDate: maxDate,
     enableMultiView: enableMultiView,
-    allowViewNavigation: enableViewNavigation,
+    allowViewNavigation: _enableViewNavigation,
     showActionButtons: showActionButtons,
     selectionMode: mode,
-    extendableRangeSelectionDirection: selectionDirection,
     controller: controller,
-    showTodayButton: showTodayButton,
     headerStyle: DateRangePickerHeaderStyle(
         textAlign: enableMultiView ? TextAlign.center : TextAlign.left),
     onCancel: () {
@@ -745,7 +590,7 @@ SfHijriDateRangePicker _getGettingStartedDatePicker(
         duration: Duration(milliseconds: 200),
       ));
     },
-    onSubmit: (Object? value) {
+    onSubmit: (Object value) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text(
           'Selection Confirmed',
@@ -754,7 +599,6 @@ SfHijriDateRangePicker _getGettingStartedDatePicker(
       ));
     },
     monthViewSettings: HijriDatePickerMonthViewSettings(
-        enableSwipeSelection: enableSwipingSelection,
-        showWeekNumber: showWeekNumber),
+        enableSwipeSelection: _enableSwipingSelection),
   );
 }

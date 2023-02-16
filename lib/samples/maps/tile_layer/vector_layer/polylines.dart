@@ -3,10 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Map import
@@ -30,7 +30,7 @@ class _PolylinesSampleState extends SampleViewState
   late MapZoomPanBehavior _zoomPanBehavior;
   MapTileLayerController? _mapController;
   AnimationController? _animationController;
-  late Animation<double> _animation;
+  late Animation _animation;
   late bool _isDesktop;
   late List<_RouteDetails> _routes;
   int _currentSelectedCityIndex = 0;
@@ -40,9 +40,9 @@ class _PolylinesSampleState extends SampleViewState
   void initState() {
     _routeJson = 'assets/london_to_british.json';
     _routes = <_RouteDetails>[
-      _RouteDetails(const MapLatLng(51.4700, -0.4543), null, 'London Heathrow'),
+      _RouteDetails(MapLatLng(51.4700, -0.4543), null, 'London Heathrow'),
       _RouteDetails(
-          const MapLatLng(51.5194, -0.1270),
+          MapLatLng(51.5194, -0.1270),
           Icon(Icons.location_on, color: Colors.red[600], size: 30),
           'The British Museum'),
     ];
@@ -50,14 +50,15 @@ class _PolylinesSampleState extends SampleViewState
     _zoomPanBehavior = MapZoomPanBehavior(
       minZoomLevel: 3,
       zoomLevel: 10,
-      focalLatLng: const MapLatLng(51.4700, -0.2843),
-      toolbarSettings: const MapToolbarSettings(
+      focalLatLng: MapLatLng(51.4700, -0.2843),
+      toolbarSettings: MapToolbarSettings(
           direction: Axis.vertical, position: MapToolbarPosition.bottomRight),
+      maxZoomLevel: 15,
       enableDoubleTapZooming: true,
     );
 
     _animationController = AnimationController(
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
       vsync: this,
     );
 
@@ -70,8 +71,10 @@ class _PolylinesSampleState extends SampleViewState
 
   @override
   void dispose() {
-    _animationController!.dispose();
-    _mapController!.dispose();
+    _animationController?.dispose();
+    _animationController = null;
+    _mapController?.dispose();
+    _mapController = null;
     _routes.clear();
     super.dispose();
   }
@@ -81,7 +84,7 @@ class _PolylinesSampleState extends SampleViewState
     final String data = await rootBundle.loadString(_routeJson);
     final dynamic jsonData = json.decode(data);
     final List<dynamic> polylinePoints =
-        jsonData['features'][0]['geometry']['coordinates'] as List<dynamic>;
+        jsonData['features'][0]['geometry']['coordinates'];
     for (int i = 0; i < polylinePoints.length; i++) {
       polyline.add(MapLatLng(polylinePoints[i][1], polylinePoints[i][0]));
     }
@@ -98,13 +101,12 @@ class _PolylinesSampleState extends SampleViewState
         themeData.platform == TargetPlatform.macOS ||
         themeData.platform == TargetPlatform.windows ||
         themeData.platform == TargetPlatform.linux;
-    return FutureBuilder<dynamic>(
+    return FutureBuilder(
         future: getJsonData(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapdata) {
           if (snapdata.hasData) {
-            final List<MapLatLng> polylinePoints =
-                snapdata.data as List<MapLatLng>;
-            return Stack(children: <Widget>[
+            final List<MapLatLng> polylinePoints = snapdata.data;
+            return Stack(children: [
               Positioned.fill(
                 child: Image.asset(
                   'images/maps_grid.png',
@@ -116,7 +118,7 @@ class _PolylinesSampleState extends SampleViewState
                   shapeHoverColor: Colors.transparent,
                 ),
                 child: SfMaps(
-                  layers: <MapLayer>[
+                  layers: [
                     MapTileLayer(
                       urlTemplate:
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -128,7 +130,6 @@ class _PolylinesSampleState extends SampleViewState
                             key: UniqueKey(),
                             latitude: _routes[index].latLan.latitude,
                             longitude: _routes[index].latLan.longitude,
-                            alignment: Alignment.bottomCenter,
                             child: _routes[index].icon,
                           );
                         } else {
@@ -136,32 +137,32 @@ class _PolylinesSampleState extends SampleViewState
                             key: UniqueKey(),
                             latitude: _routes[index].latLan.latitude,
                             longitude: _routes[index].latLan.longitude,
+                            iconType: MapIconType.circle,
                             iconColor: Colors.white,
                             iconStrokeWidth: 2.0,
-                            size: const Size(15, 15),
+                            size: Size(15, 15),
                             iconStrokeColor: Colors.black,
                           );
                         }
                       },
-                      tooltipSettings: const MapTooltipSettings(
+                      tooltipSettings: MapTooltipSettings(
                         color: Color.fromRGBO(45, 45, 45, 1),
                       ),
                       markerTooltipBuilder: (BuildContext context, int index) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(_routes[index].city,
-                              style: model.themeData.textTheme.bodySmall!
+                              style: model.themeData.textTheme.caption!
                                   .copyWith(
-                                      color: const Color.fromRGBO(
-                                          255, 255, 255, 1))),
+                                      color: Color.fromRGBO(255, 255, 255, 1))),
                         );
                       },
-                      sublayers: <MapSublayer>[
+                      sublayers: [
                         MapPolylineLayer(
-                            polylines: <MapPolyline>{
+                            polylines: {
                               MapPolyline(
                                 points: polylinePoints,
-                                color: const Color.fromRGBO(0, 102, 255, 1.0),
+                                color: Color.fromRGBO(0, 102, 255, 1.0),
                                 width: 6.0,
                               )
                             },
@@ -171,9 +172,9 @@ class _PolylinesSampleState extends SampleViewState
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                     _routes[0].city + ' - ' + _routes[1].city,
-                                    style: model.themeData.textTheme.bodySmall!
+                                    style: model.themeData.textTheme.caption!
                                         .copyWith(
-                                            color: const Color.fromRGBO(
+                                            color: Color.fromRGBO(
                                                 255, 255, 255, 1))),
                               );
                             }),
@@ -189,7 +190,7 @@ class _PolylinesSampleState extends SampleViewState
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
+                    children: [
                       _buildChipWidget(0, 'The British Museum'),
                       _buildChipWidget(1, 'The Windsor Castle'),
                       _buildChipWidget(2, 'Twickenham Stadium'),
@@ -212,10 +213,9 @@ class _PolylinesSampleState extends SampleViewState
           ? const EdgeInsets.only(left: 8.0, top: 8.0)
           : const EdgeInsets.only(left: 8.0),
       child: ChoiceChip(
-        backgroundColor:
-            model.themeData.colorScheme.brightness == Brightness.light
-                ? Colors.white
-                : Colors.black,
+        backgroundColor: model.themeData.brightness == Brightness.light
+            ? Colors.white
+            : Colors.black,
         elevation: 3.0,
         label: Text(
           city,
@@ -224,10 +224,6 @@ class _PolylinesSampleState extends SampleViewState
           ),
         ),
         selected: _currentSelectedCityIndex == index,
-        selectedColor:
-            model.themeData.colorScheme.brightness == Brightness.light
-                ? model.backgroundColor.withOpacity(0.25)
-                : const Color.fromRGBO(61, 91, 89, 0.9),
         onSelected: (bool isSelected) {
           if (isSelected) {
             setState(() {
@@ -245,51 +241,51 @@ class _PolylinesSampleState extends SampleViewState
       case 0:
         setState(() {
           _routeJson = 'assets/london_to_british.json';
-          _zoomPanBehavior.focalLatLng = const MapLatLng(51.4700, -0.2843);
+          _zoomPanBehavior.focalLatLng = MapLatLng(51.4700, -0.2843);
           _zoomPanBehavior.zoomLevel = 10;
-          _routes[1] = _RouteDetails(const MapLatLng(51.5194, -0.1270),
+          _routes[1] = _RouteDetails(MapLatLng(51.5194, -0.1270),
               Icon(Icons.location_on, color: Colors.red[600], size: 30), city);
-          _mapController!.updateMarkers(<int>[1]);
+          _mapController!.updateMarkers([1]);
         });
         break;
       case 1:
         setState(() {
           _routeJson = 'assets/london_to_windsor_castle.json';
-          _zoomPanBehavior.focalLatLng = const MapLatLng(51.4700, -0.5443);
+          _zoomPanBehavior.focalLatLng = MapLatLng(51.4700, -0.5443);
           _zoomPanBehavior.zoomLevel = 11;
-          _routes[1] = _RouteDetails(const MapLatLng(51.4839, -0.6044),
+          _routes[1] = _RouteDetails(MapLatLng(51.4839, -0.6044),
               Icon(Icons.location_on, color: Colors.red[600], size: 30), city);
-          _mapController!.updateMarkers(<int>[1]);
+          _mapController!.updateMarkers([1]);
         });
         break;
       case 2:
         setState(() {
           _routeJson = 'assets/london_to_twickenham_stadium.json';
-          _zoomPanBehavior.focalLatLng = const MapLatLng(51.4700, -0.3843);
+          _zoomPanBehavior.focalLatLng = MapLatLng(51.4700, -0.3843);
           _zoomPanBehavior.zoomLevel = 11;
-          _routes[1] = _RouteDetails(const MapLatLng(51.4560, -0.3415),
+          _routes[1] = _RouteDetails(MapLatLng(51.4560, -0.3415),
               Icon(Icons.location_on, color: Colors.red[600], size: 30), city);
-          _mapController!.updateMarkers(<int>[1]);
+          _mapController!.updateMarkers([1]);
         });
         break;
       case 3:
         setState(() {
           _routeJson = 'assets/london_to_chessington.json';
-          _zoomPanBehavior.focalLatLng = const MapLatLng(51.4050, -0.4300);
+          _zoomPanBehavior.focalLatLng = MapLatLng(51.4050, -0.4300);
           _zoomPanBehavior.zoomLevel = 10;
-          _routes[1] = _RouteDetails(const MapLatLng(51.3472, -0.3192),
+          _routes[1] = _RouteDetails(MapLatLng(51.3472, -0.3192),
               Icon(Icons.location_on, color: Colors.red[600], size: 30), city);
-          _mapController!.updateMarkers(<int>[1]);
+          _mapController!.updateMarkers([1]);
         });
         break;
       case 4:
         setState(() {
           _routeJson = 'assets/london_to_hampton_court_palace.json';
-          _zoomPanBehavior.focalLatLng = const MapLatLng(51.4500, -0.4393);
+          _zoomPanBehavior.focalLatLng = MapLatLng(51.4500, -0.4393);
           _zoomPanBehavior.zoomLevel = 11;
-          _routes[1] = _RouteDetails(const MapLatLng(51.4036, -0.3378),
+          _routes[1] = _RouteDetails(MapLatLng(51.4036, -0.3378),
               Icon(Icons.location_on, color: Colors.red[600], size: 30), city);
-          _mapController!.updateMarkers(<int>[1]);
+          _mapController!.updateMarkers([1]);
         });
         break;
     }

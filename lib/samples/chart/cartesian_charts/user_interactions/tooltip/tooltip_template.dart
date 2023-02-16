@@ -20,7 +20,6 @@ class TooltipTemplate extends SampleView {
 class _TooltipTemplateState extends SampleViewState {
   _TooltipTemplateState();
   late TooltipBehavior _tooltipBehavior;
-  late List<ChartSampleData> chartData;
 
   @override
   void initState() {
@@ -35,10 +34,10 @@ class _TooltipTemplateState extends SampleViewState {
               width: 70,
               decoration: BoxDecoration(
                 color: Colors.grey[400],
-                borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+                borderRadius: BorderRadius.all(Radius.circular(6.0)),
               ),
               child: Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(4, 0, 0, 0),
                   child: Row(children: <Widget>[
                     SizedBox(
                       height: 30,
@@ -46,50 +45,19 @@ class _TooltipTemplateState extends SampleViewState {
                       child: Image.asset(_getImageTemplate(pointIndex)),
                     ),
                     Text(
-                      data.y.toString() + '%',
-                      style: const TextStyle(fontSize: 12, color: Colors.black),
+                      (data.y.toString() + '%'),
+                      style: TextStyle(fontSize: 12, color: Colors.black),
                       textScaleFactor: 1.0,
                     ),
                   ])));
         });
-    chartData = <ChartSampleData>[
-      ChartSampleData(
-        x: 'YouTube',
-        y: 51,
-        pointColor: const Color.fromRGBO(192, 33, 39, 1),
-      ),
-      ChartSampleData(
-        x: 'Twitter',
-        y: 42,
-        pointColor: const Color.fromRGBO(26, 157, 235, 1),
-      ),
-      ChartSampleData(
-        x: 'Instagram',
-        y: 63,
-      ),
-      ChartSampleData(
-        x: 'Snapchat',
-        y: 61,
-        pointColor: const Color.fromRGBO(254, 250, 55, 1),
-      ),
-      ChartSampleData(
-        x: 'Facebook',
-        y: 74,
-        pointColor: const Color.fromRGBO(47, 107, 167, 1),
-      ),
-    ];
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return _buildTooltipTemplateChart();
-  }
-
-  @override
-  void dispose() {
-    chartData.clear();
-    super.dispose();
   }
 
   /// Returns the chart with various marker shapes.
@@ -101,13 +69,13 @@ class _TooltipTemplateState extends SampleViewState {
               : 'Percentage of people using social media on a daily basis'),
       plotAreaBorderWidth: 0,
       primaryXAxis: CategoryAxis(
-          majorGridLines: const MajorGridLines(width: 0),
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorGridLines: MajorGridLines(width: 0),
+          majorTickLines: MajorTickLines(size: 0)),
       primaryYAxis: NumericAxis(
-          axisLine: const AxisLine(width: 0),
+          axisLine: AxisLine(width: 0),
           interval: 20,
           maximum: isCardView ? 120 : 100,
-          majorTickLines: const MajorTickLines(size: 0)),
+          majorTickLines: MajorTickLines(size: 0)),
       tooltipBehavior: _tooltipBehavior,
       series: _getMarkeSeries(),
     );
@@ -117,15 +85,15 @@ class _TooltipTemplateState extends SampleViewState {
   Color? _getTooltipBorderColor(int pointIndex) {
     Color? color;
     if (pointIndex == 0) {
-      color = const Color.fromRGBO(192, 33, 39, 1);
+      color = Color.fromRGBO(192, 33, 39, 1);
     } else if (pointIndex == 1) {
-      color = const Color.fromRGBO(26, 157, 235, 1);
+      color = Color.fromRGBO(26, 157, 235, 1);
     } else if (pointIndex == 2) {
-      color = const Color.fromRGBO(93, 80, 202, 1);
+      color = Color.fromRGBO(93, 80, 202, 1);
     } else if (pointIndex == 3) {
-      color = const Color.fromRGBO(254, 250, 55, 1);
+      color = Color.fromRGBO(254, 250, 55, 1);
     } else if (pointIndex == 4) {
-      color = const Color.fromRGBO(60, 92, 156, 1);
+      color = Color.fromRGBO(60, 92, 156, 1);
     }
     return color;
   }
@@ -133,6 +101,48 @@ class _TooltipTemplateState extends SampleViewState {
   /// Returns the list of chart which need to
   /// render on the chart with Tooltip template.
   List<ColumnSeries<ChartSampleData, String>> _getMarkeSeries() {
+    final List<Color> color = <Color>[];
+    color.add(Color.fromRGBO(93, 80, 202, 1));
+    color.add(Color.fromRGBO(183, 45, 145, 1));
+    color.add(Color.fromRGBO(250, 203, 118, 1));
+
+    final List<double> stops = <double>[];
+    stops.add(0.0);
+    stops.add(0.5);
+    stops.add(1.0);
+
+    final LinearGradient gradientColors = LinearGradient(
+        colors: color,
+        stops: stops,
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter);
+
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(
+        x: 'YouTube',
+        y: 51,
+        pointColor: Color.fromRGBO(192, 33, 39, 1),
+      ),
+      ChartSampleData(
+        x: 'Twitter',
+        y: 42,
+        pointColor: Color.fromRGBO(26, 157, 235, 1),
+      ),
+      ChartSampleData(
+        x: 'Instagram',
+        y: 63,
+      ),
+      ChartSampleData(
+        x: 'Snapchat',
+        y: 61,
+        pointColor: Color.fromRGBO(254, 250, 55, 1),
+      ),
+      ChartSampleData(
+        x: 'Facebook',
+        y: 74,
+        pointColor: Color.fromRGBO(47, 107, 167, 1),
+      ),
+    ];
     return <ColumnSeries<ChartSampleData, String>>[
       ColumnSeries<ChartSampleData, String>(
         onCreateRenderer: (ChartSeries<ChartSampleData, String> series) {
@@ -140,24 +150,16 @@ class _TooltipTemplateState extends SampleViewState {
         },
         dataSource: chartData,
         animationDuration: 0,
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
+        xValueMapper: (ChartSampleData sales, _) => sales.x,
         yValueMapper: (ChartSampleData sales, _) => sales.y,
         pointColorMapper: (ChartSampleData sales, _) => sales.pointColor,
-        gradient: const LinearGradient(colors: <Color>[
-          Color.fromRGBO(93, 80, 202, 1),
-          Color.fromRGBO(183, 45, 145, 1),
-          Color.fromRGBO(250, 203, 118, 1)
-        ], stops: <double>[
-          0.0,
-          0.5,
-          1.0
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter),
+        gradient: gradientColors,
       ),
     ];
   }
 
   String _getImageTemplate(int pointIndex) {
-    final String path = pointIndex == 0
+    final String path = (pointIndex == 0
         ? 'images/youtube.png'
         : (pointIndex == 1
             ? 'images/maps_twitter.png'
@@ -165,7 +167,7 @@ class _TooltipTemplateState extends SampleViewState {
                 ? 'images/maps_instagram.png'
                 : (pointIndex == 3
                     ? 'images/maps_snapchat.png'
-                    : 'images/maps_facebook.png')));
+                    : 'images/maps_facebook.png'))));
     return path;
   }
 }
@@ -187,7 +189,7 @@ class _ColumnCustomPainter extends ColumnSegment {
   void onPaint(Canvas canvas) {
     Paint? myPaint = fillPaint;
     if (currentSegmentIndex == 0) {
-      myPaint = Paint()..color = const Color.fromRGBO(192, 33, 39, 1);
+      myPaint = Paint()..color = Color.fromRGBO(192, 33, 39, 1);
     } else if (currentSegmentIndex == 1) {
       myPaint = Paint()..color = const Color.fromRGBO(26, 157, 235, 1);
     } else if (currentSegmentIndex == 2) {

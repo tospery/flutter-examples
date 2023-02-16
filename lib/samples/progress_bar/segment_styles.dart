@@ -31,7 +31,7 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
   void initState() {
     super.initState();
     if (mounted) {
-      _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer timer) {
+      _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer _timer) {
         setState(() {
           if (progressValue == 100) {
             progressValue = 0;
@@ -59,7 +59,8 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _getSegmentedProgressBar1(),
             _getSegmentedProgressBar2(),
             _getSementedProgressBar3(),
@@ -71,7 +72,8 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
       return Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
             _getSegmentedProgressBar1(),
             _getSegmentedProgressBar2(),
             _getSementedProgressBar3(),
@@ -82,7 +84,7 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
   }
 
   Widget _getSegmentedProgressBar1() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -94,9 +96,9 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
             startAngle: 270,
             endAngle: 270,
             radiusFactor: 0.85,
-            axisLineStyle: const AxisLineStyle(
+            axisLineStyle: AxisLineStyle(
               thickness: 0.2,
-              color: Color.fromARGB(30, 0, 169, 181),
+              color: const Color.fromARGB(30, 0, 169, 181),
               thicknessUnit: GaugeSizeUnit.factor,
             ),
             pointers: <GaugePointer>[
@@ -114,6 +116,7 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
           RadialAxis(
             interval: 25,
             showLabels: false,
+            showTicks: true,
             showAxisLine: false,
             tickOffset: -0.05,
             offsetUnit: GaugeSizeUnit.factor,
@@ -125,12 +128,14 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
               GaugeAnnotation(
                   angle: 90,
                   positionFactor: 0.1,
-                  widget: Text(progressValue.toStringAsFixed(0) + '%',
-                      style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontFamily: 'Times',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15)))
+                  widget: Container(
+                      // added text widget as an annotation.
+                      child: Text(progressValue.toStringAsFixed(0) + '%',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              fontFamily: 'Times',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15))))
             ],
             majorTickStyle: MajorTickStyle(
                 length: 0.3,
@@ -138,13 +143,13 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
                 lengthUnit: GaugeSizeUnit.factor,
                 color: model.currentThemeData!.brightness == Brightness.light
                     ? Colors.white
-                    : const Color.fromRGBO(33, 33, 33, 1)),
+                    : Color.fromRGBO(33, 33, 33, 1)),
           )
         ]));
   }
 
   Widget _getSegmentedProgressBar2() {
-    return SizedBox(
+    return Container(
         width: _size,
         height: _size,
         child: SfRadialGauge(
@@ -154,18 +159,20 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
                 showLabels: false,
                 endAngle: 55,
                 radiusFactor: 0.85,
-                axisLineStyle: const AxisLineStyle(
-                    thickness: 30, dashArray: <double>[8, 3]),
+                axisLineStyle:
+                    AxisLineStyle(thickness: 30, dashArray: <double>[8, 3]),
                 annotations: <GaugeAnnotation>[
                   GaugeAnnotation(
                       angle: 90,
                       positionFactor: 0.25,
-                      widget: Text(progressValue.toStringAsFixed(0) + '%',
-                          style: const TextStyle(
-                              fontStyle: FontStyle.italic,
-                              fontFamily: 'Times',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15)))
+                      widget: Container(
+                          // added text widget as an annotation.
+                          child: Text(progressValue.toStringAsFixed(0) + '%',
+                              style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontFamily: 'Times',
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15))))
                 ],
                 pointers: <GaugePointer>[
                   RangePointer(
@@ -174,14 +181,14 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
                       animationType: AnimationType.linear,
                       animationDuration: 30,
                       width: 30,
-                      dashArray: const <double>[8, 3]),
+                      dashArray: <double>[8, 3]),
                 ]),
           ],
         ));
   }
 
   Widget _getSementedProgressBar3() {
-    return SizedBox(
+    return Container(
         width: _size,
         height: _size,
         child: SfRadialGauge(
@@ -192,15 +199,15 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.85,
-              axisLineStyle: const AxisLineStyle(
-                  thickness: 30, dashArray: <double>[15, 2]),
+              axisLineStyle:
+                  AxisLineStyle(thickness: 30, dashArray: <double>[15, 2]),
               pointers: <GaugePointer>[
                 RangePointer(
                     value: progressValue,
                     width: 30,
                     enableAnimation: true,
                     animationDuration: 30,
-                    gradient: const SweepGradient(colors: <Color>[
+                    gradient: SweepGradient(colors: <Color>[
                       Color.fromRGBO(255, 4, 0, 1),
                       Color.fromRGBO(255, 15, 0, 1),
                       Color.fromRGBO(255, 31, 0, 1),
@@ -239,18 +246,20 @@ class _ProgressBarSegmentStyleState extends SampleViewState {
                       0.85,
                       0.9,
                     ]),
-                    dashArray: const <double>[15, 2])
+                    dashArray: <double>[15, 2])
               ],
               annotations: <GaugeAnnotation>[
                 GaugeAnnotation(
                     angle: 90,
                     positionFactor: 0.25,
-                    widget: Text(progressValue.toStringAsFixed(0) + '%',
-                        style: const TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontFamily: 'Times',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15)))
+                    widget: Container(
+                        // added text widget as an annotation.
+                        child: Text(progressValue.toStringAsFixed(0) + '%',
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontFamily: 'Times',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15))))
               ],
             ),
           ],

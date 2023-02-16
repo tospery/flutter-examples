@@ -19,11 +19,35 @@ class SplineDashed extends SampleView {
 /// State class of the dashed spline chart.
 class _SplineDashedState extends SampleViewState {
   _SplineDashedState();
-  List<ChartSampleData>? chartData;
 
   @override
-  void initState() {
-    chartData = <ChartSampleData>[
+  Widget build(BuildContext context) {
+    return _buildDashedSplineChart();
+  }
+
+  /// Returns the dashed spline chart.
+  SfCartesianChart _buildDashedSplineChart() {
+    return SfCartesianChart(
+      plotAreaBorderWidth: 0,
+      title: ChartTitle(text: isCardView ? '' : 'Total investment (% of GDP)'),
+      legend: Legend(isVisible: !isCardView),
+      primaryXAxis: NumericAxis(majorGridLines: MajorGridLines(width: 0)),
+      primaryYAxis: NumericAxis(
+        minimum: 16,
+        maximum: 28,
+        interval: 4,
+        labelFormat: '{value}%',
+        axisLine: AxisLine(width: 0),
+      ),
+      series: _getDashedSplineSeries(),
+      tooltipBehavior: TooltipBehavior(enable: true),
+    );
+  }
+
+  /// Returns the list of chart series
+  /// which need to render on the dashed spline chart.
+  List<SplineSeries<ChartSampleData, num>> _getDashedSplineSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
       ChartSampleData(
           x: 1997,
           y: 17.79,
@@ -62,69 +86,33 @@ class _SplineDashedState extends SampleViewState {
           secondSeriesYValue: 21.65,
           thirdSeriesYValue: 25.31)
     ];
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildDashedSplineChart();
-  }
-
-  /// Returns the dashed spline chart.
-  SfCartesianChart _buildDashedSplineChart() {
-    return SfCartesianChart(
-      plotAreaBorderWidth: 0,
-      title: ChartTitle(text: isCardView ? '' : 'Total investment (% of GDP)'),
-      legend: Legend(isVisible: !isCardView),
-      primaryXAxis: NumericAxis(majorGridLines: const MajorGridLines(width: 0)),
-      primaryYAxis: NumericAxis(
-        minimum: 16,
-        maximum: 28,
-        interval: 4,
-        labelFormat: '{value}%',
-        axisLine: const AxisLine(width: 0),
-      ),
-      series: _getDashedSplineSeries(),
-      tooltipBehavior: TooltipBehavior(enable: true),
-    );
-  }
-
-  /// Returns the list of chart series
-  /// which need to render on the dashed spline chart.
-  List<SplineSeries<ChartSampleData, num>> _getDashedSplineSeries() {
     return <SplineSeries<ChartSampleData, num>>[
       SplineSeries<ChartSampleData, num>(
-          dataSource: chartData!,
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.y,
           width: 2,
           name: 'Brazil',
 
           /// To apply the dashes line for spline.
-          dashArray: const <double>[12, 3, 3, 3],
-          markerSettings: const MarkerSettings(isVisible: true)),
+          dashArray: <double>[12, 3, 3, 3],
+          markerSettings: MarkerSettings(isVisible: true)),
       SplineSeries<ChartSampleData, num>(
-          dataSource: chartData!,
+          dataSource: chartData,
           width: 2,
           name: 'Sweden',
-          dashArray: const <double>[12, 3, 3, 3],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          dashArray: <double>[12, 3, 3, 3],
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.secondSeriesYValue,
-          markerSettings: const MarkerSettings(isVisible: true)),
+          markerSettings: MarkerSettings(isVisible: true)),
       SplineSeries<ChartSampleData, num>(
-          dataSource: chartData!,
+          dataSource: chartData,
           width: 2,
-          dashArray: const <double>[12, 3, 3, 3],
+          dashArray: <double>[12, 3, 3, 3],
           name: 'Greece',
-          xValueMapper: (ChartSampleData sales, _) => sales.x as num,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.thirdSeriesYValue,
-          markerSettings: const MarkerSettings(isVisible: true))
+          markerSettings: MarkerSettings(isVisible: true))
     ];
-  }
-
-  @override
-  void dispose() {
-    chartData!.clear();
-    super.dispose();
   }
 }

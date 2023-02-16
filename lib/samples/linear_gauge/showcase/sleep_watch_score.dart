@@ -28,25 +28,25 @@ class _SleepWatchState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    final Brightness brightness = Theme.of(context).brightness;
+    final Brightness _brightness = Theme.of(context).brightness;
 
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: EdgeInsets.all(10.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
+            children: [
+              Container(
                   width: (defaultTargetPlatform == TargetPlatform.macOS ||
                           defaultTargetPlatform == TargetPlatform.iOS)
                       ? 54
                       : null,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Text(
+                    children: [
+                      Text(
                         'TODAY',
                         style: TextStyle(
                             fontSize: 10, fontWeight: FontWeight.w500),
@@ -60,19 +60,20 @@ class _SleepWatchState extends SampleViewState {
                                 : _todayValue < 300
                                     ? Colors.amber
                                     : _todayValue < 400
-                                        ? const Color(0xffFB7D55)
-                                        : const Color(0xff0DC9AB),
+                                        ? Color(0xffFB7D55)
+                                        : Color(0xff0DC9AB),
                             fontWeight: FontWeight.bold),
                       )
                     ],
                   )),
-              SizedBox(
+              Container(
                   width: isWebOrDesktop
                       ? MediaQuery.of(context).size.width >= 550
                           ? 450
                           : MediaQuery.of(context).size.width * 0.68
                       : MediaQuery.of(context).size.width * 0.70,
                   child: SfLinearGauge(
+                      orientation: LinearGaugeOrientation.horizontal,
                       minimum: 100.0,
                       maximum: 500.0,
                       interval: 50.0,
@@ -83,18 +84,16 @@ class _SleepWatchState extends SampleViewState {
                       minorTicksPerInterval: 0,
                       axisTrackStyle: LinearAxisTrackStyle(
                         thickness: 15,
-                        color: brightness == Brightness.dark
+                        color: _brightness == Brightness.dark
                             ? Colors.transparent
                             : Colors.grey[350],
                       ),
-                      markerPointers: <LinearMarkerPointer>[
+                      markerPointers: [
                         LinearShapePointer(
                             value: _todayValue,
-                            onChanged: (dynamic value) {
-                              setState(() {
-                                _todayValue = value as double;
-                              });
-                            },
+                            onValueChanged: (value) => {
+                                  setState(() => {_todayValue = value})
+                                },
                             height: 20,
                             width: 20,
                             color: _todayValue < 200
@@ -102,11 +101,11 @@ class _SleepWatchState extends SampleViewState {
                                 : _todayValue < 300
                                     ? Colors.amber
                                     : _todayValue < 400
-                                        ? const Color(0xffFB7D55)
-                                        : const Color(0xff0DC9AB),
+                                        ? Color(0xffFB7D55)
+                                        : Color(0xff0DC9AB),
                             position: LinearElementPosition.cross,
                             shapeType: LinearShapePointerType.circle),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 150,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -118,7 +117,7 @@ class _SleepWatchState extends SampleViewState {
                             ),
                           ),
                         ),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 250,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -128,7 +127,7 @@ class _SleepWatchState extends SampleViewState {
                             style: TextStyle(fontSize: 12),
                           ),
                         ),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 350,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -138,7 +137,7 @@ class _SleepWatchState extends SampleViewState {
                             style: TextStyle(fontSize: 12),
                           ),
                         ),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 450,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -149,7 +148,7 @@ class _SleepWatchState extends SampleViewState {
                           ),
                         )
                       ],
-                      ranges: const <LinearGaugeRange>[
+                      ranges: <LinearGaugeRange>[
                         LinearGaugeRange(
                           startValue: 100.0,
                           endValue: 200,
@@ -189,19 +188,19 @@ class _SleepWatchState extends SampleViewState {
                       ]))
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
+            children: [
+              Container(
                   width: (defaultTargetPlatform == TargetPlatform.macOS ||
                           defaultTargetPlatform == TargetPlatform.iOS)
                       ? 54
                       : null,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      const Text(
+                    children: [
+                      Text(
                         'OVERALL',
                         style: TextStyle(
                             fontSize: 10, fontWeight: FontWeight.w500),
@@ -215,19 +214,20 @@ class _SleepWatchState extends SampleViewState {
                                 : _overallValue < 300
                                     ? Colors.amber
                                     : _overallValue < 400
-                                        ? const Color(0xffFB7D55)
-                                        : const Color(0xff0DC9AB),
+                                        ? Color(0xffFB7D55)
+                                        : Color(0xff0DC9AB),
                             fontWeight: FontWeight.bold),
                       )
                     ],
                   )),
-              SizedBox(
+              Container(
                   width: isWebOrDesktop
                       ? MediaQuery.of(context).size.width >= 550
                           ? 450
                           : MediaQuery.of(context).size.width * 0.68
                       : MediaQuery.of(context).size.width * 0.70,
                   child: SfLinearGauge(
+                      orientation: LinearGaugeOrientation.horizontal,
                       minimum: 100.0,
                       maximum: 500.0,
                       interval: 50.0,
@@ -238,18 +238,17 @@ class _SleepWatchState extends SampleViewState {
                       minorTicksPerInterval: 0,
                       axisTrackStyle: LinearAxisTrackStyle(
                         thickness: 15,
-                        color: brightness == Brightness.dark
+                        edgeStyle: LinearEdgeStyle.bothFlat,
+                        color: _brightness == Brightness.dark
                             ? Colors.transparent
                             : Colors.grey[350],
                       ),
-                      markerPointers: <LinearMarkerPointer>[
+                      markerPointers: [
                         LinearShapePointer(
                             value: _overallValue,
-                            onChanged: (dynamic value) {
-                              setState(() {
-                                _overallValue = value as double;
-                              });
-                            },
+                            onValueChanged: (value) => {
+                                  setState(() => {_overallValue = value})
+                                },
                             height: 20,
                             width: 20,
                             color: _overallValue < 200
@@ -257,11 +256,11 @@ class _SleepWatchState extends SampleViewState {
                                 : _overallValue < 300
                                     ? Colors.amber
                                     : _overallValue < 400
-                                        ? const Color(0xffFB7D55)
-                                        : const Color(0xff0DC9AB),
+                                        ? Color(0xffFB7D55)
+                                        : Color(0xff0DC9AB),
                             position: LinearElementPosition.cross,
                             shapeType: LinearShapePointerType.circle),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 150,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -271,7 +270,7 @@ class _SleepWatchState extends SampleViewState {
                             style: TextStyle(fontSize: 12),
                           ),
                         ),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 250,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -281,7 +280,7 @@ class _SleepWatchState extends SampleViewState {
                             style: TextStyle(fontSize: 12),
                           ),
                         ),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 350,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -291,7 +290,7 @@ class _SleepWatchState extends SampleViewState {
                             style: TextStyle(fontSize: 12),
                           ),
                         ),
-                        const LinearWidgetPointer(
+                        LinearWidgetPointer(
                           value: 450,
                           enableAnimation: false,
                           position: LinearElementPosition.outside,
@@ -302,7 +301,7 @@ class _SleepWatchState extends SampleViewState {
                           ),
                         )
                       ],
-                      ranges: const <LinearGaugeRange>[
+                      ranges: <LinearGaugeRange>[
                         LinearGaugeRange(
                           startValue: 100.0,
                           endValue: 200,

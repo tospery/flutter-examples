@@ -1,15 +1,17 @@
+///Dart import
+import 'dart:typed_data';
+
 ///Package imports
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 ///XlsIO import
-// ignore: depend_on_referenced_packages
-import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Alignment;
 
 ///Local imports
 import '../../../model/sample_view.dart';
-import '../../common/export/save_file_mobile.dart'
-    if (dart.library.html) '../../common/export/save_file_web.dart';
+import '../helper/save_file_mobile.dart'
+    if (dart.library.html) '../helper/save_file_web.dart';
 
 /// Render XlsIO of invoice
 class InvoiceXlsIO extends SampleView {
@@ -28,28 +30,32 @@ class _InvoiceXlsIOState extends SampleViewState {
       backgroundColor: model.cardThemeColor,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-                'This sample showcases on how to create a simple Excel invoice with data, image, formulas, named range and cell formatting using XlsIO.',
-                style: TextStyle(fontSize: 16, color: model.textColor)),
-            const SizedBox(height: 20, width: 30),
-            Align(
-                child: TextButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(model.backgroundColor),
-                padding: model.isMobile
-                    ? null
-                    : MaterialStateProperty.all(const EdgeInsets.symmetric(
-                        vertical: 15, horizontal: 15)),
-              ),
-              onPressed: _generateExcel,
-              child: const Text('Generate Excel',
-                  style: TextStyle(color: Colors.white)),
-            ))
-          ],
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                  'This sample showcases on how to create a simple Excel invoice with data, image, formulas, and cell formatting using XlsIO.',
+                  style: TextStyle(fontSize: 16, color: model.textColor)),
+              const SizedBox(height: 20, width: 30),
+              Align(
+                  alignment: Alignment.center,
+                  child: TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          model.backgroundColor),
+                      padding: model.isMobile
+                          ? null
+                          : MaterialStateProperty.all(EdgeInsets.symmetric(
+                              vertical: 15, horizontal: 15)),
+                    ),
+                    onPressed: _generateExcel,
+                    child: const Text('Generate Excel',
+                        style: TextStyle(color: Colors.white)),
+                  ))
+            ],
+          ),
         ),
       ),
     );
@@ -65,13 +71,14 @@ class _InvoiceXlsIOState extends SampleViewState {
     sheet.name = 'Invoice';
     sheet.showGridlines = false;
 
-    sheet.getRangeByName('A1').columnWidth = 4.09;
-    sheet.getRangeByName('B1:C1').columnWidth = 13.09;
-    sheet.getRangeByName('D1').columnWidth = 11.47;
-    sheet.getRangeByName('E1').columnWidth = 7.77;
-    sheet.getRangeByName('F1').columnWidth = 9;
-    sheet.getRangeByName('G1').columnWidth = 8.09;
-    sheet.getRangeByName('H1').columnWidth = 3.73;
+    sheet.enableSheetCalculations();
+    sheet.getRangeByName('A1').columnWidth = 4.82;
+    sheet.getRangeByName('B1:C1').columnWidth = 13.82;
+    sheet.getRangeByName('D1').columnWidth = 12.20;
+    sheet.getRangeByName('E1').columnWidth = 8.50;
+    sheet.getRangeByName('F1').columnWidth = 9.73;
+    sheet.getRangeByName('G1').columnWidth = 8.82;
+    sheet.getRangeByName('H1').columnWidth = 4.46;
 
     sheet.getRangeByName('A1:H1').cellStyle.backColor = '#333F4F';
     sheet.getRangeByName('A1:H1').merge();
@@ -137,7 +144,7 @@ class _InvoiceXlsIOState extends SampleViewState {
 
     sheet.getRangeByName('E11').dateTime = DateTime(2020, 08, 31);
     sheet.getRangeByName('E11').numberFormat =
-        r'[$-x-sysdate]dddd, mmmm dd, yyyy';
+        '[\$-x-sysdate]dddd, mmmm dd, yyyy';
     range4.cellStyle.fontSize = 9;
     range4.cellStyle.hAlign = HAlignType.right;
 
@@ -190,7 +197,7 @@ class _InvoiceXlsIOState extends SampleViewState {
     sheet.getRangeByIndex(18, 7).formula = '=E18*F18+(E18*F18)';
     sheet.getRangeByIndex(19, 7).formula = '=E19*F19+(E19*F19)';
     sheet.getRangeByIndex(20, 7).formula = '=E20*F20+(E20*F20)';
-    sheet.getRangeByIndex(15, 6, 20, 7).numberFormat = r'$#,##0.00';
+    sheet.getRangeByIndex(15, 6, 20, 7).numberFormat = '\$#,##0.00';
 
     sheet.getRangeByName('E15:G15').cellStyle.hAlign = HAlignType.right;
     sheet.getRangeByName('B15:G15').cellStyle.fontSize = 10;
@@ -206,10 +213,8 @@ class _InvoiceXlsIOState extends SampleViewState {
     range7.text = 'TOTAL';
     range7.cellStyle.fontSize = 8;
     range7.cellStyle.fontColor = '#4D6575';
-    final Range resultRange = sheet.getRangeByName('G16:G20');
-    workbook.names.add('AmountPaid', resultRange);
-    range8.formula = '=SUM(AmountPaid)';
-    range8.numberFormat = r'$#,##0.00';
+    range8.formula = '=SUM(G16:G20)';
+    range8.numberFormat = '\$#,##0.00';
     range8.cellStyle.fontSize = 24;
     range8.cellStyle.hAlign = HAlignType.right;
     range8.cellStyle.bold = true;
@@ -229,11 +234,11 @@ class _InvoiceXlsIOState extends SampleViewState {
     picture.lastRow = 7;
     picture.lastColumn = 8;
 
-    final List<int> bytes = workbook.saveAsStream();
+    final List<int>? bytes = workbook.saveAsStream();
     workbook.dispose();
 
     //Launch file.
-    await FileSaveHelper.saveAndLaunchFile(bytes, 'Invoice.xlsx');
+    await FileSaveHelper.saveAndLaunchFile(bytes!, 'Invoice.xlsx');
   }
 
   Future<List<int>> _readImageData(String name) async {

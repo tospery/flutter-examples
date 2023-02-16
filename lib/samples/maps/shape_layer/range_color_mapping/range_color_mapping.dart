@@ -1,10 +1,8 @@
 ///Flutter package imports
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Map import
@@ -330,28 +328,28 @@ class _MapRangeColorMappingPageState extends SampleViewState {
       // [MapColorMapper.text] which is used for the text of
       // legend item and [MapColorMapper.color] will be used for
       // the color of the legend icon respectively.
-      shapeColorMappers: <MapColorMapper>[
-        const MapColorMapper(
+      shapeColorMappers: const <MapColorMapper>[
+        MapColorMapper(
             from: 0,
             to: 100,
             color: Color.fromRGBO(128, 159, 255, 1),
             text: '{0},{100}'),
-        const MapColorMapper(
+        MapColorMapper(
             from: 100,
             to: 500,
             color: Color.fromRGBO(51, 102, 255, 1),
             text: '500'),
-        const MapColorMapper(
+        MapColorMapper(
             from: 500,
             to: 1000,
             color: Color.fromRGBO(0, 57, 230, 1),
             text: '1k'),
-        const MapColorMapper(
+        MapColorMapper(
             from: 1000,
             to: 5000,
             color: Color.fromRGBO(0, 45, 179, 1),
             text: '5k'),
-        const MapColorMapper(
+        MapColorMapper(
             from: 5000,
             to: 50000,
             color: Color.fromRGBO(0, 26, 102, 1),
@@ -368,31 +366,17 @@ class _MapRangeColorMappingPageState extends SampleViewState {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      final bool scrollEnabled = constraints.maxHeight > 400;
-      double height = scrollEnabled ? constraints.maxHeight : 400;
-      if (model.isWebFullView ||
-          (model.isMobile &&
-              MediaQuery.of(context).orientation == Orientation.landscape)) {
-        final double refHeight = height * 0.6;
-        height = height > 500 ? (refHeight < 500 ? 500 : refHeight) : height;
-      }
-      return Center(
-        child: SingleChildScrollView(
-            child: SizedBox(
-          width: constraints.maxWidth,
-          height: height,
-          child: _buildMapsWidget(scrollEnabled),
-        )),
-      );
-    });
+    return MediaQuery.of(context).orientation == Orientation.portrait ||
+            model.isWebFullView
+        ? _buildMapsWidget()
+        : SingleChildScrollView(child: _buildMapsWidget());
   }
 
-  Widget _buildMapsWidget(bool scrollEnabled) {
+  Widget _buildMapsWidget() {
     return Center(
         child: Padding(
-      padding: scrollEnabled
+      padding: MediaQuery.of(context).orientation == Orientation.portrait ||
+              model.isWebFullView
           ? EdgeInsets.only(
               top: MediaQuery.of(context).size.height * 0.05,
               bottom: MediaQuery.of(context).size.height * 0.05,
@@ -400,23 +384,24 @@ class _MapRangeColorMappingPageState extends SampleViewState {
           : const EdgeInsets.only(right: 10, bottom: 15),
       child: SfMapsTheme(
         data: SfMapsThemeData(
-          shapeHoverColor: const Color.fromRGBO(176, 237, 131, 1),
+          shapeHoverColor: Color.fromRGBO(176, 237, 131, 1),
         ),
-        child: Column(children: <Widget>[
+        child: Column(children: [
           Padding(
-              padding: const EdgeInsets.only(top: 15, bottom: 30),
+              padding: EdgeInsets.only(top: 15, bottom: 30),
               child: Align(
+                  alignment: Alignment.center,
                   child: Text('World Population Density (per sq. km.)',
-                      style: Theme.of(context).textTheme.titleMedium))),
+                      style: Theme.of(context).textTheme.subtitle1))),
           Expanded(
             child: SfMaps(
               layers: <MapLayer>[
                 MapShapeLayer(
                   loadingBuilder: (BuildContext context) {
-                    return const SizedBox(
+                    return Container(
                       height: 25,
                       width: 25,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         strokeWidth: 3,
                       ),
                     );
@@ -429,19 +414,17 @@ class _MapRangeColorMappingPageState extends SampleViewState {
                       child: Text(
                           _worldPopulationDensity[index].countryName +
                               ' : ' +
-                              _numberFormat.format(
-                                  _worldPopulationDensity[index].density) +
+                              _numberFormat
+                                  .format(
+                                      _worldPopulationDensity[index].density)
+                                  .toString() +
                               ' per sq. km.',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  color:
-                                      Theme.of(context).colorScheme.surface)),
+                          style: Theme.of(context).textTheme.caption!.copyWith(
+                              color: Theme.of(context).colorScheme.surface)),
                     );
                   },
                   strokeColor: Colors.white30,
-                  legend: const MapLegend.bar(MapElement.shape,
+                  legend: MapLegend.bar(MapElement.shape,
                       position: MapLegendPosition.bottom,
                       overflowMode: MapLegendOverflowMode.wrap,
                       labelsPlacement: MapLegendLabelsPlacement.betweenItems,
@@ -449,14 +432,13 @@ class _MapRangeColorMappingPageState extends SampleViewState {
                       spacing: 1.0,
                       segmentSize: Size(55.0, 9.0)),
                   tooltipSettings: MapTooltipSettings(
-                      color: model.themeData.colorScheme.brightness ==
-                              Brightness.light
+                      color: model.themeData.brightness == Brightness.light
                           ? const Color.fromRGBO(0, 32, 128, 1)
                           : const Color.fromRGBO(226, 233, 255, 1),
-                      strokeColor: model.themeData.colorScheme.brightness ==
-                              Brightness.light
-                          ? Colors.white
-                          : Colors.black),
+                      strokeColor:
+                          model.themeData.brightness == Brightness.light
+                              ? Colors.white
+                              : Colors.black),
                 ),
               ],
             ),

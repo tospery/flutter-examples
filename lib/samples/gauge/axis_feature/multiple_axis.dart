@@ -36,66 +36,76 @@ class _MultipleAxisExampleState extends SampleViewState {
                 ? 0.5
                 : 0.6
             : 0.5,
+        labelOffset: 15,
         canRotateLabels: true,
-        showLastLabel: true,
-        minorTickStyle: const MinorTickStyle(
-            color: Color(0xFF00A8B5),
+        minorTickStyle: MinorTickStyle(
+            color: const Color(0xFF00A8B5),
+            thickness: 1.5,
             lengthUnit: GaugeSizeUnit.factor,
             length: 0.07),
-        majorTickStyle: const MajorTickStyle(
-            color: Color(0xFF00A8B5),
+        majorTickStyle: MajorTickStyle(
+            color: const Color(0xFF00A8B5),
+            thickness: 1.5,
             lengthUnit: GaugeSizeUnit.factor,
             length: 0.15),
-        axisLineStyle: const AxisLineStyle(
-          color: Color(0xFF00A8B5),
+        axisLineStyle: AxisLineStyle(
+          color: const Color(0xFF00A8B5),
           thickness: 3,
         ),
-        axisLabelStyle: const GaugeTextStyle(color: Color(0xFF00A8B5)),
+        axisLabelStyle:
+            GaugeTextStyle(color: const Color(0xFF00A8B5), fontSize: 12),
       ),
       RadialAxis(
+          minimum: 0,
+          maximum: 100,
           interval: 10,
-          showLastLabel: true,
           ticksPosition: ElementsPosition.outside,
           labelsPosition: ElementsPosition.outside,
           minorTicksPerInterval: 5,
-          minorTickStyle: const MinorTickStyle(
-              length: 0.07, lengthUnit: GaugeSizeUnit.factor),
-          majorTickStyle: const MinorTickStyle(
+          radiusFactor: 0.95,
+          labelOffset: 15,
+          minorTickStyle: MinorTickStyle(
+              thickness: 1.5, length: 0.07, lengthUnit: GaugeSizeUnit.factor),
+          majorTickStyle: MinorTickStyle(
+            thickness: 1.5,
             length: 0.15,
             lengthUnit: GaugeSizeUnit.factor,
           ),
-          axisLineStyle: const AxisLineStyle(
+          axisLineStyle: AxisLineStyle(
             thickness: 3,
           ),
-          axisLabelStyle: const GaugeTextStyle(),
+          axisLabelStyle: GaugeTextStyle(fontSize: 12),
           annotations: <GaugeAnnotation>[
             GaugeAnnotation(
                 angle: 90,
                 positionFactor: 1,
                 widget: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
-                    Text(
+                  children: <Widget>[
+                    Container(
+                        child: const Text(
                       '33°C  :',
                       style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Times'),
-                    ),
-                    Text(
+                    )),
+                    Container(
+                        child: const Text(
                       ' 91.4°F',
                       style: TextStyle(
                           fontSize: 12,
                           color: Color(0xFF00A8B5),
                           fontWeight: FontWeight.bold,
                           fontFamily: 'Times'),
-                    )
+                    ))
                   ],
                 ))
           ],
-          pointers: const <GaugePointer>[
+          pointers: <GaugePointer>[
             NeedlePointer(
               needleLength: 0.68,
+              lengthUnit: GaugeSizeUnit.factor,
               needleStartWidth: 0,
               needleEndWidth: 3,
               value: 33,

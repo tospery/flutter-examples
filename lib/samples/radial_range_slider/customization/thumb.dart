@@ -31,7 +31,12 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   String _annotationValue_2 = '75';
   String _annotationValue3 = '0';
   String _annotationValue_3 = '75';
+
   double _size = 150;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,38 +48,50 @@ class _RadialRangeSliderThumbState extends SampleViewState {
       return Center(
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
             _buildSliderWithCircle(),
-            const Center(child: Text('Circle thumb')),
+            Center(child: Text('Circle thumb')),
             _buildSliderWithRectangle(),
-            const Center(child: Text('Rectangle thumb')),
+            Center(child: Text('Rectangle thumb')),
             _buildSliderWithImage(),
-            const Center(child: Text('Image thumb')),
+            Center(child: Text('Image thumb')),
           ]));
     } else {
       _size = MediaQuery.of(context).size.width / 4.5;
       return Center(
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          _buildSliderWithCircle(),
-          const Center(child: Text('Circle thumb')),
-        ]),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          _buildSliderWithRectangle(),
-          const Center(child: Text('Rectangle thumb')),
-        ]),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-          _buildSliderWithImage(),
-          const Center(child: Text('Image thumb')),
-        ]),
-      ]));
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildSliderWithCircle(),
+                  Center(child: Text('Circle thumb')),
+                ]),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildSliderWithRectangle(),
+                  Center(child: Text('Rectangle thumb')),
+                ]),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  _buildSliderWithImage(),
+                  Center(child: Text('Image thumb')),
+                ]),
+          ]));
     }
   }
 
   /// Returns gradient progress style circular progress bar.
   Widget _buildSliderWithCircle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -84,7 +101,7 @@ class _RadialRangeSliderThumbState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
@@ -94,11 +111,11 @@ class _RadialRangeSliderThumbState extends SampleViewState {
                     startValue: _firstMarkerValue,
                     sizeUnit: GaugeSizeUnit.factor,
                     color: model.isWebFullView
-                        ? const Color.fromRGBO(197, 91, 226, 1)
+                        ? Color.fromRGBO(197, 91, 226, 1)
                         : null,
-                    gradient: const SweepGradient(colors: <Color>[
-                      Color.fromRGBO(197, 91, 226, 1),
-                      Color.fromRGBO(115, 67, 189, 1)
+                    gradient: SweepGradient(colors: <Color>[
+                      const Color.fromRGBO(197, 91, 226, 1),
+                      const Color.fromRGBO(115, 67, 189, 1)
                     ], stops: <double>[
                       0.5,
                       1
@@ -142,7 +159,7 @@ class _RadialRangeSliderThumbState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget _buildSliderWithRectangle() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -152,21 +169,21 @@ class _RadialRangeSliderThumbState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
               ranges: <GaugeRange>[
                 GaugeRange(
-                  startValue: _thirdMarkerValue,
-                  endValue: _fourthMarkerValue,
+                  endValue: _thirdMarkerValue,
+                  startValue: _fourthMarkerValue,
                   sizeUnit: GaugeSizeUnit.factor,
                   color: model.isWebFullView
-                      ? const Color.fromRGBO(197, 91, 226, 1)
+                      ? Color.fromRGBO(197, 91, 226, 1)
                       : null,
-                  gradient: const SweepGradient(colors: <Color>[
-                    Color.fromRGBO(197, 91, 226, 1),
-                    Color.fromRGBO(115, 67, 189, 1)
+                  gradient: SweepGradient(colors: <Color>[
+                    const Color.fromRGBO(197, 91, 226, 1),
+                    const Color.fromRGBO(115, 67, 189, 1)
                   ], stops: <double>[
                     0.5,
                     1
@@ -211,7 +228,7 @@ class _RadialRangeSliderThumbState extends SampleViewState {
 
   /// Returns gradient progress style circular progress bar.
   Widget _buildSliderWithImage() {
-    return SizedBox(
+    return Container(
         height: _size,
         width: _size,
         child: SfRadialGauge(axes: <RadialAxis>[
@@ -221,19 +238,19 @@ class _RadialRangeSliderThumbState extends SampleViewState {
               startAngle: 270,
               endAngle: 270,
               radiusFactor: 0.8,
-              axisLineStyle: const AxisLineStyle(
+              axisLineStyle: AxisLineStyle(
                 thickness: 0.1,
                 thicknessUnit: GaugeSizeUnit.factor,
               ),
               ranges: <GaugeRange>[
                 GaugeRange(
-                    startValue: _fifthMarkerValue,
-                    endValue: _sixthMarkerValue,
+                    endValue: _fifthMarkerValue,
+                    startValue: _sixthMarkerValue,
                     sizeUnit: GaugeSizeUnit.factor,
                     color: Colors.green,
-                    gradient: const SweepGradient(colors: <Color>[
-                      Color.fromRGBO(197, 91, 226, 1),
-                      Color.fromRGBO(115, 67, 189, 1)
+                    gradient: SweepGradient(colors: <Color>[
+                      const Color.fromRGBO(197, 91, 226, 1),
+                      const Color.fromRGBO(115, 67, 189, 1)
                     ], stops: <double>[
                       0.5,
                       1
@@ -279,8 +296,8 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   void handleSecondPointerValueChanged(double value) {
     setState(() {
       _secondMarkerValue = value;
-      final int secondMarkerValue = _secondMarkerValue.abs().toInt();
-      _annotationValue_1 = '$secondMarkerValue';
+      final int _value = _secondMarkerValue.abs().toInt();
+      _annotationValue_1 = '$_value';
     });
   }
 
@@ -296,8 +313,8 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   void handleFirstPointerValueChanged(double value) {
     setState(() {
       _firstMarkerValue = value;
-      final int firstMarkerValue = _firstMarkerValue.abs().toInt();
-      _annotationValue1 = '$firstMarkerValue';
+      final int _value = _firstMarkerValue.abs().toInt();
+      _annotationValue1 = '$_value';
     });
   }
 
@@ -314,8 +331,8 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   void handleFourthPointerValueChanged(double value) {
     setState(() {
       _fourthMarkerValue = value;
-      final int fourthMarkerValue = _fourthMarkerValue.abs().toInt();
-      _annotationValue_2 = '$fourthMarkerValue';
+      final int _value = _fourthMarkerValue.abs().toInt();
+      _annotationValue_2 = '$_value';
     });
   }
 
@@ -331,8 +348,8 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   void handleThirdPointerValueChanged(double value) {
     setState(() {
       _thirdMarkerValue = value;
-      final int thirdMarkerValue = _thirdMarkerValue.abs().toInt();
-      _annotationValue2 = '$thirdMarkerValue';
+      final int _value = _thirdMarkerValue.abs().toInt();
+      _annotationValue2 = '$_value';
     });
   }
 
@@ -349,8 +366,8 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   void handleSixthPointerValueChanged(double value) {
     setState(() {
       _sixthMarkerValue = value;
-      final int sixthMarkerValue = _sixthMarkerValue.abs().toInt();
-      _annotationValue_3 = '$sixthMarkerValue';
+      final int _value = _sixthMarkerValue.abs().toInt();
+      _annotationValue_3 = '$_value';
     });
   }
 
@@ -366,8 +383,8 @@ class _RadialRangeSliderThumbState extends SampleViewState {
   void handleFifthPointerValueChanged(double value) {
     setState(() {
       _fifthMarkerValue = value;
-      final int fifthMarkerValue = _fifthMarkerValue.abs().toInt();
-      _annotationValue3 = '$fifthMarkerValue';
+      final int _value = _fifthMarkerValue.abs().toInt();
+      _annotationValue3 = '$_value';
     });
   }
 

@@ -30,31 +30,41 @@ class _RangeThicknessExampleState extends SampleViewState {
       axes: <RadialAxis>[
         RadialAxis(
             showAxisLine: false,
+            minimum: 0,
+            maximum: 100,
             ticksPosition: ElementsPosition.outside,
             labelsPosition: ElementsPosition.outside,
             radiusFactor: 0.9,
             canRotateLabels: true,
-            showLastLabel: true,
-            majorTickStyle: const MajorTickStyle(
+            majorTickStyle: MajorTickStyle(
               length: 0.1,
+              thickness: 1.5,
               lengthUnit: GaugeSizeUnit.factor,
             ),
-            minorTickStyle: const MinorTickStyle(
+            minorTickStyle: MinorTickStyle(
               length: 0.04,
+              thickness: 1.5,
               lengthUnit: GaugeSizeUnit.factor,
             ),
             minorTicksPerInterval: 5,
             interval: 10,
-            axisLabelStyle: const GaugeTextStyle(),
+            labelOffset: 15,
+            axisLabelStyle: GaugeTextStyle(fontSize: 12),
             useRangeColorForAxis: true,
-            pointers: const <GaugePointer>[
+            pointers: <GaugePointer>[
               NeedlePointer(
+                  needleStartWidth: 1,
                   enableAnimation: true,
                   value: 70,
-                  tailStyle: TailStyle(length: 0.2, width: 5),
+                  tailStyle: TailStyle(
+                      length: 0.2, width: 5, lengthUnit: GaugeSizeUnit.factor),
                   needleEndWidth: 5,
                   needleLength: 0.7,
-                  knobStyle: KnobStyle())
+                  lengthUnit: GaugeSizeUnit.factor,
+                  knobStyle: KnobStyle(
+                    knobRadius: 0.08,
+                    sizeUnit: GaugeSizeUnit.factor,
+                  ))
             ],
             ranges: <GaugeRange>[
               GaugeRange(

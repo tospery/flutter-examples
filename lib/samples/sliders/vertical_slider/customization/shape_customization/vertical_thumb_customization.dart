@@ -1,10 +1,8 @@
 ///flutter package import
 import 'package:flutter/material.dart';
-// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart' show NumberFormat;
 
 ///Core theme import
-// ignore: depend_on_referenced_packages
 import 'package:syncfusion_flutter_core/theme.dart';
 
 ///Slider import
@@ -15,9 +13,6 @@ import '../../../../../model/sample_view.dart';
 
 ///Renders slider with customized thumb
 class VerticalThumbCustomizedSlider extends SampleView {
-  ///Renders slider with customized thumb
-  const VerticalThumbCustomizedSlider(Key key) : super(key: key);
-
   @override
   _VerticalThumbCustomizedSliderState createState() =>
       _VerticalThumbCustomizedSliderState();
@@ -36,20 +31,21 @@ class _VerticalThumbCustomizedSliderState extends SampleViewState {
           tickOffset: const Offset(0, 13),
           overlayColor: Colors.transparent,
           tooltipBackgroundColor: _activeColor,
-          activeDividerColor: _activeColor,
-          inactiveDividerColor: _activeColor.withOpacity(0.80),
-          activeDividerRadius: 2.0,
-          inactiveDividerRadius: 2.0),
+          activeDivisorColor: _activeColor,
+          inactiveDivisorColor: _activeColor.withOpacity(0.80),
+          activeDivisorRadius: 2.0,
+          inactiveDivisorRadius: 2.0),
       child: SfSlider.vertical(
+        min: 0.0,
         max: 100.0,
         value: _sliderValue,
         onChanged: (dynamic values) {
           setState(() {
-            _sliderValue = values as double;
+            _sliderValue = values;
           });
         },
         interval: 10,
-        showDividers: true,
+        showDivisors: true,
         enableTooltip: true,
         numberFormat: NumberFormat('#'),
         thumbShape: _RectThumbShape(),

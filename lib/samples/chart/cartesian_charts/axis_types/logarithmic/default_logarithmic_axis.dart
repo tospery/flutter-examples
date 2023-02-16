@@ -19,7 +19,7 @@ class LogarithmicAxisDefault extends SampleView {
 /// State class of the line cahrt with default logarithmic axis sample.
 class _LogarithmicAxisDefaultState extends SampleViewState {
   _LogarithmicAxisDefaultState();
-  TooltipBehavior? _tooltipBehavior;
+  late TooltipBehavior _tooltipBehavior;
   @override
   void initState() {
     _tooltipBehavior =
@@ -43,9 +43,9 @@ class _LogarithmicAxisDefaultState extends SampleViewState {
       /// Y axis as logarithmic axis placed here.
       primaryYAxis: LogarithmicAxis(
           minorTicksPerInterval: 5,
-          majorGridLines: const MajorGridLines(width: 1.5),
-          minorTickLines: const MinorTickLines(size: 4),
-          labelFormat: r'${value}',
+          majorGridLines: MajorGridLines(width: 1.5),
+          minorTickLines: MinorTickLines(size: 4),
+          labelFormat: '\${value}',
           interval: 1),
       series: _getSeries(),
       tooltipBehavior: _tooltipBehavior,
@@ -54,23 +54,24 @@ class _LogarithmicAxisDefaultState extends SampleViewState {
 
   /// Returns the list of chart series which need to render on the line chart.
   List<LineSeries<ChartSampleData, DateTime>> _getSeries() {
+    final List<ChartSampleData> chartData = <ChartSampleData>[
+      ChartSampleData(x: DateTime(1996, 1, 1), yValue: 200),
+      ChartSampleData(x: DateTime(1997, 1, 1), yValue: 400),
+      ChartSampleData(x: DateTime(1998, 1, 1), yValue: 600),
+      ChartSampleData(x: DateTime(1999, 1, 1), yValue: 700),
+      ChartSampleData(x: DateTime(2000, 1, 1), yValue: 1400),
+      ChartSampleData(x: DateTime(2001, 1, 1), yValue: 2000),
+      ChartSampleData(x: DateTime(2002, 1, 1), yValue: 4000),
+      ChartSampleData(x: DateTime(2003, 1, 1), yValue: 6000),
+      ChartSampleData(x: DateTime(2004, 1, 1), yValue: 8000),
+      ChartSampleData(x: DateTime(2005, 1, 1), yValue: 11000)
+    ];
     return <LineSeries<ChartSampleData, DateTime>>[
       LineSeries<ChartSampleData, DateTime>(
-          dataSource: <ChartSampleData>[
-            ChartSampleData(x: DateTime(1996), yValue: 200),
-            ChartSampleData(x: DateTime(1997), yValue: 400),
-            ChartSampleData(x: DateTime(1998), yValue: 600),
-            ChartSampleData(x: DateTime(1999), yValue: 700),
-            ChartSampleData(x: DateTime(2000), yValue: 1400),
-            ChartSampleData(x: DateTime(2001), yValue: 2000),
-            ChartSampleData(x: DateTime(2002), yValue: 4000),
-            ChartSampleData(x: DateTime(2003), yValue: 6000),
-            ChartSampleData(x: DateTime(2004), yValue: 8000),
-            ChartSampleData(x: DateTime(2005), yValue: 11000)
-          ],
-          xValueMapper: (ChartSampleData sales, _) => sales.x as DateTime,
+          dataSource: chartData,
+          xValueMapper: (ChartSampleData sales, _) => sales.x,
           yValueMapper: (ChartSampleData sales, _) => sales.yValue,
-          markerSettings: const MarkerSettings(isVisible: true))
+          markerSettings: MarkerSettings(isVisible: true))
     ];
   }
 }
